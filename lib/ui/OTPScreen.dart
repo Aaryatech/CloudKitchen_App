@@ -1,6 +1,9 @@
 import 'package:cloud_kitchen/ui/OTPVerification.dart';
+import 'package:cloud_kitchen/viewmodel/otp/otpviewmodel.dart';
 import 'package:flutter/material.dart';
 
+
+final otpViewModel=OtpViewModel();
 class OTPScreen extends StatefulWidget {
   @override
   _OTPScreenState createState() => _OTPScreenState();
@@ -21,6 +24,9 @@ class _OTPScreenState extends State<OTPScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
 
               children: [
+
+                otpViewModel.isLoading?LinearProgressIndicator():Container(),
+
               Image.asset(
                 "images/otp.jpg",
                 height: MediaQuery.of(context).size.height*0.30,
@@ -75,7 +81,20 @@ class _OTPScreenState extends State<OTPScreen> {
       //height: 50.0,
       child: GestureDetector(
           onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context)=> OTPVerification()));
+            if(!otpViewModel.isLoading)
+          {
+            otpViewModel.mobileVerification('7741919844',"123456").then((value) =>{
+              if(value){
+                Navigator.push(context, MaterialPageRoute(builder: (context)=> OTPVerification("123456",'7741919844')))
+              }else{
+                Scaffold.of(context).showSnackBar(SnackBar(
+                  content: Text("Something went wrong,Please try again."),
+                ))
+              }
+
+
+            } ).catchError((onError){});
+          }
           },
           child: Container(
                   decoration: BoxDecoration(

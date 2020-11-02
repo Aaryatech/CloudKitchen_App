@@ -159,6 +159,8 @@ int currentPage=0;
           child: Scaffold(
             backgroundColor: Colors.white,
             body: Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
           margin:EdgeInsets.all(20),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -183,9 +185,9 @@ int currentPage=0;
                   Text( 'right from your mobile', style:Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.grey)),
                    
                    Image.asset(
-              "images/intro_1.png", 
-                          height: 500,
-                          width: 700,
+              "images/intro_1.png",
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height*.50,
                         ),
                   ],
                   ),
@@ -205,7 +207,10 @@ class MyPage2Widget extends StatelessWidget {
           child: Scaffold(
             backgroundColor: Colors.white,
             body: Container(
-          margin:EdgeInsets.all(20),
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+
+              margin:EdgeInsets.all(20),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -217,10 +222,11 @@ class MyPage2Widget extends StatelessWidget {
                   children: [
 
                   Image.asset(
-              "images/intro-2.png", 
-                          height: 500,
-                          width: 700,
-                         ),
+              "images/intro-2.png",
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height*.50,
+
+                  ),
 
           
                   Text( 'Cooking Safe Food',  style:Theme.of(context).textTheme.headline5.copyWith(color:Colors.black,fontWeight: FontWeight.w700)),
@@ -295,12 +301,12 @@ class MyPage3Widget extends StatelessWidget {
 
                    Image.asset(
               "images/intro-3.png", 
-             height: 500,
-                          width: 700,
-              ),
+             height: MediaQuery.of(context).size.height*0.5,
+             width: MediaQuery.of(context).size.width,
+
+                     ),
                   ],
                   ),
-
             ],
           ),
         ),

@@ -1,7 +1,11 @@
+
 import 'package:cloud_kitchen/ui/contactUs.dart';
 import 'package:cloud_kitchen/ui/dashboard.dart';
+import 'package:cloud_kitchen/ui/locationpicker/locationpickerui.dart';
 import 'package:cloud_kitchen/ui/tackaway.dart';
 import 'package:flutter/material.dart';
+import 'package:location_permissions/location_permissions.dart';
+
 
 class LocationScreen extends StatefulWidget {
   @override
@@ -10,7 +14,6 @@ class LocationScreen extends StatefulWidget {
 
 class _LocationScreenState extends State<LocationScreen> {
   final scaffoldState = GlobalKey<ScaffoldState>();
-
 
   void showImagePickerBottomSheet(BuildContext context){
     showModalBottomSheet(
@@ -146,6 +149,25 @@ class _LocationScreenState extends State<LocationScreen> {
 
   }
 
+
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    super.initState();
+  }
+
+  void  _showSnackbar(String msg,bool isPositive) {
+    scaffoldState.currentState.showSnackBar(
+        SnackBar(
+          content: Text(msg,style: TextStyle(color: Colors.white),),
+          duration: Duration(seconds: 3),
+          backgroundColor: isPositive?Colors.green:Colors.redAccent,
+        ));
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -186,7 +208,9 @@ class _LocationScreenState extends State<LocationScreen> {
    // height: 50.0,
     child: GestureDetector(
         onTap: () {
-          Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
+          // Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> LocationPickerUI()));
+
         },
         child: Container(
           padding: EdgeInsets.all(8),

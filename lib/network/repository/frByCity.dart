@@ -1,0 +1,46 @@
+import 'package:cloud_kitchen/network/client/networkclient.dart';
+import 'package:cloud_kitchen/network/model/httpresponce.dart';
+import 'package:cloud_kitchen/network/model/response/Franchise.dart';
+import 'package:dio/dio.dart';
+import 'package:cloud_kitchen/network/base/endPoint.dart' as endPoints;
+
+
+class FrByCity{
+
+HttpClient httpClient;
+
+FrByCity(){
+  httpClient=HttpClient();
+}
+
+ 
+ Future<HttpResponse> getFrByCity(int cityId) async{
+   HttpResponse httpResponse=HttpResponse();
+    
+FormData formData = new FormData.fromMap({
+    "cityId": cityId
+    
+  });
+
+   await httpClient.post(endPoints.Auth().frByCity,body:formData).then((responce){
+     if(responce.statusCode==200){
+       httpResponse.status=responce.statusCode;
+       httpResponse.message='Successful';
+       httpResponse.data=Frainchise.fromJson(responce.data);
+     
+     }else{
+       httpResponse.status= 500;
+       httpResponse.message='Something went wrong';
+       httpResponse.data=null;
+     
+     }
+   }).catchError((onError) {
+      print(onError);
+      httpResponse.status = 404;
+      httpResponse.data = null;
+      httpResponse.message = 'Network not available';
+    });
+    return httpResponse;
+  }
+
+}

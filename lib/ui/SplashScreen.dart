@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:cloud_kitchen/ui/slider.dart';
 import 'package:flutter/material.dart';
-
+import 'package:firebase_core/firebase_core.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -9,12 +9,20 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+
   @override
   void initState() {
     startTime();
     // TODO: implement initState
+    initializeFirebase();
     super.initState();
   }
+
+
+  void initializeFirebase() async{
+   await Firebase.initializeApp();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

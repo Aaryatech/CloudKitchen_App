@@ -1,13 +1,38 @@
+import 'package:cloud_kitchen/network/model/request/SaveCustomer.dart';
 import 'package:cloud_kitchen/ui/OTPVerification.dart';
 import 'package:cloud_kitchen/ui/locationScreen.dart';
+import 'package:cloud_kitchen/viewmodel/personaldetailsviewmodel.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
+
+PersonalDetailsViewModel personalDetailsViewModel=PersonalDetailsViewModel();
 
 class PersonalDetail extends StatefulWidget {
+  PersonalDetail(this.userMobile);
+
+final  String userMobile;
   @override
   _PersonalDetailState createState() => _PersonalDetailState();
 }
 
 class _PersonalDetailState extends State<PersonalDetail> {
+
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    initializeFirebase();
+    super.initState();
+  }
+
+  void initializeFirebase() async{
+    await Firebase.initializeApp();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -29,6 +54,8 @@ class _PersonalDetailState extends State<PersonalDetail> {
 
             children: [
 
+              personalDetailsViewModel.isLoading?LinearProgressIndicator():Container(),
+              otpViewModel.isLoading?LinearProgressIndicator():Container(),
 
                  SizedBox(height: 16,),
 
@@ -108,6 +135,14 @@ class _PersonalDetailState extends State<PersonalDetail> {
                             child: GestureDetector(
                               onTap: () {
                                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> LocationScreen()));
+                                // SaveCustomer saveCustomer=SaveCustomer();
+                                // saveCustomer.phoneNumber=widget.userMobile;
+                                // saveCustomer.custName='';
+                                // saveCustomer.emailId='';
+                                // saveCustomer.cityId=0;
+                                //
+                                // personalDetailsViewModel.saveUserDetails(saveCustomer);
+
                               },
                               child: Container(
                                 decoration: BoxDecoration(
@@ -167,28 +202,35 @@ Row(
            Row(
               mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-            Image.asset(
-              "images/facebook.png",
-              height: 45,
-             width: 50,
-              ),
+            InkWell(
+              onTap: (){
+                personalDetailsViewModel.signInWithFacebook();
+              },
+              child: Image.asset(
+                "images/facebook.png",
+                height: 45,
+               width: 50,
+                ),
+            ),
 
                       SizedBox(
             width: 8,
                       ),
 
-            Image.asset(
-              "images/google.png",
-              height: 45,
-              width: 50,
-              ),
+            InkWell(
+              onTap: (){
+                personalDetailsViewModel.signInWithGoogle();
+              },
+              child: Image.asset(
+                "images/google_icon.png",
+                height: 45,
+                width: 50,
+                ),
+            ),
                   ],
                 ),
 
-
             ],
-
-
 
             ),
           ),
@@ -196,4 +238,8 @@ Row(
       ),
     );
   }
+
+
+
+
 }

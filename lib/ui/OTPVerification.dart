@@ -1,18 +1,42 @@
 import 'package:cloud_kitchen/ui/OTPScreen.dart';
 import 'package:cloud_kitchen/ui/personalDetail.dart';
+import 'package:cloud_kitchen/viewmodel/otp/otpviewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:pinput/pin_put/pin_put.dart';
 
 
+final otpViewModel=OtpViewModel();
 class OTPVerification extends StatefulWidget {
+  OTPVerification(this.otp,this.mobileNumber);
+
+  final String otp;
+  final String mobileNumber;
+
   @override
   _OTPVerificationState createState() => _OTPVerificationState();
 }
 
 class _OTPVerificationState extends State<OTPVerification> {
+
+
+  String enterdOtp;
+    final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final TextEditingController _pinPutController = TextEditingController();
+  final FocusNode _pinPutFocusNode = FocusNode();
+
+  BoxDecoration get _pinPutDecoration {
+    return BoxDecoration(
+      border: Border.all(color: Colors.deepPurpleAccent),
+      borderRadius: BorderRadius.circular(15.0),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
           child: Scaffold(
+            key: _scaffoldKey,
             backgroundColor: Colors.white,
             appBar: AppBar(
               backgroundColor: Colors.white,
@@ -46,7 +70,7 @@ class _OTPVerificationState extends State<OTPVerification> {
                   mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                  Text( 'Enter the OTP send to ', style:Theme.of(context).textTheme.subtitle2.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.grey)),
-                 Text( '+91- 1234567890', style:Theme.of(context).textTheme.subtitle2.copyWith(fontWeight: FontWeight.w500).copyWith(color:Colors.black)),
+                 Text( '+91- ${widget.mobileNumber}', style:Theme.of(context).textTheme.subtitle2.copyWith(fontWeight: FontWeight.w500).copyWith(color:Colors.black)),
                 ],
                 ),
 
@@ -55,162 +79,63 @@ class _OTPVerificationState extends State<OTPVerification> {
               ),
 
 
+            PinPut(
+              fieldsCount: 6,
+              onSubmit: ((String pin)  {
+                if(pin==widget.otp){
+                  _showSnackbar('Success', true);
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> PersonalDetail(widget.mobileNumber)));
 
-      //               TextField(
-      //   textAlign: TextAlign.start,
-      //   keyboardType: TextInputType.number,
-      //   decoration: new InputDecoration(
-      //     hintText: 'Enter Mobile Number',
-      //     prefixIcon: Icon(Icons.mobile_screen_share),
-      //     border: new OutlineInputBorder(
-      //       borderRadius: const BorderRadius.all(
-      //         const Radius.circular(2.0),
-      //       ),
-      //       borderSide: new BorderSide(
-      //         color: Colors.black,
-      //         width: 1.0,
-      //       ),
-      //     ),
-      //   ),
-      // ),
+                }else{
+          _showSnackbar('OTP does not match,Please try agian', false);
 
+          }
 
-       Row(
-         mainAxisAlignment: MainAxisAlignment.center,
-               children: [
-          Container(
-              alignment: Alignment.center,
-              height: 50,
-              width: 50,
-              child: TextField(
-       style: TextStyle(
-           fontWeight: FontWeight.bold, fontSize: 23, color: Colors.grey),
-       keyboardType: TextInputType.number,
-       maxLength: 1,
-       decoration: InputDecoration(border: InputBorder.none, counterText: ''),
-       textAlign: TextAlign.center,
+              }),
+              focusNode: _pinPutFocusNode,
+              controller: _pinPutController,
+              submittedFieldDecoration: _pinPutDecoration.copyWith(
+                borderRadius: BorderRadius.circular(20.0),
               ),
-              decoration:
-         BoxDecoration(border: Border.all(color: Colors.grey, width: 1),
-          borderRadius: BorderRadius.circular(2.0),
-         ),
-      ),
-
- SizedBox( width: 4, ),
-
-          Container(
-              alignment: Alignment.center,
-              height: 50,
-              width: 50,
-              child: TextField(
-       style: TextStyle(
-           fontWeight: FontWeight.bold, fontSize: 23, color: Colors.grey),
-       keyboardType: TextInputType.number,
-       maxLength: 1,
-       decoration: InputDecoration(border: InputBorder.none, counterText: ''),
-       textAlign: TextAlign.center,
+              selectedFieldDecoration: _pinPutDecoration,
+              followingFieldDecoration: _pinPutDecoration.copyWith(
+                borderRadius: BorderRadius.circular(5.0),
+                border: Border.all(
+                  color: Theme.of(context).primaryColor.withOpacity(.5),
+                ),
               ),
-              decoration:
-         BoxDecoration(border: Border.all(color: Colors.grey, width: 1),
-          borderRadius: BorderRadius.circular(2.0),
-         ),
-      ),
-
-SizedBox( width: 4, ),
-
-          Container(
-              alignment: Alignment.center,
-              height: 50,
-              width: 50,
-              child: TextField(
-       style: TextStyle(
-           fontWeight: FontWeight.bold, fontSize: 23, color: Colors.grey),
-       keyboardType: TextInputType.number,
-       maxLength: 1,
-       decoration: InputDecoration(border: InputBorder.none, counterText: ''),
-       textAlign: TextAlign.center,
-              ),
-              decoration:
-         BoxDecoration(border: Border.all(color: Colors.grey, width: 1),
-          borderRadius: BorderRadius.circular(2.0),
-         ),
-      ),
-
-SizedBox( width: 4, ),
-
-          Container(
-              alignment: Alignment.center,
-              height: 50,
-              width: 50,
-              child: TextField(
-       style: TextStyle(
-           fontWeight: FontWeight.bold, fontSize: 23, color: Colors.grey),
-       keyboardType: TextInputType.number,
-       maxLength: 1,
-       decoration: InputDecoration(border: InputBorder.none, counterText: ''),
-       textAlign: TextAlign.center,
-              ),
-              decoration:
-         BoxDecoration(border: Border.all(color: Colors.grey, width: 1),
-          borderRadius: BorderRadius.circular(2.0),
-         ),
-      ),
-
-      SizedBox( width: 4, ),
-
-          Container(
-              alignment: Alignment.center,
-              height: 50,
-              width: 50,
-              child: TextField(
-       style: TextStyle(
-           fontWeight: FontWeight.bold, fontSize: 23, color: Colors.grey),
-       keyboardType: TextInputType.number,
-       maxLength: 1,
-       decoration: InputDecoration(border: InputBorder.none, counterText: ''),
-       textAlign: TextAlign.center,
-              ),
-              decoration:
-         BoxDecoration(border: Border.all(color: Colors.grey, width: 1),
-          borderRadius: BorderRadius.circular(2.0),
-         ),
-      ),
-
-      SizedBox( width: 4, ),
-
-          Container(
-              alignment: Alignment.center,
-              height: 50,
-              width: 50,
-              child: TextField(
-       style: TextStyle(
-           fontWeight: FontWeight.bold, fontSize: 23, color: Colors.grey),
-       keyboardType: TextInputType.number,
-       maxLength: 1,
-       decoration: InputDecoration(border: InputBorder.none, counterText: ''),
-       textAlign: TextAlign.center,
-              ),
-              decoration:
-         BoxDecoration(border: Border.all(color: Colors.grey, width: 1),
-          borderRadius: BorderRadius.circular(2.0),
-         ),
-      ),
-               ],
-         ),
+            ),
 
 
-
-                       SizedBox(height: 30),
+                       SizedBox(height: 16),
 
                          Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                  Text( 'Didnt receive the code? ', style:Theme.of(context).textTheme.subtitle2.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.grey)),
-                 Padding(
-                    padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
-                   child: Text( 'Resend now', style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold,),),
-                  // child: Text( 'RESEND NOW', style:Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.grey).copyWith((decoration: TextDecoration.underline)),
-                 )
+                 // Padding(
+                 //    padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
+                 //   child: Text( 'Resend now', style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold,),),
+                 //  // child: Text( 'RESEND NOW', style:Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.grey).copyWith((decoration: TextDecoration.underline)),
+                 // )
+
+                  FlatButton(onPressed: (){
+                    otpViewModel.mobileVerification(widget.mobileNumber, widget.otp).then((value) => {
+
+                       if(value){
+                         _showSnackbar('Otp is Send to ${widget.mobileNumber}', true)
+                       }else{
+                    _showSnackbar('Something went wrong,Please try again.', true)
+
+                    }
+
+                    }).catchError((onError){
+                      _showSnackbar('Something went wrong,Please try again.', true);
+
+                    });
+
+
+                  }, child:Text('RESEND NOW',style:Theme.of(context).textTheme.caption.copyWith(fontWeight: FontWeight.normal,color:Colors.red,decoration: TextDecoration.underline))),
                 ],
                 ),
 
@@ -220,7 +145,7 @@ SizedBox( width: 4, ),
     //  height: 50.0,
       child: GestureDetector(
           onTap: () {
-               Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> PersonalDetail()));
+               Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> PersonalDetail(widget.mobileNumber)));
           },
           child: Container(
                   decoration: BoxDecoration(
@@ -247,10 +172,7 @@ SizedBox( width: 4, ),
                   ),
           ),
       ),
-)
-
-
-
+      ),
 
               ],
 
@@ -260,5 +182,15 @@ SizedBox( width: 4, ),
             ),
       ),
     );
+  }
+
+
+ void  _showSnackbar(String msg,bool isPositive) {
+    _scaffoldKey.currentState.showSnackBar(
+        SnackBar(
+          content: Text(msg,style: TextStyle(color: Colors.white),),
+          duration: Duration(seconds: 3),
+          backgroundColor: isPositive?Colors.green:Colors.redAccent,
+        ));
   }
 }
