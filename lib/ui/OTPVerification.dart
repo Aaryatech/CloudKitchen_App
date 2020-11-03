@@ -1,3 +1,4 @@
+import 'package:cloud_kitchen/local/prefs.dart';
 import 'package:cloud_kitchen/ui/OTPScreen.dart';
 import 'package:cloud_kitchen/ui/personalDetail.dart';
 import 'package:cloud_kitchen/viewmodel/otp/otpviewmodel.dart';
@@ -24,12 +25,19 @@ class _OTPVerificationState extends State<OTPVerification> {
     final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final TextEditingController _pinPutController = TextEditingController();
   final FocusNode _pinPutFocusNode = FocusNode();
-
+  MyLocalPrefes myLocalPrefes;
   BoxDecoration get _pinPutDecoration {
     return BoxDecoration(
       border: Border.all(color: Colors.deepPurpleAccent),
       borderRadius: BorderRadius.circular(15.0),
     );
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    myLocalPrefes=MyLocalPrefes();
+    super.initState();
   }
 
   @override
@@ -84,7 +92,9 @@ class _OTPVerificationState extends State<OTPVerification> {
               onSubmit: ((String pin)  {
                 if(pin==widget.otp){
                   _showSnackbar('Success', true);
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> PersonalDetail(widget.mobileNumber)));
+                  myLocalPrefes.setCustLogin(true);
+
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> PersonalDetail(widget.mobileNumber)));
 
                 }else{
           _showSnackbar('OTP does not match,Please try agian', false);
@@ -145,6 +155,8 @@ class _OTPVerificationState extends State<OTPVerification> {
     //  height: 50.0,
       child: GestureDetector(
           onTap: () {
+
+            myLocalPrefes.setCustLogin(true);
                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> PersonalDetail(widget.mobileNumber)));
           },
           child: Container(

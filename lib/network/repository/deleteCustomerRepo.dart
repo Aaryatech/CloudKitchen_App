@@ -27,7 +27,7 @@ FormData formData = new FormData.fromMap({
      if(responce.statusCode==200){
        httpResponse.status=responce.statusCode;
        httpResponse.message='Successful';
-       httpResponse.data=Info.fromJson(responce.data);
+       // httpResponse.data=Info.fromJson(responce.data);
      
      }else{
        httpResponse.status= 500;

@@ -1,11 +1,15 @@
+import 'package:cloud_kitchen/local/prefs.dart';
+import 'package:cloud_kitchen/network/model/httpresponce.dart';
 import 'package:cloud_kitchen/network/model/request/SaveCustomer.dart';
 import 'package:cloud_kitchen/network/model/response/SaveUser.dart';
 import 'package:cloud_kitchen/network/repository/saveuserrepo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mobx/mobx.dart';
+import 'package:regexpattern/regexpattern.dart';
 part 'personaldetailsviewmodel.g.dart';
 
 class PersonalDetailsViewModel =_PersonalDetailsViewModel with _$PersonalDetailsViewModel;
@@ -14,23 +18,36 @@ class PersonalDetailsViewModel =_PersonalDetailsViewModel with _$PersonalDetails
 abstract class _PersonalDetailsViewModel with Store{
 
 
+  final PersonalDetailsErrorState personalDetailsErrorState=PersonalDetailsErrorState();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
 
   SaveUserRepo saveUserRepo;
-
+  MyLocalPrefes myLocalPrefes;
 
   _PersonalDetailsViewModel(){
 
+    myLocalPrefes=MyLocalPrefes();
     saveUserRepo=SaveUserRepo();
+
   }
+
+
 
 
   @observable
   UserCredential result;
 
+
   @observable
-  SaveCustomer customerDetails;
+  String username;
+
+
+  @observable
+  String email;
+
+  @observable
+  SaveUser customerDetails;
 
   @observable
   bool loginStatus=false;
@@ -48,7 +65,33 @@ abstract class _PersonalDetailsViewModel with Store{
   @observable
   bool isLoading=false;
 
+  List<ReactionDisposer> _disposers;
 
+  void setupValidations() {
+
+    _disposers = [
+      reaction((_) => username, validateUsername),
+      reaction((_) => email, validatePassword)
+    ];
+  }
+
+
+
+
+
+  @action
+  validateUsername(String text) {
+    return text.isEmpty
+        ? personalDetailsErrorState.username = 'Please Enter Username'
+        : personalDetailsErrorState.username = null;
+  }
+
+  @action
+  validatePassword(String text) {
+    return text.isEmpty||text.isEmail()
+        ? personalDetailsErrorState.email = null
+        : personalDetailsErrorState.email = null;
+  }
 
   @action
   Future signInWithGoogle() async {
@@ -64,6 +107,10 @@ abstract class _PersonalDetailsViewModel with Store{
     );
 
     result= await _auth.signInWithCredential(credential);
+
+    username= result.user.displayName;
+    email= result.user.email;
+
     isLoadingForLogin=false;
 
  }
@@ -81,25 +128,72 @@ abstract class _PersonalDetailsViewModel with Store{
 
     // Once signed in, return the UserCredential
     result  =  (await _auth.signInWithCredential(facebookAuthCredential));
-
+    username= result.user.displayName;
+    email= result.user.email;
     isLoadingForLogin=true;
   }
 
-  void saveUserDetails(SaveCustomer saveUserDetails){
+  Future<bool> saveUserDetails(SaveCustomer saveUserDetails) async {
     isLoading=true;
-    saveUserRepo.saveUser(saveUserDetails).then((value)  {
-      if(value.status==200){
-        customerDetails=value.data;
-      }else if(value.status==500) {
-        errorMessage=value.message;
+   HttpResponse httpResponse=  await saveUserRepo.saveUser(saveUserDetails);
+      if(httpResponse.status==200){
+
+        if(!httpResponse.info.error)
+        {
+          customerDetails=httpResponse.data;
+          print(customerDetails.custName);
+          myLocalPrefes.setCustId(customerDetails.custId);
+          myLocalPrefes.setCustDetails(true);
+          myLocalPrefes.setCustName(customerDetails.custName);
+        return true;
+        }
+
+      }else if(httpResponse.status==500) {
+        errorMessage=httpResponse.message;
+      return false;
       }
       isLoading=false;
-    }).catchError((onError){
+
+
+  }
+
+  void getUserDetailsIfExist(String mobile){
+
+    isLoading=true;
+    saveUserRepo.getUserDetails(mobile).then((value)
+ {
+   isLoading=false;
+   if(value.status==200){
+
+     if(!value.info.error) {
+       customerDetails = value.data;
+       username = customerDetails.custName;
+       email = customerDetails.emailId;
+     }
+     }else if(value.status==500) {
+     errorMessage=value.message;
+   }
+
+ } ).catchError((onError){
       isLoading=false;
-      errorMessage=onError.toString();
+
     });
+
   }
 
 
 
+}
+
+class PersonalDetailsErrorState = _PersonalDetailsErrorState with _$PersonalDetailsErrorState;
+
+abstract class _PersonalDetailsErrorState with Store {
+  @observable
+  String username = null;
+
+  @observable
+  String email = null;
+
+  @computed
+  bool get hasErrors => username!= null || email != null;
 }

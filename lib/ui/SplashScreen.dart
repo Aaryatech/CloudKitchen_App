@@ -1,4 +1,9 @@
 import 'dart:async';
+import 'package:cloud_kitchen/local/prefs.dart';
+import 'package:cloud_kitchen/ui/dashboard.dart';
+import 'package:cloud_kitchen/ui/locationScreen.dart';
+import 'package:cloud_kitchen/ui/locationpicker/locationpickerui.dart';
+import 'package:cloud_kitchen/ui/personalDetail.dart';
 import 'package:cloud_kitchen/ui/slider.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -10,6 +15,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
 
+  MyLocalPrefes myLocalPrefes=MyLocalPrefes();
   @override
   void initState() {
     startTime();
@@ -56,8 +62,40 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void navigationPage() {
-    Navigator.pushReplacement(context,
-        new MaterialPageRoute(builder: (BuildContext context) => SliderView()));
+    if (!myLocalPrefes.getCustLogin()) {
+      print('login status false');
+      Navigator.pushReplacement(context,
+          new MaterialPageRoute(
+              builder: (BuildContext context) => SliderView()));
+    }else if(myLocalPrefes.getCustLogin()){
+      print('cust login status true');
+
+       if(myLocalPrefes.getCustDeatils()){
+
+       if(!myLocalPrefes.getCustLocationCapture())
+       {
+
+         print('cust location status true');
+
+         Navigator.pushReplacement(context,
+             new MaterialPageRoute(
+                 builder: (BuildContext context) => LocationScreen()));
+       }else {
+         print('cust location status false');
+
+         Navigator.pushReplacement(context,
+             new MaterialPageRoute(
+                 builder: (BuildContext context) => Dashboard()));
+       }
+       }else{
+         print('cust details status false');
+
+         Navigator.pushReplacement(context,
+             new MaterialPageRoute(
+                 builder: (BuildContext context) => PersonalDetail(myLocalPrefes.getCustPhone().toString())));
+
+       }
+    }
   }
-}
+  }
 

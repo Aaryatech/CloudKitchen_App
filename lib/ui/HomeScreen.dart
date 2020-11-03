@@ -2,11 +2,12 @@ import 'dart:async';
 
 import 'package:cloud_kitchen/ui/menudetailspage.dart';
 import 'package:cloud_kitchen/ui/tackaway.dart';
+import 'package:cloud_kitchen/viewmodel/franchisi/frviewmodel.dart';
 import 'package:flutter/material.dart';
 
 
 
-
+AllFrenchisiViewModel allFrenchisiViewModel=AllFrenchisiViewModel();
 class HomeScreen extends StatefulWidget {
 
 
@@ -29,40 +30,6 @@ class _HomeScreenState extends State<HomeScreen> {
     initialPage: 0,
 
   );
-
-  void openCartSheet(){
-    showModalBottomSheet(
-        context: context,
-        enableDrag: true,
-        builder: (BuildContext bc){
-          return StatefulBuilder(
-          builder: (context, setState) {
-
-            return SafeArea(
-              child: SingleChildScrollView(
-                child: Container(
-                  color: Colors.white.withOpacity(0.5),
-                  width: MediaQuery
-                      .of(context)
-                      .size
-                      .width,
-                  height: MediaQuery
-                      .of(context)
-                      .size
-                      .height-200,
-                  padding: EdgeInsets.all(16),
-
-                ),
-              ),
-            );
-          }
-      );
-    }
-
-    );
-
-  }
-
 
 
   void openFilterBottomSheet(){
@@ -125,6 +92,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     // TODO: implement initState
     slider();
+
+    allFrenchisiViewModel.getAllFranchise();
 
 
     super.initState();

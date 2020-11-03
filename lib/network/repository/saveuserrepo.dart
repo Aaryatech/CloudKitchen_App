@@ -64,7 +64,11 @@ SaveUserRepo(){
       if (responce.statusCode == 200) {
         httpResponse.status = responce.statusCode;
         httpResponse.message = 'Successful';
-        httpResponse.data = SaveUser.fromJson(responce.data);
+        httpResponse.info=Info.fromJson(responce.data['info']);
+
+        if(!httpResponse.info.error){
+          httpResponse.data = SaveUser.fromJson(responce.data['customer']);
+        }
       } else {
         httpResponse.status = 500;
         httpResponse.message = 'Something went wrong';
@@ -79,4 +83,45 @@ SaveUserRepo(){
 
     return httpResponse;
   }
- }
+
+
+
+  Future<HttpResponse> getUserDetails(String  mobile) async {
+    HttpResponse httpResponse = HttpResponse();
+
+
+    await httpClient.post('${endPoints.Auth().mobileVerification}?mobileNo=$mobile').then((responce) {
+
+      print(responce);
+      if (responce.statusCode == 200) {
+        httpResponse.status = responce.statusCode;
+        httpResponse.message = 'Successful';
+        httpResponse.info=Info.fromJson(responce.data['info']);
+
+        if(!httpResponse.info.error) {
+          try {
+            httpResponse.data =
+                SaveUser.fromJson(responce.data['customerDisplay']);
+          } catch (error) {
+            httpResponse.info.error = true;
+            httpResponse.info.messege = 'no user data available';
+          }
+        }
+      } else {
+        httpResponse.status = 500;
+        httpResponse.message = 'Something went wrong';
+        httpResponse.data = null;
+      }
+    }).catchError((onError) {
+      print(onError);
+      httpResponse.status = 404;
+      httpResponse.message = 'Network not available';
+      httpResponse.data = null;
+    });
+
+    return httpResponse;
+  }
+
+
+
+}

@@ -2,15 +2,15 @@
 import 'package:json_annotation/json_annotation.dart';
 part 'SaveUser.g.dart';
 
-@JsonSerializable(nullable: false)
+@JsonSerializable(nullable: true)
 class SaveUser{
 
    int custId,gender,langId,compId,cityId,frId,isBuissHead,isActive,delStatus,custAddPlatform,addedFormType,userId,isPremiumCust,exInt1,
-   exInt2,exInt3,exInt4,exInt5,exFloat1,exFloat2,exFloat3,exFloat4,exFloat5;
+   exInt2,exInt3,exInt4,exInt5;
   String custName,phoneNumber,whatsappNo,emailId,profilePic,custDob,ageGroup,companyName,gstNo,address,custAddDatetime,exVar1,
   exVar2,exVar3,exVar4,exVar5,message,langName;
   bool error;
-  
+  double exFloat1,exFloat2,exFloat3,exFloat4,exFloat5;
 
   SaveUser(
       {this.custId,

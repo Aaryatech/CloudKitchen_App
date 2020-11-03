@@ -1,11 +1,18 @@
 class SaveAddress {
-  int custAddressId,custId,areaId,cityId,delStatus,exInt1,exInt2,exInt3,exFloat1,exFloat2,exFloat3;
+  int custAddressId,custId,areaId,cityId,delStatus,exInt1,exInt2,exInt3,langId;
+  double exFloat1,exFloat2,exFloat3;
   String addressCaption,address,area,landmark,pincode,latitude,longitude,exVar1,exVar2,exVar3;
 
+
+  @override
+  String toString() {
+    return 'custAddressId: $custAddressId, custId: $custId, areaId: $areaId, cityId: $cityId, delStatus: $delStatus, exInt1: $exInt1, exInt2: $exInt2, exInt3: $exInt3, exFloat1: $exFloat1, exFloat2: $exFloat2, exFloat3: $exFloat3, addressCaption: $addressCaption, address: $address, area: $area, landmark: $landmark, pincode: $pincode, latitude: $latitude, longitude: $longitude, exVar1: $exVar1, exVar2: $exVar2, exVar3: $exVar3';
+  }
 
   SaveAddress(
       {this.custAddressId,
       this.custId,
+        this.langId,
       this.addressCaption,
       this.address,
       this.areaId,

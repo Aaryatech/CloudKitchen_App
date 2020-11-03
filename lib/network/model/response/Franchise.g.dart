@@ -19,11 +19,10 @@ Frainchise _$FrainchiseFromJson(Map<String, dynamic> json) {
     fromLongitude: json['fromLongitude'] as String,
     toLatitude: json['toLatitude'] as String,
     toLongitude: json['toLongitude'] as String,
-    kmAreaCovered: json['kmAreaCovered'] as int,
+    kmAreaCovered: (json['kmAreaCovered'] as num).toDouble(),
     compId: json['compId'] as int,
     cityList: json['cityList'] as String,
     areaList: json['areaList'] as String,
-    info: Info.fromJson(json['info'] as Map<String, dynamic>),
   );
 }
 
@@ -32,7 +31,6 @@ Map<String, dynamic> _$FrainchiseToJson(Frainchise instance) =>
       'frConfigId': instance.frConfigId,
       'frId': instance.frId,
       'frType': instance.frType,
-      'kmAreaCovered': instance.kmAreaCovered,
       'compId': instance.compId,
       'frName': instance.frName,
       'frCode': instance.frCode,
@@ -44,5 +42,5 @@ Map<String, dynamic> _$FrainchiseToJson(Frainchise instance) =>
       'toLongitude': instance.toLongitude,
       'cityList': instance.cityList,
       'areaList': instance.areaList,
-      'info': instance.info,
+      'kmAreaCovered': instance.kmAreaCovered,
     };

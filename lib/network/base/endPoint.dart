@@ -1,10 +1,10 @@
 class Auth{
-  final mobileVerification='getCustomerByMobileNo';
-  final saveUser='saveCustomer';
+  final mobileVerification='getCustomerByMobileNoForApp';
+  final saveUser='saveCustomerForApp';
   final allFranchise='getFranchiseList';
   final homeData='getAllDataByFr';
   final deliverInstruction='getAllDeliveryInstructions';
-  final saveCustomer='saveCustomerAddressList';
+  final saveCustomer='saveCustomerAddressForApp';
   final deleteCustomerAddress='deleteCustAddress';
   final madhviCredit='getCustWalletTransc';
   final allCity='getAllCities';

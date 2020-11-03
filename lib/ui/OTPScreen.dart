@@ -1,7 +1,8 @@
+import 'package:cloud_kitchen/local/prefs.dart';
 import 'package:cloud_kitchen/ui/OTPVerification.dart';
 import 'package:cloud_kitchen/viewmodel/otp/otpviewmodel.dart';
 import 'package:flutter/material.dart';
-
+import 'package:regexpattern/regexpattern.dart';
 
 final otpViewModel=OtpViewModel();
 class OTPScreen extends StatefulWidget {
@@ -10,10 +11,29 @@ class OTPScreen extends StatefulWidget {
 }
 
 class _OTPScreenState extends State<OTPScreen> {
+
+
+  String errortext=null;
+  String mobileno='';
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
+  MyLocalPrefes myLocalPrefes;
+
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+myLocalPrefes=MyLocalPrefes();
+    super.initState();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
           child: Scaffold(
+            key: _scaffoldKey,
         backgroundColor: Colors.white,
             body: Center(
               child: SingleChildScrollView(
@@ -60,7 +80,21 @@ class _OTPScreenState extends State<OTPScreen> {
                         enableSuggestions: true,
         textAlign: TextAlign.start,
         keyboardType: TextInputType.number,
+        maxLength: 10,
+        onChanged: (str){
+                          mobileno=str;
+              if(str.length==10){
+                setState(() {
+                  errortext=null;
+                });
+              }else{
+                setState(() {
+                  errortext="Please enter valid mobile number";
+                });
+              }
+        },
         decoration: new InputDecoration(
+          errorText: errortext,
           hintText: 'Enter Mobile Number',
           prefixIcon: Icon(Icons.phone_android),
           border: new OutlineInputBorder(
@@ -83,18 +117,30 @@ class _OTPScreenState extends State<OTPScreen> {
           onTap: () {
             if(!otpViewModel.isLoading)
           {
-            otpViewModel.mobileVerification('7741919844',"123456").then((value) =>{
-              if(value){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=> OTPVerification("123456",'7741919844')))
-              }else{
-                Scaffold.of(context).showSnackBar(SnackBar(
-                  content: Text("Something went wrong,Please try again."),
-                ))
-              }
+            if(mobileno.trim().length==10) {
+              otpViewModel.mobileVerification(mobileno, "123456").then((
+                  value) =>
+              {
+                if(value){
 
 
-            } ).catchError((onError){});
-          }
+                  myLocalPrefes.setCustPhone(mobileno),
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context) =>
+                          OTPVerification("123456", mobileno)))
+                } else
+                  {
+                    _scaffoldKey.currentState.showSnackBar(SnackBar(
+                      content: Text("Something went wrong,Please try again."),
+                    ))
+                  }
+              }).catchError((onError) {});
+            }else{
+              _scaffoldKey.currentState.showSnackBar(SnackBar(
+                content: Text("Enter a valid mobile number"),
+              ));
+            }
+            }
           },
           child: Container(
                   decoration: BoxDecoration(
@@ -135,5 +181,14 @@ class _OTPScreenState extends State<OTPScreen> {
             ),
       ),
     );
+  }
+
+  void  _showSnackbar(String msg,bool isPositive) {
+    _scaffoldKey.currentState.showSnackBar(
+        SnackBar(
+          content: Text(msg,style: TextStyle(color: Colors.white),),
+          duration: Duration(seconds: 3),
+          backgroundColor: isPositive?Colors.green:Colors.redAccent,
+        ));
   }
 }
