@@ -28,10 +28,10 @@ OfferData _$OfferDataFromJson(Map<String, dynamic> json) {
     exVar2: json['exVar2'] as String,
     exVar3: json['exVar3'] as String,
     exVar4: json['exVar4'] as String,
-    exFloat1: json['exFloat1'] as String,
-    exFloat2: json['exFloat2'] as String,
-    exFloat3: json['exFloat3'] as String,
-    exFloat4: json['exFloat4'] as String,
+    exFloat1: (json['exFloat1'] as num)?.toDouble(),
+    exFloat2: (json['exFloat2'] as num)?.toDouble(),
+    exFloat3: (json['exFloat3'] as num)?.toDouble(),
+    exFloat4: (json['exFloat4'] as num)?.toDouble(),
   );
 }
 

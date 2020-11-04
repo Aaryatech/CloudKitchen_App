@@ -4,7 +4,9 @@ import 'package:cloud_kitchen/network/client/networkclient.dart';
 import 'package:cloud_kitchen/network/model/httpresponce.dart';
 import 'package:cloud_kitchen/network/model/response/Franchise.dart';
 import 'package:cloud_kitchen/network/base/endPoint.dart' as endPoints;
+import 'package:cloud_kitchen/network/model/response/FranchiseId.dart';
 import 'package:cloud_kitchen/network/model/response/franchiseMain.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 class AllFranchiseRepo{
@@ -19,8 +21,9 @@ AllFranchiseRepo(){
    HttpResponse httpResponse=HttpResponse();
 
 
-   await httpClient.get(endPoints.Auth().allFranchise).then((responce){
+   Response responce=await httpClient.get(endPoints.Auth().allFranchise);
      // print(responce.data);
+try{
      if(responce.statusCode==200){
        httpResponse.status=responce.statusCode;
        httpResponse.message='Successful';
@@ -35,27 +38,28 @@ AllFranchiseRepo(){
      }
      return httpResponse;
   
-   }).catchError((onError){
+   }catch(onError){
        httpResponse.status= 400;
        httpResponse.message='Network not available';
        httpResponse.data=onError.toString();
      return httpResponse;
-   }); 
-
-   return httpResponse;
- }
+   }
+}
 
 
- Future<HttpResponse> getFranchiseDetailsById(String id) async{
+ Future<HttpResponse> getFranchiseDetailsById(String id)async{
    HttpResponse httpResponse=HttpResponse();
 
+   String param='?frId=$id&type=2&applicableFor=2&compId=1';
 
-   await httpClient.get(endPoints.Auth().allFranchise).then((responce){
+  Response responce=await httpClient.post('${endPoints.Auth().homeData}$param');
      // print(responce.data);
-     if(responce.statusCode==200){
+
+   try{
+   if(responce.statusCode==200){
        httpResponse.status=responce.statusCode;
        httpResponse.message='Successful';
-       httpResponse.data=FranchiseMain.fromJson(responce.data);
+       httpResponse.data=FranchiseId.fromJson(responce.data);
        httpResponse.info=Info.fromJson(responce.data['info']);
 
      }else{
@@ -66,14 +70,14 @@ AllFranchiseRepo(){
      }
      return httpResponse;
 
-   }).catchError((onError){
+   }catch(onError){
        httpResponse.status= 400;
        httpResponse.message='Network not available';
        httpResponse.data=onError.toString();
      return httpResponse;
-   });
+   }
 
-   return httpResponse;
+
  }
 
 

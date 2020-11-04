@@ -2,7 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'MobileVerificationModel.g.dart';
 
 
-@JsonSerializable(nullable: false)
+@JsonSerializable(nullable: true)
 class MobileVerificationModel {
  int custId,gender,langId,compId,cityId,frId,isBuissHead,isActive,delStatus,custAddPlatform,addedFromType,
  userId,isPremiumCust,exInt1,exInt2,exInt3,exInt4,exInt5,exFloat1,exFloat2,exFloat3,exFloat4,exFloat5;

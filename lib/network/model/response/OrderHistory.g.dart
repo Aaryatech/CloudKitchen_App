@@ -15,8 +15,8 @@ OrderHistory _$OrderHistoryFromJson(Map<String, dynamic> json) {
     custId: json['custId'] as int,
     status: json['status'] as int,
     taxableAmt: json['taxableAmt'] as int,
-    cgstAmt: (json['cgstAmt'] as num).toDouble(),
-    sgstAmt: (json['sgstAmt'] as num).toDouble(),
+    cgstAmt: (json['cgstAmt'] as num)?.toDouble(),
+    sgstAmt: (json['sgstAmt'] as num)?.toDouble(),
     igstAmt: json['igstAmt'] as int,
     discAmt: json['discAmt'] as int,
     itemDiscAmt: json['itemDiscAmt'] as int,
@@ -65,17 +65,19 @@ OrderHistory _$OrderHistoryFromJson(Map<String, dynamic> json) {
     cityName: json['cityName'] as String,
     custName: json['custName'] as String,
     frName: json['frName'] as String,
-    deliveryKm: (json['deliveryKm'] as num).toDouble(),
+    deliveryKm: (json['deliveryKm'] as num)?.toDouble(),
     deliveryCharges: json['deliveryCharges'] as int,
     paymentSubMode: json['paymentSubMode'] as int,
     isAgent: json['isAgent'] as int,
     uuidNo: json['uuidNo'] as String,
     detailList: (json['detailList'] as List)
-        .map((e) => DetailList.fromJson(e as Map<String, dynamic>))
-        .toList(),
+        ?.map((e) =>
+            e == null ? null : DetailList.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
     trailList: (json['trailList'] as List)
-        .map((e) => TrailList.fromJson(e as Map<String, dynamic>))
-        .toList(),
+        ?.map((e) =>
+            e == null ? null : TrailList.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
     grievTrailList: json['grievTrailList'] as String,
     trailDetailList: json['trailDetailList'] as String,
     orderGriev: json['orderGriev'] as String,

@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 part 'TrailList.g.dart';
 
-@JsonSerializable(nullable: false)
+@JsonSerializable(nullable: true)
 class TrailList{
   int trailId,orderId,actionByUserId,status,exInt1,exInt2,exInt3;
   String actionDateTime,exVar1,exVar2,exVar3,actionUserName;

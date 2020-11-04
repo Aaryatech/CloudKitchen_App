@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 part 'AddGrievance.g.dart';
 
-@JsonSerializable(nullable: false)
+@JsonSerializable(nullable: true)
 class AddGrievance{
 
   int grieveId,orderId,grievenceTypeId,grievenceSubtypeId,currentStatus,insertById,extraInt1,extraInt2,platform,walletAmt,frAffectAmt;

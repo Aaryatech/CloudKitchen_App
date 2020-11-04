@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 part 'DetailList.g.dart';
 
-@JsonSerializable(nullable: false)
+@JsonSerializable(nullable: true)
 class DetailList{
 
    int orderDetailId,orderId,itemId,qty,mrp,rate,taxableAmt,cgstPer,sgstPer,igstPer,igstAmt,discAmt,taxAmt,

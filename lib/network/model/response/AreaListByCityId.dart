@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 part 'AreaListByCityId.g.dart';
 
-@JsonSerializable(nullable: false)
+@JsonSerializable(nullable: true)
 class AreaListByCityId{
 
   int areaId,cityId,companyId,delStatus,isActive,exInt1,exInt2;

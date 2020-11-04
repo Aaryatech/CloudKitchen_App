@@ -10,7 +10,10 @@ CategoryData _$CategoryDataFromJson(Map<String, dynamic> json) {
   return CategoryData(
     catId: json['catId'] as int,
     catName: json['catName'] as String,
-    imageList: (json['imageList'] as List).map((e) => e as String).toList(),
+    imageList: (json['imageList'] as List)
+        ?.map((e) =>
+            e == null ? null : ImageList.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
   );
 }
 

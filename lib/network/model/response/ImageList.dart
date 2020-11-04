@@ -1,12 +1,13 @@
 import 'package:json_annotation/json_annotation.dart';
 part 'ImageList.g.dart';
 
-@JsonSerializable(nullable: false)
+@JsonSerializable(nullable: true)
 class ImageList{
 
-  int imagesId,docType,docId,seqNo,isActive,delStatus,exInt1,exInt2,exInt3;
+  int imagesId,docType,docId,isActive,delStatus,exInt1,exInt2,exInt3;
   String imageName,exVar1,exVar2,exVar3,exVar4,exFloat1,exFloat2,exFloat3;
- 
+
+  double seqNo;
 
   ImageList(
       {this.imagesId,

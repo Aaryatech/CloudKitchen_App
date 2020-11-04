@@ -3,6 +3,7 @@
 
 import 'package:cloud_kitchen/network/client/networkclient.dart';
 import 'package:cloud_kitchen/network/model/httpresponce.dart';
+import 'package:cloud_kitchen/network/model/response/distancematrics/distancematricsone.dart';
 import 'package:dio/dio.dart';
 
 class DistancematrixRepo{
@@ -14,7 +15,8 @@ class DistancematrixRepo{
         }
 
 
-        Future<HttpResponse> DistanceMatrix(String origin,String destination) async {
+        Future<HttpResponse> DistanceMatrixApi(String origin,String destination) async {
+          HttpResponse httpResponse=HttpResponse();
 
           print('${origin}, ${destination}');
         try {
@@ -22,12 +24,21 @@ class DistancematrixRepo{
             print(response);
 
             if(response.statusCode==200){
+              httpResponse.status=200;
+              httpResponse.message=response.statusMessage;
+              httpResponse.data=DistanceMatrix.fromJson(response.data);
 
-        }
+        }else{
+              httpResponse.status=400;
+              httpResponse.message='Something went wrong,Please try again!';
+            }
 
         } catch (e) {
-              print(e);
-              }
+          httpResponse.status=500;
+          httpResponse.message='Something went wrong,Please try again!';
+        }
+
+        return httpResponse;
         }
 
 

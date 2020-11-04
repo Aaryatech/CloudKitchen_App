@@ -1,4 +1,4 @@
-import 'package:cloud_kitchen/ui/HomeScreen.dart';
+import 'package:cloud_kitchen/ui/home/HomeScreen.dart';
 import 'package:flutter/material.dart';
 
 class TakeAway extends StatefulWidget {

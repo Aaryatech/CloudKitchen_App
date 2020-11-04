@@ -33,16 +33,18 @@ OfferList _$OfferListFromJson(Map<String, dynamic> json) {
     exVar2: json['exVar2'] as String,
     exVar3: json['exVar3'] as String,
     exVar4: json['exVar4'] as String,
-    exFloat1: json['exFloat1'] as String,
-    exFloat2: json['exFloat2'] as String,
-    exFloat3: json['exFloat3'] as String,
-    exFloat4: json['exFloat4'] as String,
+    exFloat1: (json['exFloat1'] as num)?.toDouble(),
+    exFloat2: (json['exFloat2'] as num)?.toDouble(),
+    exFloat3: (json['exFloat3'] as num)?.toDouble(),
+    exFloat4: (json['exFloat4'] as num)?.toDouble(),
     imageList: (json['imageList'] as List)
-        .map((e) => Images.fromJson(e as Map<String, dynamic>))
-        .toList(),
+        ?.map((e) =>
+            e == null ? null : Images.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
     offerDetailList: (json['offerDetailList'] as List)
-        .map((e) => OfferData.fromJson(e as Map<String, dynamic>))
-        .toList(),
+        ?.map((e) =>
+            e == null ? null : OfferData.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
   )..offerId = json['offerId'] as int;
 }
 

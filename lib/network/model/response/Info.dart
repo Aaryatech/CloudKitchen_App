@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 part 'Info.g.dart';
 
-@JsonSerializable(nullable: false)
+@JsonSerializable(nullable: true)
 class Info {
  String message;
  bool error;

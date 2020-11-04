@@ -19,7 +19,7 @@ Frainchise _$FrainchiseFromJson(Map<String, dynamic> json) {
     fromLongitude: json['fromLongitude'] as String,
     toLatitude: json['toLatitude'] as String,
     toLongitude: json['toLongitude'] as String,
-    kmAreaCovered: (json['kmAreaCovered'] as num).toDouble(),
+    kmAreaCovered: (json['kmAreaCovered'] as num)?.toDouble(),
     compId: json['compId'] as int,
     cityList: json['cityList'] as String,
     areaList: json['areaList'] as String,

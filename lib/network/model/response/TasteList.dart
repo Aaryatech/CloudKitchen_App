@@ -2,12 +2,12 @@
 import 'package:json_annotation/json_annotation.dart';
 part 'TasteList.g.dart';
 
-@JsonSerializable(nullable: false)
+@JsonSerializable(nullable: true)
 class TasteList{
 
-  int ingrediantId,ingrediantCatId,delStatus,isActive,exInt1,exInt2,exFloat1,exFloat2;
+  int ingrediantId,ingrediantCatId,delStatus,isActive,exInt1,exInt2;
   String ingrediantName,ingrediantImage,exVar1,exVar2,lastOprationDatetime,ingrediantDesc;
-  
+  double exFloat1,exFloat2;
 
     TasteList(
       {this.ingrediantId,

@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 part 'Language.g.dart';
 
-@JsonSerializable(nullable: false)
+@JsonSerializable(nullable: true)
 class Language{
 
    int langId,companyId,delStatus,isActive,exInt1,exInt2;

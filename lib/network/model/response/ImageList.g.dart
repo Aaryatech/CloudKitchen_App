@@ -12,7 +12,7 @@ ImageList _$ImageListFromJson(Map<String, dynamic> json) {
     docType: json['docType'] as int,
     docId: json['docId'] as int,
     imageName: json['imageName'] as String,
-    seqNo: json['seqNo'] as int,
+    seqNo: (json['seqNo'] as num)?.toDouble(),
     isActive: json['isActive'] as int,
     delStatus: json['delStatus'] as int,
     exInt1: json['exInt1'] as int,
@@ -32,7 +32,6 @@ Map<String, dynamic> _$ImageListToJson(ImageList instance) => <String, dynamic>{
       'imagesId': instance.imagesId,
       'docType': instance.docType,
       'docId': instance.docId,
-      'seqNo': instance.seqNo,
       'isActive': instance.isActive,
       'delStatus': instance.delStatus,
       'exInt1': instance.exInt1,
@@ -46,4 +45,5 @@ Map<String, dynamic> _$ImageListToJson(ImageList instance) => <String, dynamic>{
       'exFloat1': instance.exFloat1,
       'exFloat2': instance.exFloat2,
       'exFloat3': instance.exFloat3,
+      'seqNo': instance.seqNo,
     };

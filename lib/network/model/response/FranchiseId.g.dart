@@ -8,22 +8,30 @@ part of 'FranchiseId.dart';
 
 FranchiseId _$FranchiseIdFromJson(Map<String, dynamic> json) {
   return FranchiseId(
-    info: Info.fromJson(json['info'] as Map<String, dynamic>),
+    info: json['info'] == null
+        ? null
+        : Info.fromJson(json['info'] as Map<String, dynamic>),
     categoryData: (json['categoryData'] as List)
-        .map((e) => CategoryData.fromJson(e as Map<String, dynamic>))
-        .toList(),
+        ?.map((e) =>
+            e == null ? null : CategoryData.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
     subCategoryData: (json['subCategoryData'] as List)
-        .map((e) => SubCategoryData.fromJson(e as Map<String, dynamic>))
-        .toList(),
+        ?.map((e) => e == null
+            ? null
+            : SubCategoryData.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
     offerData: (json['offerData'] as List)
-        .map((e) => OfferData.fromJson(e as Map<String, dynamic>))
-        .toList(),
+        ?.map((e) =>
+            e == null ? null : OfferData.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
     tagsData: (json['tagsData'] as List)
-        .map((e) => TagsData.fromJson(e as Map<String, dynamic>))
-        .toList(),
+        ?.map((e) =>
+            e == null ? null : TagsData.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
     itemData: (json['itemData'] as List)
-        .map((e) => ItemData.fromJson(e as Map<String, dynamic>))
-        .toList(),
+        ?.map((e) =>
+            e == null ? null : ItemData.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
   );
 }
 

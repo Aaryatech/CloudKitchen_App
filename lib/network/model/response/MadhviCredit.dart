@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 part 'MadhviCredit.g.dart';
 
-@JsonSerializable(nullable: false)
+@JsonSerializable(nullable: true)
 class MadhviCredit{
 
    int walletId,orderId;

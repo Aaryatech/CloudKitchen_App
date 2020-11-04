@@ -2,10 +2,11 @@
 import 'package:json_annotation/json_annotation.dart';
 part 'TagsData.g.dart';
 
-@JsonSerializable(nullable: false)
+@JsonSerializable(nullable: true)
 class TagsData{
-   int tagId,tagIsActive,tagDeleteStatus,tagSortNumber,exInt1,exInt2;
+   int tagId,tagIsActive,tagDeleteStatus,exInt1,exInt2;
   String tagName,tagDesc,exVar1,exVar2;
+  double tagSortNumber;
  
 
   TagsData(
@@ -20,7 +21,7 @@ class TagsData{
       this.exVar1,
       this.exVar2});
 
-    factory TagsData.fromJson(Map<String, dynamic> json) => _$TagsDataFromJson(json);
+    factory TagsData. fromJson(Map<String, dynamic> json) => _$TagsDataFromJson(json);
 
   
   Map<String, dynamic> toJson() => _$TagsDataToJson(this);

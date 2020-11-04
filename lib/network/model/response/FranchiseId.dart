@@ -9,9 +9,8 @@ import 'package:json_annotation/json_annotation.dart';
 import 'TagsData.dart';
 part 'FranchiseId.g.dart';
 
-@JsonSerializable(nullable: false)
+@JsonSerializable(nullable: true)
 class FranchiseId{
-@JsonSerializable(nullable: false)  
 Info info;
   List<CategoryData> categoryData;
   List<SubCategoryData> subCategoryData;

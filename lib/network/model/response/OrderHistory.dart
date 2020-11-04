@@ -3,7 +3,7 @@ import 'package:cloud_kitchen/network/model/response/TrailList.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'OrderHistory.g.dart';
 
-@JsonSerializable(nullable: false)
+@JsonSerializable(nullable: true)
 class OrderHistory{
 
 int orderId,frId,custId,status,taxableAmt,igstAmt,discAmt,itemDiscAmt,taxAmt,totalAmt,orderStatus,paidStatus,

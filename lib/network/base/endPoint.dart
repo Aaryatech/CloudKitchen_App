@@ -2,7 +2,7 @@ class Auth{
   final mobileVerification='getCustomerByMobileNoForApp';
   final saveUser='saveCustomerForApp';
   final allFranchise='getFranchiseList';
-  final homeData='getAllDataByFr';
+  final homeData='getAllDataByFrForApp';
   final deliverInstruction='getAllDeliveryInstructions';
   final saveCustomer='saveCustomerAddressForApp';
   final deleteCustomerAddress='deleteCustAddress';
@@ -18,6 +18,9 @@ class Auth{
   final frequentlyOrder='getFrequentlyOrderedItemListByCust';
   final addGrievance='saveGrievanceOfOrder';
   final prodRating='saveProdRatings';
+
+
+  final additionaCharges='getAdditionalChargesAndOffersData';
 
 
 

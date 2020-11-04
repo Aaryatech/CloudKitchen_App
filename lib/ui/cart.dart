@@ -1,9 +1,16 @@
 import 'package:cloud_kitchen/ui/AddressBook.dart';
 import 'package:cloud_kitchen/ui/deliveryInstruction.dart';
+import 'package:cloud_kitchen/viewmodel/franchisi/frviewmodel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 
 class Cart extends StatefulWidget {
+ final AllFrenchisiViewModel allFrenchisiViewModel;
+
+  const Cart(this.allFrenchisiViewModel);
+
+
   @override
   _CartState createState() => _CartState();
 }
@@ -59,59 +66,87 @@ class _CartState extends State<Cart> {
                 ),
 
 
-                Container(
-                  padding: EdgeInsets.all(16),
-                  child:
-                  ListView.separated(
-                    scrollDirection: Axis.vertical,
-                    separatorBuilder: (context, index) => Divider(
-                      color: Colors.black45,
-                    ),
-                    shrinkWrap: true,
-                    physics: BouncingScrollPhysics(),
-                    itemCount: 3,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Container(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Image.asset('images/veg_icn.png',width: 16,height: 16,),
+                Observer(
+                   builder: (_)=> Container(
+                    padding: EdgeInsets.all(16),
+                    child:
+                    ListView.separated(
+                      scrollDirection: Axis.vertical,
+                      separatorBuilder: (context, index) => Divider(
+                        color: Colors.black45,
+                      ),
+                      shrinkWrap: true,
+                      physics: BouncingScrollPhysics(),
+                      itemCount: widget.allFrenchisiViewModel.items.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Container(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Image.asset('images/veg_icn.png',width: 16,height: 16,),
 
-                                SizedBox(width: 24,),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  SizedBox(width: 24,),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(widget.allFrenchisiViewModel.items[index].name,style: Theme.of(context).textTheme.subtitle1,)
+                                      ,Row(
+                                        children: [
+                                          Image.asset('images/rupees_icn.png',width: 16,height: 16,),
+                                          Text('${widget.allFrenchisiViewModel.items[index].prize*widget.allFrenchisiViewModel.items[index].qty}',style: Theme.of(context).textTheme.caption,),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+
+
+                                ],
+
+
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                    border: Border.all(width: 1,color: Colors.grey)
+                                ),
+                                child: Row(
                                   children: [
-                                    Text("Family Combo [Serves 6]",style: Theme.of(context).textTheme.subtitle1,)
-                                    ,Text("R 450",style: Theme.of(context).textTheme.caption,)
+
+                                    InkWell(
+                                        onTap:(){
+                                          setState(() {
+                                            if(widget.allFrenchisiViewModel.items[index].qty>1) {
+                                              widget.allFrenchisiViewModel
+                                                  .items[index].qty--;
+                                            }
+                                          });
+                                        },
+                                        child: Image.asset('images/minus_icn.png',width: 16,height: 16,)),
+                                    SizedBox(width: 2,),
+                                    Text("  ${widget.allFrenchisiViewModel.items[index].qty}  ",style: TextStyle(backgroundColor: Theme.of(context).primaryColor.withOpacity(0.3)),),
+                                    SizedBox(width: 2,),
+                                    InkWell(
+                                        onTap: (){
+                                          setState(() {
+                                            widget.allFrenchisiViewModel.items[index].qty++;
+
+                                          });
+
+                                        },
+                                        child: Image.asset('images/plus_icon.png',width: 16,height: 16,)),
+
+
+
                                   ],
                                 ),
+                              )
 
-
-                              ],
-
-
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                  border: Border.all(width: 1,color: Colors.grey)
-                              ),
-                              child: Row(
-                                children: [
-                                  Icon(Icons.add),
-                                  SizedBox(width: 2,),
-                                  Text("  1  ",style: TextStyle(backgroundColor: Theme.of(context).primaryColor.withOpacity(0.3)),),
-                                  SizedBox(width: 2,),
-                                  Icon(Icons.linear_scale)
-                                ],
-                              ),
-                            )
-
-                          ],
-                        ),
-                      );
-                    },
+                            ],
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
 
@@ -146,14 +181,19 @@ class _CartState extends State<Cart> {
 
 
                 Container(
-                  padding: EdgeInsets.all(16),
+                  padding: EdgeInsets.only(top:16,left: 16,right: 16),
                   child: Column(
                     children: [
                       Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('Item Total',style: Theme.of(context).textTheme.caption,),
-                        Text('R2118.00',style: Theme.of(context).textTheme.caption,)
+                        Row(
+                          children: [
+                             Image.asset('images/rupees_icn.png',width: 16,height: 16,),
+                            Text('${getItemTotal()}',style: Theme.of(context).textTheme.caption,),
+                          ],
+                        )
                       ],
                     ),
 
@@ -165,25 +205,7 @@ class _CartState extends State<Cart> {
                         Text('R22.00',style: Theme.of(context).textTheme.caption,)
                       ],
                     ),
-                      SizedBox(height: 12,),
-
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Text('Donate R1 to feeding india Foundation',style: Theme.of(context).textTheme.caption.copyWith(decoration: TextDecoration.underline,decorationStyle: TextDecorationStyle.dashed,decorationThickness: 2,),),
-                            SizedBox(width: 8,),
-                            Text('REMOVE',style: Theme.of(context).textTheme.caption.copyWith(color: Theme.of(context).primaryColor),),
-
-                          ],
-                        ),
-                        Text('R1',style: Theme.of(context).textTheme.caption,)
-                      ],
-                    )
-
-                    ],
+                    ]
                   ),
                 ),
 
@@ -200,21 +222,6 @@ class _CartState extends State<Cart> {
                     ],
                   ),
                 ),
-
-
-                // Container(
-                //   color: Colors.grey[100],
-                //   padding: EdgeInsets.all(16),
-                //   child: Row(
-                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //     children: [
-                //       Text('Add Personal Details',style: Theme.of(context).textTheme.caption.copyWith(letterSpacing: 2),),
-                //       Text('Add',style: Theme.of(context).textTheme.button.copyWith(color: Theme.of(context).primaryColor),),
-                //
-                //
-                //     ],
-                //   ),
-                // ),
 
                 Container(
                   color: Colors.grey[100],
@@ -331,4 +338,14 @@ class _CartState extends State<Cart> {
 
     );
   }
+
+
+  double getItemTotal(){
+    double prise=0;
+    widget.allFrenchisiViewModel.items.forEach((element) {
+      prise=(element.qty*element.prize)+prise;
+    });
+return prise;
+  }
+
 }

@@ -1,13 +1,15 @@
 
+import 'package:cloud_kitchen/network/model/response/ImageList.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'CategoryData.g.dart';
 
-@JsonSerializable(nullable: false)
+@JsonSerializable(nullable: true)
 class CategoryData{
 
    int catId;
   String catName;
-  List<String> imageList;
+  List<ImageList> imageList;
 
    CategoryData({this.catId, this.catName, this.imageList});
 

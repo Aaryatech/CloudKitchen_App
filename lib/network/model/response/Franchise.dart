@@ -2,7 +2,7 @@ import 'package:cloud_kitchen/network/model/response/Info.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'Franchise.g.dart';
 
-@JsonSerializable(nullable: false)
+@JsonSerializable(nullable: true)
 class Frainchise {
  int frConfigId,frId,frType,compId;
  String frName,frCode,frAddress,frMob,fromLatitude,fromLongitude,toLatitude,toLongitude,cityList,areaList;

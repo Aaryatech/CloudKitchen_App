@@ -2,7 +2,7 @@
 import 'package:json_annotation/json_annotation.dart';
 part 'CustomerAddress.g.dart';
 
-@JsonSerializable(nullable: false)
+@JsonSerializable(nullable: true)
 class CustomerAddress{
 
   int custAddressId,custId,areaId,cityId,delStatus,exInt1,exInt2,exInt3,exFloat1,exFloat2,exFloat3;

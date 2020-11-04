@@ -1,7 +1,7 @@
 import 'package:cloud_kitchen/network/model/response/Franchise.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-@JsonSerializable(nullable: false)
+@JsonSerializable(nullable: true)
 class FranchiseMain{
 
   List<Frainchise> franchiseList;

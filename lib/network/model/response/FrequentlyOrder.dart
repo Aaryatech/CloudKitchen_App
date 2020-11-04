@@ -6,7 +6,7 @@ import 'package:cloud_kitchen/network/model/response/TasteList.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'FrequentlyOrder.g.dart';
 
-@JsonSerializable(nullable: false)
+@JsonSerializable(nullable: true)
 class FrequentlyOrder{
 
    int itemId,catId,subCatId,itemSortId,isDecimal,uomId,productType,productCategory,showInOrder,rating,rateAmt,

@@ -1,9 +1,12 @@
-import 'package:cloud_kitchen/ui/HomeScreen.dart';
+import 'package:cloud_kitchen/ui/home/HomeScreen.dart';
 import 'package:cloud_kitchen/ui/cart.dart';
 import 'package:cloud_kitchen/ui/profile.dart';
 import 'package:cloud_kitchen/ui/tackaway.dart';
+import 'package:cloud_kitchen/viewmodel/franchisi/frviewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 
+AllFrenchisiViewModel allFrenchisiViewModel=AllFrenchisiViewModel();
 class Dashboard extends StatefulWidget {
   @override
   _DashboardState createState() => _DashboardState();
@@ -19,6 +22,15 @@ class _DashboardState extends State<Dashboard> {
     });
   }
   final scaffoldState = GlobalKey<ScaffoldState>();
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+   allFrenchisiViewModel.getAllFranchise();
+    super.initState();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -58,14 +70,16 @@ class _DashboardState extends State<Dashboard> {
                           minWidth: 12,
                           minHeight: 12,
                         ),
-                        child: new Text(
-                          '2',
-                          style: new TextStyle(
-                            color: Colors.white,
-                            fontSize: 8,
-                            fontWeight: FontWeight.w700
+                        child: Observer(
+                          builder: (_) =>  Text(
+                           '${allFrenchisiViewModel.items.length??0}',
+                            style: new TextStyle(
+                              color: Colors.white,
+                              fontSize: 8,
+                              fontWeight: FontWeight.w700
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                          textAlign: TextAlign.center,
                         ),
                       ),
                     )
@@ -97,11 +111,11 @@ class _DashboardState extends State<Dashboard> {
 
   Widget _children(int index) {
     if (index == 0 ) {
-       return HomeScreen();
+       return HomeScreen(allFrenchisiViewModel);
     }  else if (index == 2) {
       return ProfileScreen();
     } else if (index == 1) {
-      return Cart();
+      return Cart(allFrenchisiViewModel);
     }
   }
 

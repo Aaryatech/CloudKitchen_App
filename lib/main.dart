@@ -1,5 +1,5 @@
 import 'package:cloud_kitchen/theme/themeutils.dart';
-import 'package:cloud_kitchen/ui/HomeScreen.dart';
+import 'package:cloud_kitchen/ui/home/HomeScreen.dart';
 import 'package:cloud_kitchen/ui/SplashScreen.dart';
 import 'package:cloud_kitchen/ui/dashboard.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';

@@ -6,14 +6,14 @@ import 'package:cloud_kitchen/network/model/response/TasteList.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'ItemData.g.dart';
 
-@JsonSerializable(nullable: false)
+@JsonSerializable(nullable: true)
 class ItemData{
 
-  int itemId,catId,subCatId,itemSortId,isDecimal,uomId,productType,productCategory,showInOrder,rating,rateAmt,
-  mrpAmt,spRateAmt,igstPer,discPer,mrpDiscAmt,spDiscAmt,freqOrderedQty,isAvailable;
-  String itemName,catName,subCatName,itemUom,itemDesc,productStatus,productCategoryName,preperationTime,tagIds,
+  int itemId,catId,subCatId,isDecimal,uomId,productType,productCategory,showInOrder,isAvailable;
+  String itemName,catName, subCatName,itemUom,itemDesc,productStatus,productCategoryName,preperationTime,tagIds,
   tasteTypeIds,tagName,tasteName,hsncd,relItemIds,offerIds,jsonStr;
-  double cgstPer,sgstPer;
+  double cgstPer,sgstPer,itemSortId,rating,rateAmt,
+      mrpAmt,spRateAmt,igstPer,discPer,mrpDiscAmt,spDiscAmt,freqOrderedQty;
 
   List<TagsData> tagList;
   List<TasteList> tasteList;

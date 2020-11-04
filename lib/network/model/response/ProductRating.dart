@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 part 'ProductRating.g.dart';
 
-@JsonSerializable(nullable: false)
+@JsonSerializable(nullable: true)
 class ProductRating{
 
   int ratingsId,custId,itemId,value,exInt1,exInt2,exFloat1,exFloat2;

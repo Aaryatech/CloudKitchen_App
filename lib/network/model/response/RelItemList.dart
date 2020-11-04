@@ -3,14 +3,14 @@ import 'package:cloud_kitchen/network/model/response/ImageList.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'RelItemList.g.dart';
 
-@JsonSerializable(nullable: false)
+@JsonSerializable(nullable: true)
 class RelItemList {
 
-    int itemId,catId,subCatId,itemSortId,isDecimal,uomId,productType,productCategory,showInOrder,rating,rateAmt,
-    mrpAmt,spRateAmt,igstPer,discPer,mrpDiscAmt,spDiscAmt,freqOrderedQty,isAvailable;
+    int itemId,catId,subCatId,isDecimal,uomId,productType,productCategory,showInOrder,isAvailable;
   String itemName,catName,subCatName,itemUom,itemDesc,productStatus,productCategoryName,preperationTime,tagIds,tasteTypeIds,
   tagName,tasteName,hsncd,relItemIds,offerIds,jsonStr,tagList,tasteList,relItemList,offerList;
-  double cgstPer,sgstPer;
+  double cgstPer,sgstPer,itemSortId,rating,rateAmt,
+      mrpAmt,spRateAmt,igstPer,discPer,mrpDiscAmt,spDiscAmt,freqOrderedQty;
  
   List<ImageList> imageList;
   

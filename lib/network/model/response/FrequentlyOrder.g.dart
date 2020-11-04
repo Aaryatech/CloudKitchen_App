@@ -47,17 +47,21 @@ FrequentlyOrder _$FrequentlyOrderFromJson(Map<String, dynamic> json) {
     jsonStr: json['jsonStr'] as String,
     tagList: json['tagList'] as String,
     tasteList: (json['tasteList'] as List)
-        .map((e) => TasteList.fromJson(e as Map<String, dynamic>))
-        .toList(),
+        ?.map((e) =>
+            e == null ? null : TasteList.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
     imageList: (json['imageList'] as List)
-        .map((e) => ImageList.fromJson(e as Map<String, dynamic>))
-        .toList(),
+        ?.map((e) =>
+            e == null ? null : ImageList.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
     relItemList: (json['relItemList'] as List)
-        .map((e) => RelItemList.fromJson(e as Map<String, dynamic>))
-        .toList(),
+        ?.map((e) =>
+            e == null ? null : RelItemList.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
     offerList: (json['offerList'] as List)
-        .map((e) => OfferList.fromJson(e as Map<String, dynamic>))
-        .toList(),
+        ?.map((e) =>
+            e == null ? null : OfferList.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
   );
 }
 
