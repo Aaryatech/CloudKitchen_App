@@ -25,17 +25,16 @@ CustomerAddressRepo(){
  Future<HttpResponse> getCustomerAddresss(int custId) async{
    HttpResponse httpResponse=HttpResponse();
     
-FormData formData = new FormData.fromMap({
-    "custId": custId
+ String params="?custId=$custId";
     
-  });
 
-   await httpClient.post(endPoints.Auth().custAddress,body:formData).then((responce){
+
+   await httpClient.post(endPoints.Auth().custAddress+params).then((responce){
      if(responce.statusCode==200){
        httpResponse.status=responce.statusCode;
        httpResponse.message='Successful';
-       httpResponse.data=CustomerAddress.fromJson(responce.data);
-     
+       httpResponse.data=CustomerAddressMain.fromJson(responce.data);
+       httpResponse.info=Info.fromJson(responce.data['info']);
      }else{
        httpResponse.status= 500;
        httpResponse.message='Something went wrong';
@@ -63,7 +62,7 @@ Future<HttpResponse> gsaveCustomerAddresss(SaveAddress saveAddress) async{
     "area": saveAddress.area,
     "landmark": saveAddress.landmark,
     "pincode": saveAddress.pincode,
-    "cityId": saveAddress.custId,
+    "cityId": saveAddress.cityId,
     "delStatus": saveAddress.delStatus,
     "latitude": saveAddress.latitude,
     "longitude": saveAddress.longitude,

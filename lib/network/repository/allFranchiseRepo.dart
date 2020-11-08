@@ -47,40 +47,101 @@ try{
 }
 
 
- Future<HttpResponse> getFranchiseDetailsById(String id)async{
-   HttpResponse httpResponse=HttpResponse();
+  Future<HttpResponse> getFranchiseDetailsById(String id)async{
+    HttpResponse httpResponse=HttpResponse();
 
-   String param='?frId=$id&type=2&applicableFor=2&compId=1';
+    String param='?frId=$id&type=2&applicableFor=2&compId=1';
 
-  Response responce=await httpClient.post('${endPoints.Auth().homeData}$param');
-     // print(responce.data);
+    Response responce=await httpClient.post('${endPoints.Auth().homeData}$param');
+    // print(responce.data);
 
-   try{
-   if(responce.statusCode==200){
-       httpResponse.status=responce.statusCode;
-       httpResponse.message='Successful';
-       httpResponse.data=FranchiseId.fromJson(responce.data);
-       httpResponse.info=Info.fromJson(responce.data['info']);
+    try{
+      if(responce.statusCode==200){
+        httpResponse.status=responce.statusCode;
+        httpResponse.message='Successful';
+        httpResponse.data=FranchiseId.fromJson(responce.data);
+        httpResponse.info=Info.fromJson(responce.data['info']);
 
-     }else{
-       httpResponse.status= 500;
-       httpResponse.message='Something went wrong';
-       httpResponse.data=null;
+      }else{
+        httpResponse.status= 500;
+        httpResponse.message='Something went wrong';
+        httpResponse.data=null;
 
-     }
-     return httpResponse;
+      }
+      return httpResponse;
 
-   }catch(onError){
-       httpResponse.status= 400;
-       httpResponse.message='Network not available';
-       httpResponse.data=onError.toString();
-     return httpResponse;
-   }
-
-
- }
+    }catch(onError){
+      httpResponse.status= 400;
+      httpResponse.message='Network not available';
+      httpResponse.data=onError.toString();
+      return httpResponse;
+    }
 
 
+  }
+
+
+  Future<HttpResponse> getFranchiseDetailsSorted(int frId,int sortId)async{
+    HttpResponse httpResponse=HttpResponse();
+
+    String param='?frId=$frId&sort=$sortId';
+
+    Response responce=await httpClient.post('${endPoints.Auth().franchiseDatabySort}$param');
+    // print(responce.data);
+
+    try{
+      if(responce.statusCode==200){
+        httpResponse.status=responce.statusCode;
+        httpResponse.message='Successful';
+        httpResponse.data=FranchiseId.fromJson(responce.data);
+        httpResponse.info=Info.fromJson(responce.data['info']);
+
+      }else{
+        httpResponse.status= 500;
+        httpResponse.message='Something went wrong';
+        httpResponse.data=null;
+
+      }
+      return httpResponse;
+
+    }catch(onError){
+      httpResponse.status= 400;
+      httpResponse.message='Network not available';
+      httpResponse.data=onError.toString();
+      return httpResponse;
+    }
+  }
+
+  Future<HttpResponse> getFranchiseDetailsRating(int frId,String sort)async{
+    HttpResponse httpResponse=HttpResponse();
+
+    String param='?frId=$frId&sort=$sort';
+
+    Response responce=await httpClient.post('${endPoints.Auth().franchiseDatabyRating}$param');
+
+
+    try{
+      if(responce.statusCode==200){
+        httpResponse.status=responce.statusCode;
+        httpResponse.message='Successful';
+        httpResponse.data=FranchiseId.fromJson(responce.data);
+        httpResponse.info=Info.fromJson(responce.data['info']);
+
+      }else{
+        httpResponse.status= 500;
+        httpResponse.message='Something went wrong';
+        httpResponse.data=null;
+
+      }
+      return httpResponse;
+
+    }catch(onError){
+      httpResponse.status= 400;
+      httpResponse.message='Network not available';
+      httpResponse.data=onError.toString();
+      return httpResponse;
+    }
+  }
 
 
 

@@ -1,11 +1,34 @@
 
+import 'package:cloud_kitchen/network/model/httpresponce.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'CustomerAddress.g.dart';
+
+
+
+
+@JsonSerializable(nullable: true)
+class CustomerAddressMain{
+  List<CustomerAddress> addressList;
+
+
+  CustomerAddressMain(this.addressList);
+
+  factory CustomerAddressMain.fromJson(Map<String, dynamic> json) => _$CustomerAddressMainFromJson(json);
+
+
+  Map<String, dynamic> toJson() => _$CustomerAddressMainToJson(this);
+
+}
+
+
+
+
 
 @JsonSerializable(nullable: true)
 class CustomerAddress{
 
-  int custAddressId,custId,areaId,cityId,delStatus,exInt1,exInt2,exInt3,exFloat1,exFloat2,exFloat3;
+  int custAddressId,custId,areaId,cityId,delStatus,exInt1,exInt2,exInt3;
+  double exFloat1,exFloat2,exFloat3;
   String addressCaption,address,area,landmark,pincode,latitude,longitude,exVar1,exVar2,exVar3,areaName,cityName;
   
 

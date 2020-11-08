@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_kitchen/local/prefs.dart';
 import 'package:cloud_kitchen/ui/OTPVerification.dart';
 import 'package:cloud_kitchen/viewmodel/otp/otpviewmodel.dart';
@@ -114,20 +116,19 @@ myLocalPrefes=MyLocalPrefes();
           Container(
       //height: 50.0,
       child: GestureDetector(
-          onTap: () {
+          onTap: ()  {
             if(!otpViewModel.isLoading)
           {
             if(mobileno.trim().length==10) {
-              otpViewModel.mobileVerification(mobileno, "123456").then((
-                  value) =>
+              int otp=new Random().nextInt(888888) + 111111;
+              otpViewModel.mobileVerification(mobileno, '$otp').then((
+                  value) async =>
               {
-                if(value){
-
-
-                  myLocalPrefes.setCustPhone(mobileno),
+                if(value) {
+                 await myLocalPrefes.setCustPhone(mobileno),
                   Navigator.push(context, MaterialPageRoute(
                       builder: (context) =>
-                          OTPVerification("123456", mobileno)))
+                          OTPVerification('$otp', mobileno)))
                 } else
                   {
                     _scaffoldKey.currentState.showSnackBar(SnackBar(

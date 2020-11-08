@@ -110,9 +110,7 @@ class _LocationPickerUIState extends State<LocationPickerUI> {
    ).then((position) async{
           print(position == null ? 'Unknown' : position.latitude.toString() + ', ' + position.longitude.toString());
 
-          setState(() {
-            isAddressAvailable=true;
-          });
+
          animateCameraPosition(position);
    });
   }
@@ -139,7 +137,9 @@ String selected='';
    var first = addresses.first;
    print("address -: ${first.featureName} : ${first.addressLine}");
    addMarker(latLng, first.addressLine);
-
+   setState(() {
+     isAddressAvailable=true;
+   });
 
 
 
@@ -415,7 +415,7 @@ String selected='';
                                     saveUserDetails.area= null;
                                      saveUserDetails.landmark= "${addresses.first.addressLine}";
                                      saveUserDetails.pincode= "121212";
-                                     saveUserDetails.cityId= 0;
+                                     saveUserDetails.cityId= 1;
                                      saveUserDetails.langId=1;
                                      saveUserDetails.delStatus= 0;
                                      saveUserDetails.latitude= '${currentPosition.latitude}';
@@ -447,12 +447,6 @@ String selected='';
                                     }).catchError((onError){
 
                                     });
-
-                                      // Navigator.pushReplacement(context,
-                                      //     MaterialPageRoute(
-                                      //         builder: (context) =>
-                                      //             Dashboard()));
-
 
                                     }else{
 

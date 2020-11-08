@@ -88,8 +88,8 @@ abstract class _PersonalDetailsViewModel with Store{
 
   @action
   validatePassword(String text) {
-    return text.isEmpty||text.isEmail()
-        ? personalDetailsErrorState.email = null
+    return text.isEmpty||!text.isEmail()
+        ? personalDetailsErrorState.email = 'Please enter valies Email'
         : personalDetailsErrorState.email = null;
   }
 

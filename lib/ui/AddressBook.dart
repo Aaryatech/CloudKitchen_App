@@ -56,12 +56,9 @@ class _AddressBookState extends State<AddressBook> {
                               new Container(
                                 child: Icon(
                                  address[index].icon, size: 32.0, color: Theme.of(context).primaryColor,),
-//                          CircleAvatar(
-//                            radius: 30,
-//                            backgroundImage: AssetImage('images/profilee.jpg'),
-//                          ),
+                         ),
 
-                              ),
+
                               // new Text("John Doe",
                               //     textScaleFactor: 1.5)
                             ],

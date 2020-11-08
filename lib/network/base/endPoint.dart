@@ -11,8 +11,8 @@ class Auth{
   final allLanguage='getAllLanguages';
   final areaByCity='getAreaListByCity';
   final frByCity='getShopByCityId';
-  final custAddress='getCustomerAddressList';
-  final placeOrder='saveCloudOrder';
+  final custAddress='getCustomerAddressListForApp';
+  final placeOrder='placeOrderForApp';
   final orderHistory='getOrderListByCustomerId';
   final grievanceList='getGrievienceListByCustomerId';
   final frequentlyOrder='getFrequentlyOrderedItemListByCust';
@@ -21,6 +21,13 @@ class Auth{
 
 
   final additionaCharges='getAdditionalChargesAndOffersData';
+
+  final franchiseDatabySort='getSubCatItemListSortForApp';
+
+  final franchiseDatabyRating='getSubCatItemListByRatingsForApp';
+
+
+  final updatePaymentAfterSuccess='updatePaymentSuccessful';
 
 
 

@@ -40,13 +40,17 @@ abstract class _AddLocationViewModel with Store {
       if(!httpResponse.info.error)
       {
 
+        isLoading=false;
+        myLocalPrefes.setSelectedAddress(saveUserDetails.landmark);
         myLocalPrefes.setCustLocationCapture(true);
+        myLocalPrefes.setSelectedAddressCaption(saveUserDetails.addressCaption);
         myLocalPrefes.setAddressId(httpResponse.message);
         myLocalPrefes.setUserLatitude(saveUserDetails.latitude);
         myLocalPrefes.setUserLongitude(saveUserDetails.longitude);
 
         return true;
       }else{
+        isLoading=false;
         msg=httpResponse.message;
         return false;
       }

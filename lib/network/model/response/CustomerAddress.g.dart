@@ -6,6 +6,22 @@ part of 'CustomerAddress.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+CustomerAddressMain _$CustomerAddressMainFromJson(Map<String, dynamic> json) {
+  return CustomerAddressMain(
+    (json['addressList'] as List)
+        ?.map((e) => e == null
+            ? null
+            : CustomerAddress.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
+  );
+}
+
+Map<String, dynamic> _$CustomerAddressMainToJson(
+        CustomerAddressMain instance) =>
+    <String, dynamic>{
+      'addressList': instance.addressList,
+    };
+
 CustomerAddress _$CustomerAddressFromJson(Map<String, dynamic> json) {
   return CustomerAddress(
     custAddressId: json['custAddressId'] as int,
@@ -26,9 +42,9 @@ CustomerAddress _$CustomerAddressFromJson(Map<String, dynamic> json) {
     exVar1: json['exVar1'] as String,
     exVar2: json['exVar2'] as String,
     exVar3: json['exVar3'] as String,
-    exFloat1: json['exFloat1'] as int,
-    exFloat2: json['exFloat2'] as int,
-    exFloat3: json['exFloat3'] as int,
+    exFloat1: (json['exFloat1'] as num)?.toDouble(),
+    exFloat2: (json['exFloat2'] as num)?.toDouble(),
+    exFloat3: (json['exFloat3'] as num)?.toDouble(),
     areaName: json['areaName'] as String,
     cityName: json['cityName'] as String,
   );

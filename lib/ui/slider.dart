@@ -56,8 +56,13 @@ int currentPage=0;
                      child:currentPage==0?
                      Align(
                          alignment: Alignment.topRight,
-                         child: Text("Skip",style:Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.bold).copyWith(color:Colors.grey),),)
+                         child: InkWell(
+                           onTap:(){
+                             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> OTPScreen()));
+                           } ,
+                           child: Text( 'Skip',style:Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.bold).copyWith(color:Colors.grey)),
 
+                         ),)
                          :
                        Row(
                          mainAxisSize: MainAxisSize.max,
@@ -69,7 +74,9 @@ int currentPage=0;
                              onTap:(){
                                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> OTPScreen()));
                              } ,
-                             child: Text( 'Skip',style:Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.bold).copyWith(color:Colors.grey)),),
+                             child: Text( 'Skip',style:Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.bold).copyWith(color:Colors.grey)),
+
+                           ),
                          ],
                        ),
                    ),

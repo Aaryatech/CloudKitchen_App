@@ -7,8 +7,8 @@ part 'OfferData.g.dart';
 class OfferData{
   
    int offerDetailId,offerId,offerSubType,primaryItemId,secondaryItemId,isActive,delStatus,exInt1,exInt2,exInt3,exInt4;
-	 String primaryQty,discPer,offerLimit,couponCode,secondaryQty,exVar1,exVar2,exVar3,exVar4;
-	 double exFloat1,exFloat2,exFloat3,exFloat4;
+	 String couponCode,exVar1,exVar2,exVar3,exVar4;
+	 double exFloat1,exFloat2,exFloat3,exFloat4,primaryQty,discPer,offerLimit,secondaryQty;
      
     
    

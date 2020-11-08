@@ -1,12 +1,17 @@
 
+import 'package:cloud_kitchen/network/model/request/SaveAddress.dart';
 import 'package:cloud_kitchen/ui/contactUs.dart';
 import 'package:cloud_kitchen/ui/dashboard.dart';
 import 'package:cloud_kitchen/ui/locationpicker/locationpickerui.dart';
 import 'package:cloud_kitchen/ui/tackaway.dart';
+import 'package:cloud_kitchen/viewmodel/location/locationviewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:google_maps_webservice/geocoding.dart';
+import 'package:google_maps_webservice/places.dart';
 import 'package:location_permissions/location_permissions.dart';
 
-
+AddLocationViewModel addLocationViewModel=AddLocationViewModel();
 class LocationScreen extends StatefulWidget {
   @override
   _LocationScreenState createState() => _LocationScreenState();
@@ -15,30 +20,36 @@ class LocationScreen extends StatefulWidget {
 class _LocationScreenState extends State<LocationScreen> {
   final scaffoldState = GlobalKey<ScaffoldState>();
 
+
+  final places = new GoogleMapsPlaces(apiKey: "AIzaSyBahlnISPYhetj3q50ADqVE6SECypRGe4A");
+
+
+String completeaddress='',floor='',howtoreach='',selected="HOME";
+
   void showImagePickerBottomSheet(BuildContext context){
+
+
+    List<PlacesSearchResult> result=[];
+    PlacesSearchResult selectedResult;
+
     showModalBottomSheet(
         context: context,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
         ),
         enableDrag: true,
+        isScrollControlled: true,
+
         builder: (BuildContext bc){
           return StatefulBuilder(
           builder: (context, setState) {
-
             return SafeArea(
               child: Container(
                 color: Colors.white.withOpacity(0.5),
-                width: MediaQuery
-                    .of(context)
-                    .size
-                    .width,
-
                 padding: EdgeInsets.only(left: 16,right: 16,bottom: 16,top: 8),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -53,15 +64,27 @@ class _LocationScreenState extends State<LocationScreen> {
                     SizedBox(
                       height: 4,
                     ),
+
                    TextFormField(
                      enabled: true,
+                     onChanged:(str) async{
+
+
+                       PlacesSearchResponse response = await places.searchByText(str);
+
+                       setState((){
+                       selectedResult=null;
+                       result=response.results;
+                       });
+                     },
                      decoration: InputDecoration(
                        border: OutlineInputBorder(),
                        prefixIcon: Icon(Icons.search),
-                       suffix: Icon(Icons.close),
+
                        hintText: 'Search Your Place',
                        filled: true,
                        fillColor: Colors.white,
+
                        isDense: true,
                      ),
                    ),
@@ -71,67 +94,180 @@ class _LocationScreenState extends State<LocationScreen> {
 
                     SingleChildScrollView(
                       child: Container(
-                        height: MediaQuery.of(context).size.height*.30,
-                        child: InkWell(
-                          onTap: (){
-                            Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
-                          },
-                          child: ListView(
-                            scrollDirection: Axis.vertical,
-                            children: [
-                              ListTile(
-                                leading: Icon(Icons.location_on_outlined),
-                                title: Text('Canada Corner'),
-                                subtitle: Text('College Road, Nashik, Maharastra, India '),
-                              ),
+                        height: MediaQuery.of(context).size.height*.70,
+                        child: selectedResult==null?ListView.builder(
+                          itemCount: result.length,
+                          scrollDirection: Axis.vertical,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              onTap: (){
+                                // Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
 
-                              ListTile(
-                                leading: Icon(Icons.location_on_outlined),
-                                title: Text('Canada Corner'),
-                                subtitle: Text('College Road, Nashik, Maharastra, India '),
-                              ),
+                                setState((){
+                                  selectedResult=result[index];
+                                });
 
-                              ListTile(
-                                leading: Icon(Icons.location_on_outlined),
-                                title: Text('Canada Corner'),
-                                subtitle: Text('College Road, Nashik, Maharastra, India '),
-                              ),
+                                // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> LocationPickerUI()));
+
+                              },
+                              leading: Icon(Icons.location_on_outlined),
+                              title: Text(result[index].name),
+                              subtitle: Text(result[index].formattedAddress),
+                            );
+                          }
+                          ):Observer(
+                            builder:(_)=> Container(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+
+                                Text('Selected address ${selectedResult.formattedAddress}',style: Theme.of(context).textTheme.subtitle2),
+
+                                TextFormField(
+                                  onChanged: (str) {
+                                    completeaddress=str;
+                                  },
+                                  decoration: InputDecoration(
+                                    hintText: 'Complete Address *',
+                                  ),
+                                ),
+
+                                TextFormField(
+                                  onChanged: (str) {
+                                    floor=str;
+                                  },
+
+                                  decoration: InputDecoration(
+                                    hintText: 'Floor(Optional)',
+                                  ),
+                                ),
+
+                                TextFormField(
+                                  onChanged: (str) {
+                                    howtoreach=str;
+                                  },
+                                  decoration: InputDecoration(
 
 
-                              ListTile(
-                                leading: Icon(Icons.location_on_outlined),
-                                title: Text('Canada Corner'),
-                                subtitle: Text('College Road, Nashik, Maharastra, India '),
-                              ),
+                                    hintText: 'How to reach(Optional)',
+                                  ),
+                                ),
+
+                                SizedBox(height: 16,),
+                                Text('TAG THIS LOCATION FOR LATER',style: Theme.of(context).textTheme.subtitle2.copyWith(color: Colors.grey),),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    FilterChip(
+                                      shape: StadiumBorder(side: BorderSide(color: Colors.grey)),
+                                      label: Text("HOME",style: Theme.of(context).textTheme.caption,),
+                                      padding: EdgeInsets.only(left: 12,right: 12),
+                                      labelStyle: TextStyle(letterSpacing: 2, color: Colors.black),
+
+                                      selected: selected=="HOME",
+                                      selectedColor: Colors.transparent,
+                                      // backgroundColor: Theme.of(context).primaryColor,
+                                      onSelected: (flag) {
+                                        if(flag){
+                                          setState(() {
+                                            selected="HOME";
+                                          });}
+                                      },
+                                    ),
+
+                                    FilterChip(
+                                      shape: StadiumBorder(side: BorderSide(color: Colors.grey)),
+                                      label: Text("WORK",style: Theme.of(context).textTheme.caption),
+                                      labelStyle: TextStyle(letterSpacing: 2, color: Colors.black),
+                                      padding: EdgeInsets.only(left: 12,right: 12),
+                                      selected: selected=="WORK",
+                                      selectedColor: Colors.transparent,
+                                      // backgroundColor: Theme.of(context).primaryColor,
+                                      onSelected: (flag) {
+                                        setState(() {
+                                          if(flag)
+                                          {
+                                            selected="WORK";
+                                          }
+                                        });
+                                      },
+                                    ),
+
+                                    FilterChip(
+                                      // avatar: Icon(Icons.close,color: Colors.black),
+                                      shape: StadiumBorder(side: BorderSide(color: Colors.grey)),
+                                      label: Text("OTHER",style: Theme.of(context).textTheme.caption),
+                                      labelStyle: TextStyle(letterSpacing: 2, color: Colors.black),
+                                      padding: EdgeInsets.only(left: 12,right: 12),
+                                      selected: selected=="OTHER",
+                                      selectedColor: Colors.transparent,
+                                      // backgroundColor: Theme.of(context).primaryColor,
+                                      onSelected: (flag) {
+                                        setState(() {
+                                          selected="OTHER";
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                ),
+
+                                Align(
+                                  alignment: Alignment.center,
+                                  child: RaisedButton(onPressed: (){
+
+                                    if(!addLocationViewModel.isLoading){
+                                    SaveAddress saveUserDetails=SaveAddress();
+
+                                    saveUserDetails.custAddressId= 0;
+
+                                    saveUserDetails.addressCaption= selected;
+                                    saveUserDetails.address= "${completeaddress} - ${floor} - ${howtoreach}";
+                                    saveUserDetails.areaId= 0;
+                                    saveUserDetails.area= null;
+                                    saveUserDetails.landmark= "${selectedResult.formattedAddress}";
+                                    saveUserDetails.pincode= "";
+                                    saveUserDetails.cityId= 1;
+                                    saveUserDetails.langId=1;
+                                    saveUserDetails.delStatus= 0;
+                                    saveUserDetails.latitude= '${selectedResult.geometry.location.lat}';
+                                    saveUserDetails.longitude= '${selectedResult.geometry.location.lng}';
+                                    saveUserDetails.exInt1= 0;
+                                    saveUserDetails.exInt2= 0;
+                                    saveUserDetails.exInt3= 0;
+                                    saveUserDetails.exVar1= "";
+                                    saveUserDetails.exVar2= "";
+                                    saveUserDetails.exVar3="";
+                                    saveUserDetails.exFloat1=0;
+                                    saveUserDetails.exFloat2= 0;
+                                    saveUserDetails.exFloat3= 0;
+
+                                    addLocationViewModel.saveUserDetails(saveUserDetails).then((value) => {
+
+                                      if(value){
+                                        Navigator.pushReplacement(context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    Dashboard())),
+                                      }else{
+                                        _showSnackbar(addLocationViewModel.msg, false),
+                                      }
+                                    }).catchError((onError){
+                                    });
+                                  }},
+                                  child: Text('Save',style: Theme.of(context).textTheme.subtitle2.copyWith(color: Colors.white),),
+                                  color: Theme.of(context).primaryColor,
+                                  ),
+                                ),
+
+                               addLocationViewModel.isLoading?LinearProgressIndicator():Container(),
 
 
-                              ListTile(
-                                leading: Icon(Icons.location_on_outlined),
-                                title: Text('Canada Corner'),
-                                subtitle: Text('College Road, Nashik, Maharastra, India '),
-                              ),
-
-
-                              ListTile(
-                                leading: Icon(Icons.location_on_outlined),
-                                title: Text('Canada Corner'),
-                                subtitle: Text('College Road, Nashik, Maharastra, India '),
-                              ),
-
-                              ListTile(
-                                leading: Icon(Icons.location_on_outlined),
-                                title: Text('Canada Corner'),
-                                subtitle: Text('College Road, Nashik, Maharastra, India '),
-                              ),
-
-
-                            ],
-                          ),
+                              ],
+                            ),
                         ),
+                          ),
                       ),
                     ),
-
-
 
 
 
@@ -147,8 +283,13 @@ class _LocationScreenState extends State<LocationScreen> {
 
     );
 
-  }
 
+
+
+  }
+  void searchByPlaces(String searchStr) async{
+
+  }
 
   @override
   void initState() {
