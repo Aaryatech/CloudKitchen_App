@@ -1,4 +1,4 @@
-import 'package:cloud_kitchen/ui/OTPScreen.dart';
+import 'package:cloud_kitchen/ui/otp/OTPScreen.dart';
 import 'package:flutter/material.dart';
 
 class SliderView extends StatefulWidget {
@@ -188,7 +188,7 @@ int currentPage=0;
                   SizedBox(
                     height: 10,
                   ),
-                  Text( 'Now you an order food any time', style:Theme.of(context).textTheme.subtitle1.copyWith(color:Colors.grey)),
+                  Text( 'Now you can order food any time', style:Theme.of(context).textTheme.subtitle1.copyWith(color:Colors.grey)),
                   Text( 'right from your mobile', style:Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.grey)),
                    
                    Image.asset(
@@ -303,7 +303,7 @@ class MyPage3Widget extends StatelessWidget {
                   SizedBox(
                     height: 10,
                   ),
-                  Text( 'Order yourfavorite meals will', style:Theme.of(context).textTheme.subtitle1.copyWith(color:Colors.grey)),
+                  Text( 'Order your favorite meals will', style:Theme.of(context).textTheme.subtitle1.copyWith(color:Colors.grey)),
                   Text( 'be immediately deliver',style:Theme.of(context).textTheme.subtitle1.copyWith(color:Colors.grey)),
 
                    Image.asset(

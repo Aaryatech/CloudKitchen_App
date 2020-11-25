@@ -86,6 +86,22 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
     });
   }
 
+  final _$deliveryInstructionAtom =
+      Atom(name: '_AllFrenchisiViewModel.deliveryInstruction');
+
+  @override
+  DeliveryInstruction get deliveryInstruction {
+    _$deliveryInstructionAtom.reportRead();
+    return super.deliveryInstruction;
+  }
+
+  @override
+  set deliveryInstruction(DeliveryInstruction value) {
+    _$deliveryInstructionAtom.reportWrite(value, super.deliveryInstruction, () {
+      super.deliveryInstruction = value;
+    });
+  }
+
   final _$isPlaceingOrderAtom =
       Atom(name: '_AllFrenchisiViewModel.isPlaceingOrder');
 
@@ -150,6 +166,53 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
     });
   }
 
+  final _$selectedOutletAtom =
+      Atom(name: '_AllFrenchisiViewModel.selectedOutlet');
+
+  @override
+  int get selectedOutlet {
+    _$selectedOutletAtom.reportRead();
+    return super.selectedOutlet;
+  }
+
+  @override
+  set selectedOutlet(int value) {
+    _$selectedOutletAtom.reportWrite(value, super.selectedOutlet, () {
+      super.selectedOutlet = value;
+    });
+  }
+
+  final _$selectedDelModeAtom =
+      Atom(name: '_AllFrenchisiViewModel.selectedDelMode');
+
+  @override
+  int get selectedDelMode {
+    _$selectedDelModeAtom.reportRead();
+    return super.selectedDelMode;
+  }
+
+  @override
+  set selectedDelMode(int value) {
+    _$selectedDelModeAtom.reportWrite(value, super.selectedDelMode, () {
+      super.selectedDelMode = value;
+    });
+  }
+
+  final _$currentIndexAtom = Atom(name: '_AllFrenchisiViewModel.currentIndex');
+
+  @override
+  int get currentIndex {
+    _$currentIndexAtom.reportRead();
+    return super.currentIndex;
+  }
+
+  @override
+  set currentIndex(int value) {
+    _$currentIndexAtom.reportWrite(value, super.currentIndex, () {
+      super.currentIndex = value;
+    });
+  }
+
   final _$itemsIdsAtom = Atom(name: '_AllFrenchisiViewModel.itemsIds');
 
   @override
@@ -177,6 +240,22 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
   set isLoading(bool value) {
     _$isLoadingAtom.reportWrite(value, super.isLoading, () {
       super.isLoading = value;
+    });
+  }
+
+  final _$isLoadingForHistoryAtom =
+      Atom(name: '_AllFrenchisiViewModel.isLoadingForHistory');
+
+  @override
+  bool get isLoadingForHistory {
+    _$isLoadingForHistoryAtom.reportRead();
+    return super.isLoadingForHistory;
+  }
+
+  @override
+  set isLoadingForHistory(bool value) {
+    _$isLoadingForHistoryAtom.reportWrite(value, super.isLoadingForHistory, () {
+      super.isLoadingForHistory = value;
     });
   }
 
@@ -261,6 +340,37 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
     });
   }
 
+  final _$orderHistoryAtom = Atom(name: '_AllFrenchisiViewModel.orderHistory');
+
+  @override
+  OrderHistory get orderHistory {
+    _$orderHistoryAtom.reportRead();
+    return super.orderHistory;
+  }
+
+  @override
+  set orderHistory(OrderHistory value) {
+    _$orderHistoryAtom.reportWrite(value, super.orderHistory, () {
+      super.orderHistory = value;
+    });
+  }
+
+  final _$selectedFranchiseAtom =
+      Atom(name: '_AllFrenchisiViewModel.selectedFranchise');
+
+  @override
+  Frainchise get selectedFranchise {
+    _$selectedFranchiseAtom.reportRead();
+    return super.selectedFranchise;
+  }
+
+  @override
+  set selectedFranchise(Frainchise value) {
+    _$selectedFranchiseAtom.reportWrite(value, super.selectedFranchise, () {
+      super.selectedFranchise = value;
+    });
+  }
+
   final _$loadingMessageAtom =
       Atom(name: '_AllFrenchisiViewModel.loadingMessage');
 
@@ -274,6 +384,21 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
   set loadingMessage(String value) {
     _$loadingMessageAtom.reportWrite(value, super.loadingMessage, () {
       super.loadingMessage = value;
+    });
+  }
+
+  final _$outletTypeAtom = Atom(name: '_AllFrenchisiViewModel.outletType');
+
+  @override
+  int get outletType {
+    _$outletTypeAtom.reportRead();
+    return super.outletType;
+  }
+
+  @override
+  set outletType(int value) {
+    _$outletTypeAtom.reportWrite(value, super.outletType, () {
+      super.outletType = value;
     });
   }
 
@@ -416,14 +541,38 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
     });
   }
 
+  final _$searchStringAtom = Atom(name: '_AllFrenchisiViewModel.searchString');
+
+  @override
+  String get searchString {
+    _$searchStringAtom.reportRead();
+    return super.searchString;
+  }
+
+  @override
+  set searchString(String value) {
+    _$searchStringAtom.reportWrite(value, super.searchString, () {
+      super.searchString = value;
+    });
+  }
+
+  final _$changeDefAddressAsyncAction =
+      AsyncAction('_AllFrenchisiViewModel.changeDefAddress');
+
+  @override
+  Future changeDefAddress(CustomerAddress customerAddress) {
+    return _$changeDefAddressAsyncAction
+        .run(() => super.changeDefAddress(customerAddress));
+  }
+
   final _$placeOrderAsyncAction =
       AsyncAction('_AllFrenchisiViewModel.placeOrder');
 
   @override
   Future<HttpResponse> placeOrder(double itemTotal, int payMode, int offerId,
-      double deliveryCharges, double descAmt) {
-    return _$placeOrderAsyncAction.run(() => super
-        .placeOrder(itemTotal, payMode, offerId, deliveryCharges, descAmt));
+      double deliveryCharges, double descAmt, String dateTime) {
+    return _$placeOrderAsyncAction.run(() => super.placeOrder(
+        itemTotal, payMode, offerId, deliveryCharges, descAmt, dateTime));
   }
 
   final _$getAddressAsyncAction =
@@ -444,6 +593,14 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
         .run(() => super.postPaymentService(orderId, status, paid, txStatus));
   }
 
+  final _$getOrderHistoryAsyncAction =
+      AsyncAction('_AllFrenchisiViewModel.getOrderHistory');
+
+  @override
+  Future<dynamic> getOrderHistory() {
+    return _$getOrderHistoryAsyncAction.run(() => super.getOrderHistory());
+  }
+
   final _$getAllFranchiseAsyncAction =
       AsyncAction('_AllFrenchisiViewModel.getAllFranchise');
 
@@ -460,6 +617,23 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
     return _$sortFranchiseByKmAsyncAction.run(() => super.sortFranchiseByKm());
   }
 
+  final _$lookforNearestFranchiseAsyncAction =
+      AsyncAction('_AllFrenchisiViewModel.lookforNearestFranchise');
+
+  @override
+  Future lookforNearestFranchise() {
+    return _$lookforNearestFranchiseAsyncAction
+        .run(() => super.lookforNearestFranchise());
+  }
+
+  final _$changeOutletAsyncAction =
+      AsyncAction('_AllFrenchisiViewModel.changeOutlet');
+
+  @override
+  Future changeOutlet(Frainchise frainchise) {
+    return _$changeOutletAsyncAction.run(() => super.changeOutlet(frainchise));
+  }
+
   final _$getOffersandAdditionalChargeAsyncAction =
       AsyncAction('_AllFrenchisiViewModel.getOffersandAdditionalCharge');
 
@@ -467,6 +641,24 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
   Future<dynamic> getOffersandAdditionalCharge() {
     return _$getOffersandAdditionalChargeAsyncAction
         .run(() => super.getOffersandAdditionalCharge());
+  }
+
+  final _$getAllFranchiseForTackAwayAsyncAction =
+      AsyncAction('_AllFrenchisiViewModel.getAllFranchiseForTackAway');
+
+  @override
+  Future<dynamic> getAllFranchiseForTackAway() {
+    return _$getAllFranchiseForTackAwayAsyncAction
+        .run(() => super.getAllFranchiseForTackAway());
+  }
+
+  final _$sortFranchiseByKmForTakeAwayAsyncAction =
+      AsyncAction('_AllFrenchisiViewModel.sortFranchiseByKmForTakeAway');
+
+  @override
+  Future<dynamic> sortFranchiseByKmForTakeAway() {
+    return _$sortFranchiseByKmForTakeAwayAsyncAction
+        .run(() => super.sortFranchiseByKmForTakeAway());
   }
 
   final _$_AllFrenchisiViewModelActionController =
@@ -484,22 +676,55 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
   }
 
   @override
-  dynamic setDefAddress(String adress, String caption) {
+  dynamic setDeliveryInstruction(DeliveryInstruction deliveryInstructiona) {
     final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
-        name: '_AllFrenchisiViewModel.setDefAddress');
+        name: '_AllFrenchisiViewModel.setDeliveryInstruction');
     try {
-      return super.setDefAddress(adress, caption);
+      return super.setDeliveryInstruction(deliveryInstructiona);
     } finally {
       _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
     }
   }
 
   @override
-  dynamic changeDefAddress(CustomerAddress customerAddress) {
+  dynamic getSelectedOutlet() {
     final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
-        name: '_AllFrenchisiViewModel.changeDefAddress');
+        name: '_AllFrenchisiViewModel.getSelectedOutlet');
     try {
-      return super.changeDefAddress(customerAddress);
+      return super.getSelectedOutlet();
+    } finally {
+      _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic getSelectedDelMode() {
+    final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
+        name: '_AllFrenchisiViewModel.getSelectedDelMode');
+    try {
+      return super.getSelectedDelMode();
+    } finally {
+      _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic setDelMode(int mode) {
+    final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
+        name: '_AllFrenchisiViewModel.setDelMode');
+    try {
+      return super.setDelMode(mode);
+    } finally {
+      _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic setDefAddress(String adress, String caption) {
+    final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
+        name: '_AllFrenchisiViewModel.setDefAddress');
+    try {
+      return super.setDefAddress(adress, caption);
     } finally {
       _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
     }
@@ -627,11 +852,22 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
   }
 
   @override
-  dynamic lookforNearestFranchise() {
+  String getFrAddress() {
     final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
-        name: '_AllFrenchisiViewModel.lookforNearestFranchise');
+        name: '_AllFrenchisiViewModel.getFrAddress');
     try {
-      return super.lookforNearestFranchise();
+      return super.getFrAddress();
+    } finally {
+      _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  String getFrName() {
+    final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
+        name: '_AllFrenchisiViewModel.getFrName');
+    try {
+      return super.getFrName();
     } finally {
       _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
     }
@@ -660,6 +896,17 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
   }
 
   @override
+  dynamic lookforNearestFranchiseForTakAway() {
+    final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
+        name: '_AllFrenchisiViewModel.lookforNearestFranchiseForTakAway');
+    try {
+      return super.lookforNearestFranchiseForTakAway();
+    } finally {
+      _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 items: ${items},
@@ -667,18 +914,26 @@ selectedAddress: ${selectedAddress},
 filterList: ${filterList},
 isSerching: ${isSerching},
 isAddressLoading: ${isAddressLoading},
+deliveryInstruction: ${deliveryInstruction},
 isPlaceingOrder: ${isPlaceingOrder},
 iPaymetnLading: ${iPaymetnLading},
 isChagesdataAvailable: ${isChagesdataAvailable},
 adressesMain: ${adressesMain},
+selectedOutlet: ${selectedOutlet},
+selectedDelMode: ${selectedDelMode},
+currentIndex: ${currentIndex},
 itemsIds: ${itemsIds},
 isLoading: ${isLoading},
+isLoadingForHistory: ${isLoadingForHistory},
 isNoDataAvailable: ${isNoDataAvailable},
 isLoadingForFranchiseData: ${isLoadingForFranchiseData},
 isLoadingForOffers: ${isLoadingForOffers},
 initiatePayment: ${initiatePayment},
 placeOrderModel: ${placeOrderModel},
+orderHistory: ${orderHistory},
+selectedFranchise: ${selectedFranchise},
 loadingMessage: ${loadingMessage},
+outletType: ${outletType},
 frainchise: ${frainchise},
 frainchiseHomeData: ${frainchiseHomeData},
 distanceMatrix: ${distanceMatrix},
@@ -687,7 +942,8 @@ error: ${error},
 custAdrress: ${custAdrress},
 custName: ${custName},
 custAdrressCaption: ${custAdrressCaption},
-offersMain: ${offersMain}
+offersMain: ${offersMain},
+searchString: ${searchString}
     ''';
   }
 }

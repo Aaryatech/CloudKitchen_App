@@ -31,8 +31,6 @@ abstract class _AddLocationViewModel with Store {
 
   Future<bool> saveUserDetails(SaveAddress saveUserDetails) async {
     isLoading=true;
-
-
     saveUserDetails.custId=getCustId();
     HttpResponse httpResponse=  await customerAddressRepo.gsaveCustomerAddresss(saveUserDetails);
     if(httpResponse.status==200){
@@ -44,7 +42,8 @@ abstract class _AddLocationViewModel with Store {
         myLocalPrefes.setSelectedAddress(saveUserDetails.landmark);
         myLocalPrefes.setCustLocationCapture(true);
         myLocalPrefes.setSelectedAddressCaption(saveUserDetails.addressCaption);
-        myLocalPrefes.setAddressId(httpResponse.message);
+        // await myLocalPrefes.setAddressId(saveUserDetails.custAddressId);
+         myLocalPrefes.setAddressId(int.parse(httpResponse.message));
         myLocalPrefes.setUserLatitude(saveUserDetails.latitude);
         myLocalPrefes.setUserLongitude(saveUserDetails.longitude);
 

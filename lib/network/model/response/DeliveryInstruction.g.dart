@@ -6,6 +6,23 @@ part of 'DeliveryInstruction.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+DeliveryInstructionMain _$DeliveryInstructionMainFromJson(
+    Map<String, dynamic> json) {
+  return DeliveryInstructionMain(
+    (json['deliveryInstruction'] as List)
+        ?.map((e) => e == null
+            ? null
+            : DeliveryInstruction.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
+  );
+}
+
+Map<String, dynamic> _$DeliveryInstructionMainToJson(
+        DeliveryInstructionMain instance) =>
+    <String, dynamic>{
+      'deliveryInstruction': instance.deliveryInstruction,
+    };
+
 DeliveryInstruction _$DeliveryInstructionFromJson(Map<String, dynamic> json) {
   return DeliveryInstruction(
     instruId: json['instruId'] as int,

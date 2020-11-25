@@ -8,20 +8,35 @@ part of 'OrderHistory.dart';
 
 OrderHistory _$OrderHistoryFromJson(Map<String, dynamic> json) {
   return OrderHistory(
+    (json['orderList'] as List)
+        ?.map((e) => e == null
+            ? null
+            : OrderHistoryItem.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
+  );
+}
+
+Map<String, dynamic> _$OrderHistoryToJson(OrderHistory instance) =>
+    <String, dynamic>{
+      'orderList': instance.orderList,
+    };
+
+OrderHistoryItem _$OrderHistoryItemFromJson(Map<String, dynamic> json) {
+  return OrderHistoryItem(
     orderId: json['orderId'] as int,
     orderNo: json['orderNo'] as String,
     orderDate: json['orderDate'] as String,
     frId: json['frId'] as int,
     custId: json['custId'] as int,
     status: json['status'] as int,
-    taxableAmt: json['taxableAmt'] as int,
+    taxableAmt: (json['taxableAmt'] as num)?.toDouble(),
     cgstAmt: (json['cgstAmt'] as num)?.toDouble(),
     sgstAmt: (json['sgstAmt'] as num)?.toDouble(),
-    igstAmt: json['igstAmt'] as int,
-    discAmt: json['discAmt'] as int,
-    itemDiscAmt: json['itemDiscAmt'] as int,
-    taxAmt: json['taxAmt'] as int,
-    totalAmt: json['totalAmt'] as int,
+    igstAmt: (json['igstAmt'] as num)?.toDouble(),
+    discAmt: (json['discAmt'] as num)?.toDouble(),
+    itemDiscAmt: (json['itemDiscAmt'] as num)?.toDouble(),
+    taxAmt: (json['taxAmt'] as num)?.toDouble(),
+    totalAmt: (json['totalAmt'] as num)?.toDouble(),
     orderStatus: json['orderStatus'] as int,
     paidStatus: json['paidStatus'] as int,
     paymentMethod: json['paymentMethod'] as int,
@@ -49,10 +64,10 @@ OrderHistory _$OrderHistoryFromJson(Map<String, dynamic> json) {
     exVar2: json['exVar2'] as String,
     exVar3: json['exVar3'] as String,
     exVar4: json['exVar4'] as String,
-    exFloat1: json['exFloat1'] as int,
-    exFloat2: json['exFloat2'] as int,
-    exFloat3: json['exFloat3'] as int,
-    exFloat4: json['exFloat4'] as int,
+    exFloat1: (json['exFloat1'] as num)?.toDouble(),
+    exFloat2: (json['exFloat2'] as num)?.toDouble(),
+    exFloat3: (json['exFloat3'] as num)?.toDouble(),
+    exFloat4: (json['exFloat4'] as num)?.toDouble(),
     exDate1: json['exDate1'] as String,
     exDate2: json['exDate2'] as String,
     billingName: json['billingName'] as String,
@@ -66,7 +81,7 @@ OrderHistory _$OrderHistoryFromJson(Map<String, dynamic> json) {
     custName: json['custName'] as String,
     frName: json['frName'] as String,
     deliveryKm: (json['deliveryKm'] as num)?.toDouble(),
-    deliveryCharges: json['deliveryCharges'] as int,
+    deliveryCharges: (json['deliveryCharges'] as num)?.toDouble(),
     paymentSubMode: json['paymentSubMode'] as int,
     isAgent: json['isAgent'] as int,
     uuidNo: json['uuidNo'] as String,
@@ -78,24 +93,15 @@ OrderHistory _$OrderHistoryFromJson(Map<String, dynamic> json) {
         ?.map((e) =>
             e == null ? null : TrailList.fromJson(e as Map<String, dynamic>))
         ?.toList(),
-    grievTrailList: json['grievTrailList'] as String,
-    trailDetailList: json['trailDetailList'] as String,
-    orderGriev: json['orderGriev'] as String,
   );
 }
 
-Map<String, dynamic> _$OrderHistoryToJson(OrderHistory instance) =>
+Map<String, dynamic> _$OrderHistoryItemToJson(OrderHistoryItem instance) =>
     <String, dynamic>{
       'orderId': instance.orderId,
       'frId': instance.frId,
       'custId': instance.custId,
       'status': instance.status,
-      'taxableAmt': instance.taxableAmt,
-      'igstAmt': instance.igstAmt,
-      'discAmt': instance.discAmt,
-      'itemDiscAmt': instance.itemDiscAmt,
-      'taxAmt': instance.taxAmt,
-      'totalAmt': instance.totalAmt,
       'orderStatus': instance.orderStatus,
       'paidStatus': instance.paidStatus,
       'paymentMethod': instance.paymentMethod,
@@ -111,13 +117,8 @@ Map<String, dynamic> _$OrderHistoryToJson(OrderHistory instance) =>
       'exInt2': instance.exInt2,
       'exInt3': instance.exInt3,
       'exInt4': instance.exInt4,
-      'exFloat1': instance.exFloat1,
-      'exFloat2': instance.exFloat2,
-      'exFloat3': instance.exFloat3,
-      'exFloat4': instance.exFloat4,
       'deliveryType': instance.deliveryType,
       'deliveryInstId': instance.deliveryInstId,
-      'deliveryCharges': instance.deliveryCharges,
       'paymentSubMode': instance.paymentSubMode,
       'isAgent': instance.isAgent,
       'orderNo': instance.orderNo,
@@ -145,12 +146,20 @@ Map<String, dynamic> _$OrderHistoryToJson(OrderHistory instance) =>
       'custName': instance.custName,
       'frName': instance.frName,
       'uuidNo': instance.uuidNo,
+      'deliveryCharges': instance.deliveryCharges,
       'cgstAmt': instance.cgstAmt,
       'sgstAmt': instance.sgstAmt,
       'deliveryKm': instance.deliveryKm,
+      'taxableAmt': instance.taxableAmt,
+      'igstAmt': instance.igstAmt,
+      'itemDiscAmt': instance.itemDiscAmt,
+      'discAmt': instance.discAmt,
+      'taxAmt': instance.taxAmt,
+      'totalAmt': instance.totalAmt,
+      'exFloat1': instance.exFloat1,
+      'exFloat2': instance.exFloat2,
+      'exFloat3': instance.exFloat3,
+      'exFloat4': instance.exFloat4,
       'detailList': instance.detailList,
       'trailList': instance.trailList,
-      'grievTrailList': instance.grievTrailList,
-      'trailDetailList': instance.trailDetailList,
-      'orderGriev': instance.orderGriev,
     };

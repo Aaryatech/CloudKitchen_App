@@ -1,5 +1,6 @@
 
 import 'package:cloud_kitchen/network/model/response/CategoryData.dart';
+import 'package:cloud_kitchen/network/model/response/Franchise.dart';
 import 'package:cloud_kitchen/network/model/response/Info.dart';
 import 'package:cloud_kitchen/network/model/response/ItemData.dart';
 import 'package:cloud_kitchen/network/model/response/OfferData.dart';
@@ -17,6 +18,8 @@ Info info;
   List<OfferData> offerData;
   List<TagsData> tagsData;
   List<ItemData> itemData;
+  Frainchise franchise;
+
 
     FranchiseId(
       {this.info,

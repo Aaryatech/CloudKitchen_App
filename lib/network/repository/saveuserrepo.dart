@@ -32,6 +32,7 @@ SaveUserRepo(){
       "compId": saveUser.compId,
       "cityId": saveUser.cityId,
       "frId": saveUser.frId,
+     "langId":1,
       "isBuissHead": saveUser.isBuissHead,
       "companyName": saveUser.companyName,
       "gstNo": saveUser.gstNo,
@@ -121,6 +122,39 @@ SaveUserRepo(){
 
     return httpResponse;
   }
+
+
+
+  Future<HttpResponse> saveContactUs(SaveCustomer saveUser) async {
+    HttpResponse httpResponse = HttpResponse();
+
+
+    String params='?name=${saveUser.custName}&number=${saveUser.phoneNumber}&email=${saveUser.emailId}&msg=${saveUser.msg}';
+    await httpClient.post(
+      '${endPoints.Auth().saveContactUs}$params',).then((responce) {
+
+      print(responce);
+      if (responce.statusCode == 200) {
+        httpResponse.status = responce.statusCode;
+        httpResponse.message = responce.data['message'];
+        httpResponse.info= Info.fromJson(responce.data) ;
+
+      } else {
+        httpResponse.status = 500;
+        httpResponse.message = 'Something went wrong';
+        httpResponse.data = null;
+      }
+    }).catchError((onError) {
+      print(onError);
+      httpResponse.status = 404;
+      httpResponse.message = 'Network not available';
+      httpResponse.data = null;
+    });
+
+    return httpResponse;
+  }
+
+
 
 
 

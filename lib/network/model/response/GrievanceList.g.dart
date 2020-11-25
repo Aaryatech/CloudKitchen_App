@@ -6,6 +6,21 @@ part of 'GrievanceList.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+GrievanceListMain _$GrievanceListMainFromJson(Map<String, dynamic> json) {
+  return GrievanceListMain(
+    (json['grievanceList'] as List)
+        ?.map((e) => e == null
+            ? null
+            : GrievanceList.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
+  );
+}
+
+Map<String, dynamic> _$GrievanceListMainToJson(GrievanceListMain instance) =>
+    <String, dynamic>{
+      'grievanceList': instance.grievanceList,
+    };
+
 GrievanceList _$GrievanceListFromJson(Map<String, dynamic> json) {
   return GrievanceList(
     grieveId: json['grieveId'] as int,

@@ -1,13 +1,16 @@
 import 'dart:async';
 
 import 'package:cloud_kitchen/network/model/request/SaveAddress.dart';
-import 'package:cloud_kitchen/ui/dashboard.dart';
+import 'package:cloud_kitchen/ui/home/dashboard.dart';
 import 'package:cloud_kitchen/viewmodel/location/locationviewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:location_permissions/location_permissions.dart';
+import 'package:location/location.dart' as loc;
+
 
 AddLocationViewModel addLocationViewModel=AddLocationViewModel();
 class LocationPickerUI extends StatefulWidget {
@@ -17,6 +20,7 @@ class LocationPickerUI extends StatefulWidget {
 
 class _LocationPickerUIState extends State<LocationPickerUI> {
 
+ loc.Location location = new loc.Location();
   LatLng currentPosition = LatLng(0, 0);
   Completer<GoogleMapController> _controller = Completer();
 
@@ -31,7 +35,7 @@ class _LocationPickerUIState extends State<LocationPickerUI> {
         0.000000 ,
          0.000000 );
     googleMapController.animateCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(target: latLng, zoom: 60)));
+        CameraPosition(target: latLng, zoom: 45)));
   }
 
 
@@ -39,6 +43,20 @@ class _LocationPickerUIState extends State<LocationPickerUI> {
   PermissionStatus permissionStatus;
   String completeaddress='',floor='',howtoreach='';
 
+ bool _serviceEnabled;
+ Future<void> _requestService() async {
+   if (_serviceEnabled == null || !_serviceEnabled) {
+     final bool serviceRequestedResult = await location.requestService();
+     setState(() {
+       _serviceEnabled = serviceRequestedResult;
+     });
+     if (!serviceRequestedResult) {
+       return;
+     }else{
+       getCurrentLocation();
+     }
+   }
+ }
   Future<PermissionStatus> checkLocationPermisionStatus()async{
     permissionStatus= await LocationPermissions().checkPermissionStatus();
 
@@ -55,6 +73,7 @@ class _LocationPickerUIState extends State<LocationPickerUI> {
       if(serviceStatus==ServiceStatus.enabled){
         getCurrentLocation();
       }else{
+        _requestService();
         _showSnackbar('Please start gps', false);
 
       }
@@ -79,7 +98,14 @@ class _LocationPickerUIState extends State<LocationPickerUI> {
 
 
  void askForPermission()async{
-     await LocationPermissions().requestPermissions();
+    PermissionStatus status= await LocationPermissions().requestPermissions();
+
+    if(status==loc.PermissionStatus.denied){
+      Navigator.pop(context);
+    }else if(status==loc.PermissionStatus.granted){
+      getCurrentLocation();
+    }
+
     checkLocationPermisionStatus();
  }
 
@@ -100,22 +126,31 @@ class _LocationPickerUIState extends State<LocationPickerUI> {
 
 
    GoogleMapController mapcController;
- bool isAddressAvailable=false;
+  bool isAddressAvailable=false;
+
+  bool isCuurentLocation=false;
 
   Future getCurrentLocation() async {
     // mapcController = await _controller.future;
 
-   Geolocator.getCurrentPosition(     desiredAccuracy: LocationAccuracy.bestForNavigation,
-     forceAndroidLocationManager: true,
+    setState(() {
+      isCuurentLocation=true;
+    });
+   Geolocator.getCurrentPosition(     desiredAccuracy: LocationAccuracy.high,
    ).then((position) async{
           print(position == null ? 'Unknown' : position.latitude.toString() + ', ' + position.longitude.toString());
 
 
          animateCameraPosition(position);
+          setState(() {
+            isCuurentLocation=false;
+          });
+
+
    });
   }
 
-String selected='';
+String selected='Home';
 
 
   void animateCameraPosition(Position position){
@@ -123,8 +158,8 @@ String selected='';
         CameraUpdate.newCameraPosition(CameraPosition(
             bearing: 192.8334901395799,
             target: LatLng(position.latitude, position.longitude),
-            tilt: 59.440717697143555,
-            zoom: 30.151926040649414)));
+            tilt: 50.440717697143555,
+            zoom: 20.151926040649414)));
 
 
     getAdressbyLatLog(LatLng(position.latitude, position.longitude));
@@ -185,6 +220,9 @@ String selected='';
         key: scaffoldState,
         body: Stack(
           children: [
+
+
+
             GoogleMap(
               zoomControlsEnabled: true,
               zoomGesturesEnabled: true,
@@ -200,6 +238,18 @@ String selected='';
               ),
             ),
 
+
+
+            isCuurentLocation?Positioned(
+            top: 40,
+            child: Container(
+              height: 3,
+              width: MediaQuery.of(context).size.width,
+              margin: EdgeInsets.all(16),
+              child: LinearProgressIndicator(
+                valueColor:AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor) ,
+              ),
+            ),):Container(),
 
             isAddressAvailable?Positioned(
               top: 40,
@@ -247,264 +297,284 @@ String selected='';
               child: AnimatedContainer(
                 duration: Duration(milliseconds: 300),
                 color: Colors.transparent,
-                margin: EdgeInsets.all(8),
+
                 width: MediaQuery
                     .of(context)
                     .size
                     .width,
 
-                child: Card(
+                child: Observer(
+                  builder:(_)=> Card(
 
-                  child: Padding(
-                    padding: EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text("Select Delivery Location",style: Theme.of(context).textTheme.headline6,),
-                        SizedBox(
-                          height: 8,
-                        ),
+                    child: Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text("Select Delivery Location",style: Theme.of(context).textTheme.headline6,),
+                          SizedBox(
+                            height: 8,
+                          ),
 
-                        Container(
-                          height: 1,
-                          color: Colors.grey.withOpacity(0.5),
-                          width: MediaQuery.of(context).size.width,
-                        ),
+                          Container(
+                            height: 1,
+                            color: Colors.grey.withOpacity(0.5),
+                            width: MediaQuery.of(context).size.width,
+                          ),
 
-                        SizedBox(
-                          height: 8,
-                        ),
-                        Container(
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Container(
 
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Your Location',style: Theme.of(context).textTheme.subtitle2,),
-                              SizedBox(height: 4,),
-                              Row(
-                                children: [
-                                  Icon(Icons.check_circle,color: Theme.of(context).primaryColor,),
-                                  SizedBox(width: 4,),
-                                  Text(isAddressAvailable?'${addresses.first.addressLine}':"",style: Theme.of(context).textTheme.subtitle2,softWrap: true,),
-
-                                ],
-                              ),
-
-                              SizedBox(
-                                height: 8,
-                              ),
-
-                              Container(
-                                height: 1,
-                                color: Colors.grey.withOpacity(0.5),
-                                width: MediaQuery.of(context).size.width,
-                              ),
-
-
-                              showUi?Container(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Your Location',style: Theme.of(context).textTheme.subtitle2,),
+                                SizedBox(height: 4,),
+                                Row(
                                   children: [
-                                    TextFormField(
-                                      onChanged: (str) {
-                                        completeaddress=str;
-                                      },
-                                      decoration: InputDecoration(
-                                        hintText: 'Complete Address *',
-                                      ),
-                                    ),
-
-                                    TextFormField(
-                                      onChanged: (str) {
-                                        floor=str;
-                                      },
-
-                                      decoration: InputDecoration(
-                                        hintText: 'Floor(Optional)',
-                                      ),
-                                    ),
-
-                                    TextFormField(
-                                      onChanged: (str) {
-                                        howtoreach=str;
-                                        },
-                                        decoration: InputDecoration(
-
-
-                                        hintText: 'How to reach(Optional)',
-                                        ),
-                                        ),
-
-                                        Text('TAG THIS LOCATION FOR LATER',style: Theme.of(context).textTheme.subtitle2.copyWith(color: Colors.grey),),
-                                        Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                        FilterChip(
-                                        shape: StadiumBorder(side: BorderSide(color: Colors.grey)),
-                                        label: Text("HOME",style: Theme.of(context).textTheme.caption,),
-                                        padding: EdgeInsets.only(left: 12,right: 12),
-                                          labelStyle: TextStyle(letterSpacing: 2, color: Colors.black),
-
-                                          selected: selected=="HOME",
-                                          selectedColor: Colors.transparent,
-                                          // backgroundColor: Theme.of(context).primaryColor,
-                                          onSelected: (flag) {
-                                            if(flag){
-                                            setState(() {
-                                              selected="HOME";
-                                            });}
-                                          },
-                                        ),
-
-                                        FilterChip(
-                                          shape: StadiumBorder(side: BorderSide(color: Colors.grey)),
-                                          label: Text("WORK",style: Theme.of(context).textTheme.caption),
-                                          labelStyle: TextStyle(letterSpacing: 2, color: Colors.black),
-                                          padding: EdgeInsets.only(left: 12,right: 12),
-                                          selected: selected=="WORK",
-                                          selectedColor: Colors.transparent,
-                                          // backgroundColor: Theme.of(context).primaryColor,
-                                          onSelected: (flag) {
-                                            setState(() {
-                                              if(flag)
-                                              {
-                                                selected="WORK";
-                                              }
-                                            });
-                                          },
-                                        ),
-
-                                        FilterChip(
-                                          // avatar: Icon(Icons.close,color: Colors.black),
-                                          shape: StadiumBorder(side: BorderSide(color: Colors.grey)),
-                                          label: Text("OTHER",style: Theme.of(context).textTheme.caption),
-                                          labelStyle: TextStyle(letterSpacing: 2, color: Colors.black),
-                                          padding: EdgeInsets.only(left: 12,right: 12),
-                                          selected: selected=="OTHER",
-                                          selectedColor: Colors.transparent,
-                                          // backgroundColor: Theme.of(context).primaryColor,
-                                          onSelected: (flag) {
-                                            setState(() {
-                                              selected="OTHER";
-                                            });
-                                          },
-                                        ),
-                                      ],
-                                    )
+                                    Icon(Icons.check_circle,color: Theme.of(context).primaryColor,),
+                                    SizedBox(width: 4,),
+                                    Text(isAddressAvailable?'${addresses.first.addressLine}':"",style: Theme.of(context).textTheme.subtitle2,softWrap: true,),
 
                                   ],
                                 ),
-                              ):Container(),
 
-                              SizedBox(
-                                height: 8,
-                              ),
-                              Container(
-                                //  height: 50.0,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    if(btnText!='Continue') {
-                                     SaveAddress saveUserDetails=SaveAddress();
+                                SizedBox(
+                                  height: 8,
+                                ),
 
-                                     saveUserDetails.custAddressId= 0;
-
-                                    saveUserDetails.addressCaption= selected;
-                                    saveUserDetails.address= "${completeaddress} - ${floor} - ${howtoreach}";
-                                    saveUserDetails.areaId= 0;
-                                    saveUserDetails.area= null;
-                                     saveUserDetails.landmark= "${addresses.first.addressLine}";
-                                     saveUserDetails.pincode= "121212";
-                                     saveUserDetails.cityId= 1;
-                                     saveUserDetails.langId=1;
-                                     saveUserDetails.delStatus= 0;
-                                     saveUserDetails.latitude= '${currentPosition.latitude}';
-                                     saveUserDetails.longitude= '${currentPosition.longitude}';
-                                     saveUserDetails.exInt1= 0;
-                                     saveUserDetails.exInt2= 0;
-                                     saveUserDetails.exInt3= 0;
-                                     saveUserDetails.exVar1= "";
-                                     saveUserDetails.exVar2= "";
-                                     saveUserDetails.exVar3="";
-                                     saveUserDetails.exFloat1=0;
-                                     saveUserDetails.exFloat2= 0;
-                                     saveUserDetails.exFloat3= 0;
+                                Container(
+                                  height: 1,
+                                  color: Colors.grey.withOpacity(0.5),
+                                  width: MediaQuery.of(context).size.width,
+                                ),
 
 
+                                showUi?Container(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      TextFormField(
+                                        onChanged: (str) {
+                                          completeaddress=str;
+                                        },
+                                        decoration: InputDecoration(
+                                          hintText: 'Complete Address *',
+                                        ),
+                                      ),
+
+                                      TextFormField(
+                                        onChanged: (str) {
+                                          floor=str;
+                                        },
+
+                                        decoration: InputDecoration(
+                                          hintText: 'Floor(Optional)',
+                                        ),
+                                      ),
+
+                                      TextFormField(
+                                        onChanged: (str) {
+                                          howtoreach=str;
+                                          },
+                                          decoration: InputDecoration(
 
 
-                                    addLocationViewModel.saveUserDetails(saveUserDetails).then((value) => {
+                                          hintText: 'How to reach(Optional)',
+                                          ),
+                                          ),
+                                          SizedBox(height: 8,),
 
-                                      if(value){
-                                        Navigator.pushReplacement(context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    Dashboard())),
-                                      }else{
-                                        _showSnackbar(addLocationViewModel.msg, false),
-                                      }
+                                          Text('TAG THIS LOCATION FOR LATER',style: Theme.of(context).textTheme.subtitle2.copyWith(color: Colors.grey),),
+                                          Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                          FilterChip(
+                                          shape: StadiumBorder(side: BorderSide(color: Colors.grey)),
+                                          label: Text("Home",style: Theme.of(context).textTheme.caption,),
+                                          padding: EdgeInsets.only(left: 12,right: 12),
+                                            labelStyle: TextStyle(letterSpacing: 2, color: Colors.black),
 
-                                    }).catchError((onError){
+                                            selected: selected=="Home",
+                                            selectedColor: Colors.transparent,
+                                            // backgroundColor: Theme.of(context).primaryColor,
+                                            onSelected: (flag) {
+                                              if(flag){
+                                              setState(() {
+                                                selected="Home";
+                                              });}
+                                            },
+                                          ),
 
-                                    });
+                                          FilterChip(
+                                            shape: StadiumBorder(side: BorderSide(color: Colors.grey)),
+                                            label: Text("Work",style: Theme.of(context).textTheme.caption),
+                                            labelStyle: TextStyle(letterSpacing: 2, color: Colors.black),
+                                            padding: EdgeInsets.only(left: 12,right: 12),
+                                            selected: selected=="Work",
+                                            selectedColor: Colors.transparent,
+                                            // backgroundColor: Theme.of(context).primaryColor,
+                                            onSelected: (flag) {
+                                              setState(() {
+                                                if(flag)
+                                                {
+                                                  selected="Work";
+                                                }
+                                              });
+                                            },
+                                          ),
 
-                                    }else{
+                                          FilterChip(
+                                            // avatar: Icon(Icons.close,color: Colors.black),
+                                            shape: StadiumBorder(side: BorderSide(color: Colors.grey)),
+                                            label: Text("Other",style: Theme.of(context).textTheme.caption),
+                                            labelStyle: TextStyle(letterSpacing: 2, color: Colors.black),
+                                            padding: EdgeInsets.only(left: 12,right: 12),
+                                            selected: selected=="Other",
+                                            selectedColor: Colors.transparent,
+                                            // backgroundColor: Theme.of(context).primaryColor,
+                                            onSelected: (flag) {
+                                              setState(() {
+                                                selected="Other";
+                                              });
+                                            },
+                                          ),
+                                        ],
+                                      )
 
-                                      setState(() {
-                                        showUi=true;
-                                        btnText="Save";
+                                    ],
+                                  ),
+                                ):Container(),
+
+                                SizedBox(
+                                  height: 8,
+                                ),
+                                Container(
+                                  //  height: 50.0,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      if(btnText!='Continue') {
+                                       SaveAddress saveUserDetails=SaveAddress();
+
+                                       saveUserDetails.custAddressId= 0;
+
+                                      saveUserDetails.addressCaption= selected;
+                                      saveUserDetails.address= "${completeaddress} - ${floor} - ${howtoreach}";
+                                      saveUserDetails.areaId= 0;
+                                      saveUserDetails.area= null;
+                                       saveUserDetails.landmark= "${addresses.first.addressLine}";
+                                       saveUserDetails.pincode= "121212";
+                                       saveUserDetails.cityId= 1;
+                                       saveUserDetails.langId=1;
+                                       saveUserDetails.delStatus= 0;
+                                       saveUserDetails.latitude= '${currentPosition.latitude}';
+                                       saveUserDetails.longitude= '${currentPosition.longitude}';
+                                       saveUserDetails.exInt1= 0;
+                                       saveUserDetails.exInt2= 0;
+                                       saveUserDetails.exInt3= 0;
+                                       saveUserDetails.exVar1= "";
+                                       saveUserDetails.exVar2= "";
+                                       saveUserDetails.exVar3="";
+                                       saveUserDetails.exFloat1=0;
+                                       saveUserDetails.exFloat2= 0;
+                                       saveUserDetails.exFloat3= 0;
+
+
+
+
+                                      addLocationViewModel.saveUserDetails(saveUserDetails).then((value) => {
+
+                                        if(value){
+                                          Navigator.pushAndRemoveUntil(context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      Dashboard()),(r) => false),
+                                        }else{
+                                          _showSnackbar(addLocationViewModel.msg, false),
+                                        }
+
+                                      }).catchError((onError){
+
                                       });
 
+                                      }else{
 
-                                    }
+                                        setState(() {
+                                          showUi=true;
+                                          btnText="Save";
+                                        });
 
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
+
+                                      }
+
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color: Theme.of(context).primaryColor,
+                                          style: BorderStyle.solid,
+                                          width: 1.0,
+                                        ),
                                         color: Theme.of(context).primaryColor,
-                                        style: BorderStyle.solid,
-                                        width: 1.0,
+                                        borderRadius: BorderRadius.circular(2.0),
                                       ),
-                                      color: Theme.of(context).primaryColor,
-                                      borderRadius: BorderRadius.circular(2.0),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: Center(
-                                            child: Row(
-                                              children: [
-                                                Image.asset('images/location_icn.png',width: 24,height: 24,),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: Center(
+                                              child: Row(
+                                                children: [
+                                                  Icon(Icons.gps_fixed_outlined, color: Colors.white,),
 
-                                                SizedBox(width: 8,),
-                                                Text(
-                                                    btnText,
-                                                    style:Theme.of(context).textTheme.button.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.white)),
-                                              ],
+                                                  SizedBox(width: 8,),
+                                                  Text(
+                                                      btnText,
+                                                      style:Theme.of(context).textTheme.button.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.white)),
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                        )
-                                      ],
+                                          )
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: 16,
-                        ),
 
-                      ],
+                                addLocationViewModel.isLoading?Container(
+                                  height: 4,
+                                  width: MediaQuery.of(context).size.width,
+                                  margin: EdgeInsets.all(16),
+                                  child: LinearProgressIndicator(
+                                    valueColor:AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor) ,
+                                  ),
+                                ):Container(),
+
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 24,
+                          ),
+
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
+
+            // addLocationViewModel.isLoading?Center(
+            //   child: CircularProgressIndicator(
+            //     valueColor:AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor) ,
+            //   ),
+            // ):Container(),
+
 
           ],
         ),

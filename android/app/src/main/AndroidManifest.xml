@@ -10,13 +10,18 @@
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
 
     <application
         android:name="io.flutter.app.FlutterApplication"
         android:label="Madhvi"
         tools:replace="android:label"
-        tools:node="merge"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:showWhenLocked="true"
+        android:turnScreenOn="true"
+        tools:node="merge">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
@@ -45,6 +50,12 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+
+            <intent-filter>
+                <action android:name="FLUTTER_NOTIFICATION_CLICK" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
         </activity>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
@@ -52,7 +63,9 @@
             android:name="flutterEmbedding"
             android:value="2" />
 
-
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="high_importance_channel" />
 <!--        <meta-data android:name="com.facebook.sdk.ApplicationId"-->
 <!--            android:value="859376508213035"/>-->
 
@@ -72,8 +85,17 @@
 <!--        </activity>-->
 
         <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDzcWh8mOoRtbjke_trM-8X-LVZgSOeh5w"/>
+            android:value="AIzaSyD4PZa3KdtvG-IFSQL53Bi9_lSRCmuDIjY"/>
+        <receiver android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
+            </intent-filter>
+        </receiver>
 
+        <receiver android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />
 
     </application>
 </manifest>

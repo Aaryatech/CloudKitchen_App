@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:cloud_kitchen/local/prefs.dart';
-import 'package:cloud_kitchen/ui/dashboard.dart';
-import 'package:cloud_kitchen/ui/locationScreen.dart';
+import 'package:cloud_kitchen/ui/home/dashboard.dart';
+import 'package:cloud_kitchen/ui/user/locationScreen.dart';
 import 'package:cloud_kitchen/ui/locationpicker/locationpickerui.dart';
-import 'package:cloud_kitchen/ui/personalDetail.dart';
+import 'package:cloud_kitchen/ui/user/personalDetail.dart';
 import 'package:cloud_kitchen/ui/slider.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -46,7 +46,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset('images/splash_logo.png'),
+                    Text('Madhvi',style: Theme.of(context).textTheme.headline3.copyWith(color: Colors.white,fontWeight: FontWeight.bold),),
+                    Text(' Dairy and Restaurant food delivery app',style: Theme.of(context).textTheme.caption.copyWith(color: Colors.white,fontWeight: FontWeight.bold),),
                   ],
                 ),
               ),
@@ -57,7 +58,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   }
   startTime() async {
-    var _duration = new Duration(seconds:5);
+    var _duration = new Duration(seconds:3);
     return new Timer(_duration, navigationPage);
   }
 

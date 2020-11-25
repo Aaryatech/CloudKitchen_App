@@ -32,7 +32,9 @@ FranchiseId _$FranchiseIdFromJson(Map<String, dynamic> json) {
         ?.map((e) =>
             e == null ? null : ItemData.fromJson(e as Map<String, dynamic>))
         ?.toList(),
-  );
+  )..franchise = json['franchise'] == null
+      ? null
+      : Frainchise.fromJson(json['franchise'] as Map<String, dynamic>);
 }
 
 Map<String, dynamic> _$FranchiseIdToJson(FranchiseId instance) =>
@@ -43,4 +45,5 @@ Map<String, dynamic> _$FranchiseIdToJson(FranchiseId instance) =>
       'offerData': instance.offerData,
       'tagsData': instance.tagsData,
       'itemData': instance.itemData,
+      'franchise': instance.franchise,
     };

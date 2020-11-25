@@ -2,6 +2,21 @@ import 'package:json_annotation/json_annotation.dart';
 part 'GrievanceList.g.dart';
 
 @JsonSerializable(nullable: true)
+class GrievanceListMain {
+ final List<GrievanceList> grievanceList;
+
+  GrievanceListMain(this.grievanceList);
+
+ factory GrievanceListMain.fromJson(Map<String, dynamic> json) => _$GrievanceListMainFromJson(json);
+
+
+ Map<String, dynamic> toJson() => _$GrievanceListMainToJson(this);
+
+}
+
+
+
+@JsonSerializable(nullable: true)
 class GrievanceList{
 
    int grieveId,orderId,grievenceTypeId,grievenceSubtypeId,currentStatus,insertById,extraInt1,extraInt2,platform; 

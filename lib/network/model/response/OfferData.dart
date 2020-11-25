@@ -1,5 +1,6 @@
 
 
+import 'package:cloud_kitchen/network/model/response/ImageList.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'OfferData.g.dart';
 
@@ -9,10 +10,10 @@ class OfferData{
    int offerDetailId,offerId,offerSubType,primaryItemId,secondaryItemId,isActive,delStatus,exInt1,exInt2,exInt3,exInt4;
 	 String couponCode,exVar1,exVar2,exVar3,exVar4;
 	 double exFloat1,exFloat2,exFloat3,exFloat4,primaryQty,discPer,offerLimit,secondaryQty;
-     
+   List<ImageList> imageList;
     
    
-   OfferData({this.offerDetailId,this.offerId,this.offerSubType,this.primaryItemId,this.primaryQty,this.discPer,this.offerLimit,
+   OfferData({this.offerDetailId,this.imageList,this.offerId,this.offerSubType,this.primaryItemId,this.primaryQty,this.discPer,this.offerLimit,
    this.couponCode,this.secondaryItemId,this.secondaryQty,this.isActive,this.delStatus,this.exInt1,this.exInt2,this.exInt3,
    this.exInt4,this.exVar1,this.exVar2,this.exVar3,this.exVar4,this.exFloat1,this.exFloat2,this.exFloat3,this.exFloat4});
    

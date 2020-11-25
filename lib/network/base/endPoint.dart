@@ -3,18 +3,18 @@ class Auth{
   final saveUser='saveCustomerForApp';
   final allFranchise='getFranchiseList';
   final homeData='getAllDataByFrForApp';
-  final deliverInstruction='getAllDeliveryInstructions';
+  final deliverInstruction='getAllDeliveryInstructionsForApp';
   final saveCustomer='saveCustomerAddressForApp';
   final deleteCustomerAddress='deleteCustAddress';
-  final madhviCredit='getCustWalletTransc';
+  final madhviCredit='getCustWalletTranscForApp';
   final allCity='getAllCities';
   final allLanguage='getAllLanguages';
   final areaByCity='getAreaListByCity';
   final frByCity='getShopByCityId';
   final custAddress='getCustomerAddressListForApp';
   final placeOrder='placeOrderForApp';
-  final orderHistory='getOrderListByCustomerId';
-  final grievanceList='getGrievienceListByCustomerId';
+  final orderHistory='getOrderListByCustomerIdForApp';
+  final grievanceList='getGrievienceListByCustomerIdForApp';
   final frequentlyOrder='getFrequentlyOrderedItemListByCust';
   final addGrievance='saveGrievanceOfOrder';
   final prodRating='saveProdRatings';
@@ -28,6 +28,13 @@ class Auth{
 
 
   final updatePaymentAfterSuccess='updatePaymentSuccessful';
+
+
+  final getSettingsDataForApp='getSettingsDataForApp';
+
+
+  final saveContactUs='saveContactUs';
+
 
 
 

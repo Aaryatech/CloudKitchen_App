@@ -5,8 +5,8 @@ part 'Franchise.g.dart';
 @JsonSerializable(nullable: true)
 class Frainchise {
  int frConfigId,frId,frType,compId;
- String frName,frCode,frAddress,frMob,fromLatitude,fromLongitude,toLatitude,toLongitude,cityList,areaList;
-double kmAreaCovered;
+ String frName,frCode,frAddress,frMob,fromLatitude,fromLongitude,toLatitude,toLongitude,cityList,areaList,duration;
+double kmAreaCovered,distance;
 
 
 
@@ -16,6 +16,7 @@ double kmAreaCovered;
       {this.frConfigId,
       this.frId,
       this.frType,
+        this.duration,
       this.frName,
       this.frCode,
       this.frAddress,
@@ -28,6 +29,7 @@ double kmAreaCovered;
       this.compId,
       this.cityList,
       this.areaList,
+      this.distance
   });
 
         factory Frainchise.fromJson(Map<String, dynamic> json) => _$FrainchiseFromJson(json);

@@ -15,33 +15,27 @@ DeliveryInstructionRepo(){
 }
 
  
- Future<HttpResponse> deliveryinstruction(String compId) async{
+ Future<HttpResponse> deliveryinstruction() async{
    HttpResponse httpResponse=HttpResponse();
-    
-FormData formData = new FormData.fromMap({
-    "compId": compId
-  });
 
-   await httpClient.post(endPoints.Auth().deliverInstruction,body:formData).then((responce){
+   String param= "?compId=1";
+
+  Response responce=await httpClient.post('${endPoints.Auth().deliverInstruction}$param');
+    print(responce);
      if(responce.statusCode==200){
        httpResponse.status=responce.statusCode;
        httpResponse.message='Successful';
-       httpResponse.data=DeliveryInstruction.fromJson(responce.data);
-     
+       httpResponse.data=DeliveryInstructionMain.fromJson(responce.data);
+       httpResponse.info=Info.fromJson(responce.data['info']);
+
      }else{
        httpResponse.status= 500;
        httpResponse.message='Something went wrong';
        httpResponse.data=null;
-     
-     }
-   
+       httpResponse.info=Info.fromJson(responce.data['info']);
 
-   }).catchError((onError) {
-      print(onError);
-      httpResponse.status = 404;
-      httpResponse.data = null;
-      httpResponse.message = 'Network not available';
-    });
+     }
+
     return httpResponse;
   }
 

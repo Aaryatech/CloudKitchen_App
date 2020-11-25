@@ -23,47 +23,51 @@ ThemeData _buildLightTheme() {
     textTheme: TextTheme(
 
       headline6: TextStyle(
-          fontFamily: "Proxima Nova",
+          fontFamily: "Metropolis",
           color: Colors.black
 
       ),
+
       subtitle2: TextStyle(
-          fontFamily: "Proxima Nova",
+          fontFamily: "Open Sans regular",
           color: Colors.black
 
       ),
       subtitle1: TextStyle(
-          fontFamily: "Proxima Nova",
+          fontFamily: "Open Sans regular",
           color: Colors.black
 
       ),
       headline4: TextStyle(
-          fontFamily: "Proxima Nova",
+          fontFamily: "Metropolis",
           color: Colors.black
 
       ),
       headline5: TextStyle(
-        fontFamily: "Proxima Nova",
+        fontFamily: "Metropolis",
         color: Colors.black
 
       ),
       bodyText2: TextStyle(
-          fontFamily: "Proxima Nova",
+          fontFamily: "Open Sans regular",
           color: Colors.black
 
       ),
       bodyText1: TextStyle(
-          fontFamily: "Proxima Nova",
+          fontFamily: "Open Sans regular",
           color: Colors.black
 
       ),
+      //
       button: TextStyle(
-          fontFamily: "Proxima Nova",
+          fontFamily: "Open Sans regular",
           color: Colors.black
 
       ),
+
+      //open sans
       caption:TextStyle(
-          fontFamily: "Proxima Nova",
+          fontFamily: "Open Sans regular",
           color: Colors.black
       ),
     ),

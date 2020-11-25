@@ -4,10 +4,10 @@ part 'DetailList.g.dart';
 @JsonSerializable(nullable: true)
 class DetailList{
 
-   int orderDetailId,orderId,itemId,qty,mrp,rate,taxableAmt,cgstPer,sgstPer,igstPer,igstAmt,discAmt,taxAmt,
-   totalAmt,delStatus,exInt1,exInt2,exInt3,exInt4,exFloat1,exFloat2,exFloat3,exFloat4;
+   int orderDetailId,orderId,itemId,delStatus,exInt1,exInt2,exInt3,exInt4;
   String hsnCode,remark,exVar1,exVar2,exVar3,exVar4,itemName;
-  double cgstAmt,sgstAmt;
+  double cgstAmt,sgstAmt,qty,mrp,rate,taxableAmt,cgstPer,sgstPer,igstPer,igstAmt,discAmt,taxAmt,
+      totalAmt,exFloat1,exFloat2,exFloat3,exFloat4;
   
 
   DetailList(

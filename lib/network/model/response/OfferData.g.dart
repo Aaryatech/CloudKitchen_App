@@ -9,6 +9,10 @@ part of 'OfferData.dart';
 OfferData _$OfferDataFromJson(Map<String, dynamic> json) {
   return OfferData(
     offerDetailId: json['offerDetailId'] as int,
+    imageList: (json['imageList'] as List)
+        ?.map((e) =>
+            e == null ? null : ImageList.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
     offerId: json['offerId'] as int,
     offerSubType: json['offerSubType'] as int,
     primaryItemId: json['primaryItemId'] as int,
@@ -60,4 +64,5 @@ Map<String, dynamic> _$OfferDataToJson(OfferData instance) => <String, dynamic>{
       'discPer': instance.discPer,
       'offerLimit': instance.offerLimit,
       'secondaryQty': instance.secondaryQty,
+      'imageList': instance.imageList,
     };

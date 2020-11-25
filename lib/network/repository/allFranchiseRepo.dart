@@ -112,10 +112,10 @@ try{
     }
   }
 
-  Future<HttpResponse> getFranchiseDetailsRating(int frId,String sort)async{
+  Future<HttpResponse> getFranchiseDetailsRating(int frId,String rating)async{
     HttpResponse httpResponse=HttpResponse();
 
-    String param='?frId=$frId&sort=$sort';
+    String param='?frId=$frId&ratings=$rating';
 
     Response responce=await httpClient.post('${endPoints.Auth().franchiseDatabyRating}$param');
 

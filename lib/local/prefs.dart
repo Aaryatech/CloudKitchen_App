@@ -20,12 +20,42 @@ class MyLocalPrefes{
   String addressId="AddressId";
   String defFranchise='DefFrinchise';
   String defFranchiseDairy='DefFrinchiseDairy';
+  String defFranchiseName='defFranchiseName';
+  String defFranchiseAddrress='defFranchiseAddrress';
   String isLocationCapture="isLocationCature";
   String custDetails="PersonalDetailsAvailable";
   String isFrSelect='IsFranchiseSelected';
   String selectedAddress='SelectedAddress';
   String selectedAddressCaption='SelectedAddressCaption';
   String selectedOutletType="OutletType";
+  String delType="DelType";
+
+
+  int getDefType(){
+    return prefs.getInt(delType)??1;
+  }
+
+  Future setDefType(int  type) async{
+    await prefs.setInt(delType,type);
+  }
+
+
+  String getdefFranchiseAddrress(){
+    return prefs.getString(defFranchiseAddrress)??"";
+  }
+
+  Future setdefFranchiseAddrress(String  address) async{
+    await prefs.setString(defFranchiseAddrress,address);
+  }
+
+  String getdefFranchiseName(){
+    return prefs.getString(defFranchiseName)??"";
+  }
+
+  Future setdefFranchiseName(String  name) async{
+    await prefs.setString(defFranchiseName,name);
+  }
+
 
 
   int getSelectedOutletType(){
@@ -68,7 +98,7 @@ class MyLocalPrefes{
 
 
   int getDefFranchiseRest(){
-     return prefs.getString(defFranchise)??0;
+     return prefs.getInt(   defFranchise)??0;
   }
 
   Future setDefFranchiseRest(int frId) async{
@@ -83,12 +113,12 @@ class MyLocalPrefes{
     await prefs.setInt(defFranchiseDairy,frId);
   }
 
-  String getAddressId(){
-    return prefs.getString(addressId);
+  int getAddressId(){
+    return prefs.getInt(addressId);
   }
 
-  Future setAddressId(String address) async{
-    await prefs.setString(addressId,address);
+  Future setAddressId(int address) async{
+    await prefs.setInt(addressId,address);
   }
 
 
@@ -145,7 +175,7 @@ class MyLocalPrefes{
 
 
   String getCustPhone(){
-    return prefs.getString(custPhone);
+    return prefs.getString(custPhone)??"";
   }
 
   Future setCustPhone(String phone)async {

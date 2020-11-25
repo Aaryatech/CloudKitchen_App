@@ -1,5 +1,5 @@
 import 'package:cloud_kitchen/network/model/response/ItemData.dart';
-import 'package:cloud_kitchen/ui/menudetailspage.dart';
+import 'package:cloud_kitchen/ui/order/menudetailspage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 

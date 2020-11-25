@@ -1,12 +1,13 @@
 class SaveCustomer {
   int custId=0,gender=1,compId=1,cityId=1,frId=0,isBuissHead=0,isActive=0,delStatus=0,custAddPlatform=2,userId=0,isPremiumCust=0,exInt1=0,
   exInt2=0,exInt3=0,exInt4=0,exInt5=0,exFloat1=0,exFloat2=0,exFloat3=0,exFloat4=0,exFloat5=0,langId;
-  String custName,phoneNumber,whatsappNo="",emailId,profilePic="",custDob="",ageGroup="",companyName="",gstNo="",address="",custAddDatetime="",
+  String msg,custName,phoneNumber,whatsappNo="",emailId,profilePic="",custDob="",ageGroup="",companyName="",gstNo="",address="",custAddDatetime="",
   addedFromType="",exVar1="",exVar2="",exVar3="",exVar4="",exVar5="";
   
 
   SaveCustomer(
       {this.custId,
+        this.msg,
       this.custName,
       this.phoneNumber,
       this.whatsappNo,

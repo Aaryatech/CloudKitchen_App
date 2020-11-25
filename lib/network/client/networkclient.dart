@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:dio_http_cache/dio_http_cache.dart';
 import '../base/base_url.dart' as BaseUrl;
 
 class HttpClient{
@@ -19,23 +20,25 @@ HttpClient(){
     headers['authorization']= basicAuthenticationHeader('aaryatech', 'Aaryatech@1cr');
     BaseOptions options = new BaseOptions(
     baseUrl: BaseUrl.baseUrl,
-    connectTimeout: 15000,
-    receiveTimeout: 15000,
+    connectTimeout: 60000,
+    receiveTimeout: 60000,
     headers: headers,
 );
  client=Dio(options);
+ client.interceptors.add(DioCacheManager(CacheConfig(baseUrl: BaseUrl.baseUrl)).interceptor);
+
 }
 
 Future<Response> get(String endpoint, {FormData body}) async {
 
     print("$endpoint    ${body.toString()} ");
-    return client.request(endpoint,options: Options(method: "GET"));
+    return client.request(endpoint,options: Options(method: "GET", ));
   }
 
   Future<Response> post(String endpoint, { dynamic body }) async {
     print("$endpoint    ${body.toString()} ");
 
-    return client.request(endpoint,data: body, options: Options(method: "POST"));
+    return client.request(endpoint,data: body, options: Options(method: "POST", ));
   } 
 
   Future<Response> put(String endpoint, { dynamic body }) async {
