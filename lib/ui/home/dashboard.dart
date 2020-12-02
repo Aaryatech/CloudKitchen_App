@@ -30,82 +30,61 @@ class _DashboardState extends State<Dashboard> {
   }
   final scaffoldState = GlobalKey<ScaffoldState>();
 
+
+
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   FlutterLocalNotificationsPlugin();
 
 
-
-   initNotification()async{
-
-     AndroidNotificationChannel channel = AndroidNotificationChannel(
-       'high_importance_channel', // id
-       'High Importance Notifications', // title
-       'This channel is used for important notifications.', // description
-       importance: Importance.max,
-     );
-
-
-     await flutterLocalNotificationsPlugin
-         .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
-         ?.createNotificationChannel(channel);
-
-
-     AndroidInitializationSettings initializationSettingsAndroid =
-     AndroidInitializationSettings('app_icon');
-
-     final InitializationSettings initializationSettings = InitializationSettings(
-         android: initializationSettingsAndroid);
-     await flutterLocalNotificationsPlugin.initialize(initializationSettings,
-         onSelectNotification: selectNotification);
-
-
-
-   }
-
-
-  Future selectNotification(String payload) async {
-    if (payload != null) {
-      debugPrint('notification payload: $payload');
-    }
-    // await Navigator.push(
-    //   context,
-    //   MaterialPageRoute<void>(builder: (context) => SecondScreen(payload)),
-    // );
-  }
-
   @override
   void initState() {
     // TODO: implement initState
-   allFrenchisiViewModel.getAllFranchise();
-
-   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-
-     print(message.toString());
+    allFrenchisiViewModel.getAllFranchise();
 
 
-     // If `onMessage` is triggered with a notification, construct our own
-     // local notification to show to users using the created channel.
-     showNotification(message.data);
+    FirebaseMessaging.instance
+        .getInitialMessage()
+        .then((RemoteMessage message) {
+      if (message != null) {
+        print(message.data.toString());
+      }
+    });
 
-   });
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      RemoteNotification notification = message.notification;
+      AndroidNotification android = message.notification?.android;
+
+      if (notification != null && android != null) {
+        flutterLocalNotificationsPlugin.show(
+            notification.hashCode,
+            notification.title,
+            notification.body,
+            NotificationDetails(
+              android: AndroidNotificationDetails(
+                '1',
+                'channel.name',
+                'channel.description',
+                // TODO add a proper drawable resource to android, for now using
+                //      one that already exists in example app.
+                icon: 'launch_background',
+              ),
+            ));
+      }
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print('A new onMessageOpenedApp event was published!');
+      //   Navigator.pushNamed(context, '/message',
+      //       arguments: MessageArguments(message, true));
+      // });
+    });
+
 
     super.initState();
   }
 
 
-  showNotification(Map<String,String> data)async{
-    const AndroidNotificationDetails androidPlatformChannelSpecifics =
-    AndroidNotificationDetails(
-        'your channel id', 'your channel name', 'your channel description',
-        importance: Importance.max,
-        priority: Priority.high,
-        showWhen: false);
-    const NotificationDetails platformChannelSpecifics =
-    NotificationDetails(android: androidPlatformChannelSpecifics);
-    await flutterLocalNotificationsPlugin.show(
-        0, data['title'], data['body'], platformChannelSpecifics,
-        payload: 'item x');
-  }
+
 
 
   @override
@@ -149,11 +128,11 @@ class _DashboardState extends State<Dashboard> {
                           ),
                           child: Observer(
                             builder: (_) =>  Text(
-                             '${allFrenchisiViewModel.items.length??0}',
+                              '${allFrenchisiViewModel.items.length??0}',
                               style: new TextStyle(
-                                color: Colors.white,
-                                fontSize: 8,
-                                fontWeight: FontWeight.w700
+                                  color: Colors.white,
+                                  fontSize: 8,
+                                  fontWeight: FontWeight.w700
                               ),
                               textAlign: TextAlign.center,
                             ),
@@ -202,7 +181,7 @@ class _DashboardState extends State<Dashboard> {
 
   Widget _children(int index) {
     if (index == 0 ) {
-       return HomeScreen(allFrenchisiViewModel);
+      return HomeScreen(allFrenchisiViewModel);
     }  else if (index == 2) {
       return ProfileScreen(allFrenchisiViewModel);
     } else if (index == 1) {

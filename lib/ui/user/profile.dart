@@ -180,15 +180,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: InkWell(
                           onTap: (){
                             setState(() {
-                              index=01;
+                              index=2;
                             });
                           },
 
                                               child: Column(
                               children:[
-                                Icon(Icons.settings,color:index==1?Theme.of(context).primaryColor:Colors.black,),
+                                Icon(Icons.settings,color:index==2?Theme.of(context).primaryColor:Colors.black,),
                                 Text(
-                                  'App Info',style:Theme.of(context).textTheme.subtitle1.copyWith(color:index==1?Theme.of(context).primaryColor:Colors.black)),
+                                  'App Info',style:Theme.of(context).textTheme.subtitle1.copyWith(color:index==2?Theme.of(context).primaryColor:Colors.black)),
 
                               ]
                           ),
@@ -204,7 +204,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                       SizedBox(height: 8,),
 
-                    index==1? Column(
+                    index==2? Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -338,7 +338,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                           ),
                         ],
-                      ):Column(
+                      ):Container(),
+
+
+
+                  index==0?  Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -404,7 +408,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         //   ),
                         // ),
                        ],
-                      ),
+                      ):Container(),
                     ],
                   ),
                 ],

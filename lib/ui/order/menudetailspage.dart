@@ -183,7 +183,7 @@ class _MenuDetailsState extends State<MenuDetails> {
                               //   widget.itemData.relItemList.isNotEmpty? Text('Related Items',style: Theme.of(context).textTheme.subtitle1):Container(),
 
 
-                               /* ListView.separated(
+                                widget.itemData.relItemList.isNotEmpty? ListView.separated(
                                   shrinkWrap: true,
                                   separatorBuilder: (context, index) => Divider(
                                     color: Colors.black,
@@ -193,400 +193,403 @@ class _MenuDetailsState extends State<MenuDetails> {
                                   itemCount: widget.itemData.relItemList.length,
                                   itemBuilder: (_, int index) {
                                     RelItemList relitem=widget.itemData.relItemList[index];
-                                    return    Container(
+                                    return    AnimatedContainer(
+                                      duration: Duration(milliseconds: 300),
+                                      width: MediaQuery.of(context).size.width,
                                       child: Padding(
-                                        padding: EdgeInsets.all(8.0),
+                                        padding: EdgeInsets.all(4.0),
                                         child: Row(
                                           mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           crossAxisAlignment:  CrossAxisAlignment.center,
                                           children: <Widget>[
-                                            Column(
+                                            Row(
                                               crossAxisAlignment: CrossAxisAlignment.start,
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: <Widget>[
-                                                Stack(
+                                              children: [
+                                                Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  mainAxisAlignment: MainAxisAlignment.start,
                                                   children: <Widget>[
-                                                    Container(
-                                                      width: 100,
-                                                      height: 100,
-                                                      decoration: BoxDecoration(
-                                                        image: DecorationImage(
-                                                          // image: NetworkImage('${imageUrl}${widget.itemData.imageList[0].}'),
-                                                            image: AssetImage('images/loginbg.jpg'),
-                                                            fit: BoxFit.cover),
-                                                        borderRadius:
-                                                        new BorderRadius.circular(4.0),
+                                                    widget.itemData.imageList.isEmpty?  Padding(
+                                                      padding: const EdgeInsets.only(top:15,left: 5),
+                                                      child: Image.asset(
+                                                        "images/veg_icn.png",
+                                                        height: 10,
+                                                        width: 10,
                                                       ),
-                                                    ),
+                                                    ): Stack(
+                                                      children: <Widget>[
 
-                                                    Container(
-                                                      alignment: Alignment.topLeft,
-                                                      //padding: EdgeInsets.all(10),
-                                                      margin: const EdgeInsets.all(8),
-                                                      height: 20,
-                                                      // width: 80,
-                                                      child: Row(
-                                                        mainAxisSize: MainAxisSize.min,
-                                                        children: <Widget>[
-                                                          Image.asset(
+                                                        widget.itemData.imageList.isNotEmpty?
+                                                        InkWell(
+                                                            onTap: (){
+                                                              // setState(() {
+                                                              //   isSelected=true;
+                                                              // });
+                                                            },
+                                                            child: Image.network('${imageUrl}${widget.itemData.imageList[0].imageName}',width: MediaQuery.of(context).size.width*.25,height: 100,)):Container(),
+
+                                                        Positioned(
+                                                          top: 15,
+                                                          left: 5,
+                                                          child: Image.asset(
                                                             "images/veg_icn.png",
                                                             height: 10,
                                                             width: 10,
                                                           ),
-                                                        ],
-                                                      ),
+                                                        ),
+                                                      ],
                                                     ),
-
-
                                                   ],
                                                 ),
+                                                InkWell(
+                                                  onTap: (){
+                                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> MenuDetails( widget.itemData,widget.allFrenchisiViewModel)));
+                                                  },
+                                                  child: Container(
+                                                    width: MediaQuery.of(context).size.width*.35,
+                                                    padding: EdgeInsets.symmetric(
+                                                        horizontal: 10.0, vertical: 10.0),
+                                                    child: new Column(
+                                                      mainAxisSize: MainAxisSize.min,
+                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: <Widget>[
+
+                                                        SizedBox(
+                                                          child: Text(
+                                                            widget.itemData.itemName,
+                                                            style: Theme.of(context).textTheme.subtitle1,
+                                                            textAlign: TextAlign.start,
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 4,
+                                                        ),
+                                                        SizedBox(
+                                                          child: Text(
+                                                            widget.itemData.itemDesc,
+                                                            style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.grey),
+                                                            textAlign: TextAlign.start,
+                                                            overflow: TextOverflow.ellipsis,
+                                                          ),
+                                                        ),
+
+
+                                                        GestureDetector(
+                                                          onTap: () {
+                                                            // Navigator.push(context, MaterialPageRoute(builder: (context)=> HomeScreen()));
+                                                          },
+                                                          child: Container(
+                                                            decoration: BoxDecoration(
+                                                              color: Theme.of(context).primaryColor,
+                                                              borderRadius: BorderRadius.circular(4.0),
+                                                            ),
+                                                            child: Padding(
+                                                              padding: const EdgeInsets.all(2.0),
+                                                              child: Text(
+                                                                  widget.itemData.productStatus,
+                                                                  style:Theme.of(context).textTheme.caption.copyWith(color:Colors.white,fontSize: 10)),
+                                                            ),
+                                                          ),
+                                                        ),
+
+
+                                                        new Row(
+                                                          mainAxisSize: MainAxisSize.min,
+                                                          children: <Widget>[
+
+                                                            Icon(Icons.star, color:widget.itemData.rating>=1?Colors.yellow:Colors.grey,size: 12,),
+
+                                                            SizedBox(
+                                                              width: 4,
+                                                            ),
+
+                                                            Icon(Icons.star, color: widget.itemData.rating>=2?Colors.yellow:Colors.grey,size: 12,),
+
+                                                            SizedBox(
+                                                              width: 4,
+                                                            ),
+
+                                                            Icon(Icons.star, color: widget.itemData.rating>=3?Colors.yellow:Colors.grey,size: 12,),
+                                                            SizedBox(
+                                                              width: 4,
+                                                            ),
+
+                                                            Icon(Icons.star, color: widget.itemData.rating>=4?Colors.yellow:Colors.grey,size: 12,),
+
+                                                            SizedBox(
+                                                              width: 4,
+                                                            ),
+
+                                                            Icon(Icons.star, color: widget.itemData.rating>=5?Colors.yellow:Colors.grey,size: 12,),
+
+                                                          ],
+                                                        ),
+
+                                                        Row(
+                                                          children: [
+                                                            Image.asset('images/rupees_icn.png',width: 16,height: 16,),
+                                                            Text('${widget.itemData.spRateAmt}'),
+                                                          ],
+                                                        ),
+
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+
                                               ],
                                             ),
-                                            Container(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 10.0, vertical: 10.0),
-                                              child: new Column(
-                                                mainAxisSize: MainAxisSize.min,
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: <Widget>[
 
-                                                  SizedBox(
-                                                    width: MediaQuery.of(context).size.width*.40,
-                                                    child: Text(
-                                                      relitem.itemName,
-                                                      style: Theme.of(context).textTheme.subtitle1,
-                                                      textAlign: TextAlign.start,
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 4,
-                                                  ),
-                                                  SizedBox(
-                                                    width: MediaQuery.of(context).size.width*.40,
-                                                    child: Text(
-                                                      relitem.itemDesc,
-                                                      style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.grey),
-                                                      textAlign: TextAlign.start,
-                                                      overflow: TextOverflow.ellipsis,
-                                                    ),
-                                                  ),
-
-
-                                                  GestureDetector(
-                                                    onTap: () {
-                                                      // Navigator.push(context, MaterialPageRoute(builder: (context)=> HomeScreen()));
-                                                    },
-                                                    child: Container(
-                                                      decoration: BoxDecoration(
-                                                        color: Theme.of(context).primaryColor,
-                                                        borderRadius: BorderRadius.circular(4.0),
-                                                      ),
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.all(2.0),
-                                                        child: Text(
-                                                            relitem.productStatus,
-                                                            style:Theme.of(context).textTheme.caption.copyWith(color:Colors.white,fontSize: 10)),
-                                                      ),
-                                                    ),
-                                                  ),
-
-
-                                                  new Row(
-                                                    mainAxisSize: MainAxisSize.min,
-                                                    children: <Widget>[
-
-                                                      Icon(Icons.star, color:relitem.rating>=1?Colors.yellow:Colors.grey,size: 12,),
-
-                                                      SizedBox(
-                                                        width: 4,
-                                                      ),
-
-                                                      Icon(Icons.star, color:relitem.rating>=2?Colors.yellow:Colors.grey,size: 12,),
-
-                                                      SizedBox(
-                                                        width: 4,
-                                                      ),
-
-                                                      Icon(Icons.star, color: relitem.rating>=3?Colors.yellow:Colors.grey,size: 12,),
-                                                      SizedBox(
-                                                        width: 4,
-                                                      ),
-
-                                                      Icon(Icons.star, color: relitem.rating>=4?Colors.yellow:Colors.grey,size: 12,),
-
-                                                      SizedBox(
-                                                        width: 4,
-                                                      ),
-
-                                                      Icon(Icons.star, color: relitem.rating>=5?Colors.yellow:Colors.grey,size: 12,),
-
-                                                    ],
-                                                  ),
-
-                                                  Row(
-                                                    children: [
-                                                      Image.asset('images/rupees_icn.png',width: 16,height: 16,),
-                                                      Text('${relitem.spRateAmt}'),
-                                                    ],
-                                                  ),
-
-                                                ],
-                                              ),
-                                            ),
 
                                             Column(
                                               children: [
                                                 Container(
+                                                  width: MediaQuery.of(context).size.width*.25,
                                                   padding: EdgeInsets.all(4),
                                                   decoration: BoxDecoration(
                                                     border: Border.all(color: Colors.grey),
                                                     borderRadius:
-                                                    new BorderRadius.circular(8.0),
+                                                    new BorderRadius.circular(4.0),
                                                   ),
 
                                                   child:
                                                   InkWell(
 
                                                     onTap: (){
-                                                      if(relitem.isDecimal==1) {
+                                                      if(widget.itemData.isDecimal==0) {
                                                         if(!widget. allFrenchisiViewModel.itemsIds.contains(widget.itemData.itemId)) {
                                                           CartItem cartItem = CartItem(
-                                                              relitem.itemId, 1, 1,
-                                                              relitem.itemName,
-                                                              relitem.spRateAmt,
-                                                              relitem.itemUom
+                                                              widget.itemData.itemId, 1, 1,
+                                                              widget.itemData.itemName,
+                                                              widget.itemData.spRateAmt,
+                                                              widget.itemData.itemUom
                                                           );
                                                           widget.allFrenchisiViewModel.addCartItem(
                                                               cartItem);
-                                                          _showSnackbar("Item Added!", true);
+                                                          // _showSnackbar("Item Added!", true);
 
                                                         }
 
-                                                      }
-                                                      else{
+                                                      }else{
 
-                                                        int quantity=1;
+
                                                         String selected='250g';
                                                         double selectedQuestity=0.25;
-                                                        Scaffold.of(context).
-                                                        showBottomSheet((context) =>
+
+
+                                                        scaffoldState.currentState.showBottomSheet((context) =>
                                                             StatefulBuilder(
-                                                                builder: (BuildContext context, StateSetter setState *//*You can rename this!*//*) {
-                                                                  return
-                                                                  Container(
-                                                                    height: 185,
+                                                                builder: (BuildContext context, StateSetter setState /*You can rename this!*/) {
+                                                                  return Container(
+                                                                    height: 200,
                                                                     margin: EdgeInsets.all(16),
                                                                     padding: EdgeInsets.only(
                                                                         left: 8, right: 8),
-                                                                    child: Column(
-                                                                      crossAxisAlignment: CrossAxisAlignment
-                                                                          .start,
-                                                                      children: [
-                                                                        Text('Select Size'),
+                                                                    child: Observer(
+                                                                      builder:(_)=> Column(
+                                                                        crossAxisAlignment: CrossAxisAlignment
+                                                                            .start,
+                                                                        children: [
+                                                                          Text('Select Size'),
 
-                                                                        // Container(
-                                                                        //   width: MediaQuery
-                                                                        //       .of(context)
-                                                                        //       .size
-                                                                        //       .width,
-                                                                        //   height: 1,
-                                                                        //   color: Colors.grey,
-                                                                        // ),
+                                                                          // Container(
+                                                                          //   width: MediaQuery
+                                                                          //       .of(context)
+                                                                          //       .size
+                                                                          //       .width,
+                                                                          //   height: 1,
+                                                                          //   color: Colors.grey,
+                                                                          // ),
 
-                                                                        SizedBox(height: 16,),
+                                                                          SizedBox(height: 16,),
 
-                                                                        Row(
-                                                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                                          children: [
-                                                                            InkWell(
-                                                                              onTap:(){
-                                                                                setState((){
-                                                                                  selected='250g';
-                                                                                  selectedQuestity=.25;
-                                                                                });
-                                                                              },
+                                                                          Row(
+                                                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                                            children: [
+                                                                              InkWell(
+                                                                                onTap:(){
+                                                                                  setState((){
+                                                                                    selected='250g';
+                                                                                    selectedQuestity=.25;
+                                                                                  });
+                                                                                },
 
-                                                                              child: Container(
+                                                                                child: Container(
 
-                                                                                child: Text('250g',
-                                                                                  style: Theme.of(context).textTheme.subtitle2
-                                                                                      .copyWith(color: selectedQuestity==0.25?Colors.white:Colors.black,),
-                                                                                ),
-                                                                                padding: EdgeInsets.all(8),
-                                                                                decoration: BoxDecoration(
-                                                                                    border: Border.all(color: Theme.of(context).primaryColor),
-                                                                                    shape: BoxShape.rectangle,
-                                                                                    color: selectedQuestity==0.25?Theme.of(context).primaryColor:Colors.white,
-                                                                                    borderRadius: BorderRadius.all(Radius.circular(8))
-
-
-                                                                                ),
-                                                                              ),
-                                                                            ),
-                                                                            InkWell(
-                                                                              onTap:(){
-                                                                                setState((){
-                                                                                  selected='500g';
-                                                                                  selectedQuestity=0.5;
-                                                                                });
-                                                                              },
-
-                                                                              child: Container(
-
-                                                                                child: Text('500g',
-                                                                                  style: Theme.of(context).textTheme.subtitle2
-                                                                                      .copyWith(color: selectedQuestity==0.5?Colors.white:Colors.black,),
-                                                                                ),
-                                                                                padding: EdgeInsets.all(8),
-                                                                                decoration: BoxDecoration(
-                                                                                    border: Border.all(color: Theme.of(context).primaryColor),
-                                                                                    shape: BoxShape.rectangle,
-                                                                                    color: selectedQuestity==0.5?Theme.of(context).primaryColor:Colors.white,
-
-                                                                                    borderRadius: BorderRadius.all(Radius.circular(8))
+                                                                                  child: Text('250g',
+                                                                                    style: Theme.of(context).textTheme.subtitle2
+                                                                                        .copyWith(color: selectedQuestity==0.25?Colors.white:Colors.black,),
+                                                                                  ),
+                                                                                  padding: EdgeInsets.all(8),
+                                                                                  decoration: BoxDecoration(
+                                                                                      border: Border.all(color: Theme.of(context).primaryColor),
+                                                                                      shape: BoxShape.rectangle,
+                                                                                      color: selectedQuestity==0.25?Theme.of(context).primaryColor:Colors.white,
+                                                                                      borderRadius: BorderRadius.all(Radius.circular(8))
 
 
+                                                                                  ),
                                                                                 ),
                                                                               ),
-                                                                            ),
-                                                                            InkWell(
-                                                                              onTap:(){
-                                                                                setState((){
-                                                                                  selected='750g';
-                                                                                  selectedQuestity=0.75;
-                                                                                });
-                                                                              },
+                                                                              InkWell(
+                                                                                onTap:(){
+                                                                                  setState((){
+                                                                                    selected='500g';
+                                                                                    selectedQuestity=0.5;
+                                                                                  });
+                                                                                },
 
-                                                                              child: Container(
+                                                                                child: Container(
 
-                                                                                child: Text('750g',
-                                                                                  style: Theme.of(context).textTheme.subtitle2
-                                                                                      .copyWith(color: selectedQuestity==0.75?Colors.white:Colors.black,),
-                                                                                ),
-                                                                                padding: EdgeInsets.all(8),
-                                                                                decoration: BoxDecoration(
-                                                                                    border: Border.all(color: Theme.of(context).primaryColor),
-                                                                                    shape: BoxShape.rectangle,
-                                                                                    color: selectedQuestity==0.75?Theme.of(context).primaryColor:Colors.white,
+                                                                                  child: Text('500g',
+                                                                                    style: Theme.of(context).textTheme.subtitle2
+                                                                                        .copyWith(color: selectedQuestity==0.5?Colors.white:Colors.black,),
+                                                                                  ),
+                                                                                  padding: EdgeInsets.all(8),
+                                                                                  decoration: BoxDecoration(
+                                                                                      border: Border.all(color: Theme.of(context).primaryColor),
+                                                                                      shape: BoxShape.rectangle,
+                                                                                      color: selectedQuestity==0.5?Theme.of(context).primaryColor:Colors.white,
 
-                                                                                    borderRadius: BorderRadius.all(Radius.circular(8))
-
-
-                                                                                ),
-                                                                              ),
-                                                                            ),
-                                                                            InkWell(
-                                                                              onTap:(){
-                                                                                setState((){
-                                                                                  selected='1000g';
-                                                                                  selectedQuestity=1.0;
-                                                                                });
-                                                                              },
-                                                                              child: Container(
-
-                                                                                child: Text('1000g',
-                                                                                  style: Theme.of(context).textTheme.subtitle2
-                                                                                      .copyWith(color: selectedQuestity==1.0?Colors.white:Colors.black,),
-                                                                                ),
-                                                                                padding: EdgeInsets.all(8),
-                                                                                decoration: BoxDecoration(
-                                                                                    border: Border.all(color: Theme.of(context).primaryColor),
-                                                                                    shape: BoxShape.rectangle,
-                                                                                    color: selectedQuestity==1.0?Theme.of(context).primaryColor:Colors.white,
-
-                                                                                    borderRadius: BorderRadius.all(Radius.circular(8))
+                                                                                      borderRadius: BorderRadius.all(Radius.circular(8))
 
 
+                                                                                  ),
                                                                                 ),
                                                                               ),
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                        SizedBox(height: 16,),
-                                                                        Row(
-                                                                          mainAxisAlignment: MainAxisAlignment.center,
-                                                                          children: [
+                                                                              InkWell(
+                                                                                onTap:(){
+                                                                                  setState((){
+                                                                                    selected='750g';
+                                                                                    selectedQuestity=0.75;
+                                                                                  });
+                                                                                },
 
-                                                                            Text('Select Quantity',style: Theme.of(context).textTheme.subtitle2,),
+                                                                                child: Container(
 
-                                                                            SizedBox(width: 16,),
-                                                                            Container(
-                                                                              padding: EdgeInsets.only(left:4,right:4),
-                                                                              decoration: BoxDecoration(
-                                                                                  border: Border.all(color: Theme.of(context).primaryColor),
-                                                                                  shape: BoxShape.rectangle,
-                                                                                  color: Colors.white,
-                                                                                  borderRadius: BorderRadius.all(Radius.circular(8))
+                                                                                  child: Text('750g',
+                                                                                    style: Theme.of(context).textTheme.subtitle2
+                                                                                        .copyWith(color: selectedQuestity==0.75?Colors.white:Colors.black,),
+                                                                                  ),
+                                                                                  padding: EdgeInsets.all(8),
+                                                                                  decoration: BoxDecoration(
+                                                                                      border: Border.all(color: Theme.of(context).primaryColor),
+                                                                                      shape: BoxShape.rectangle,
+                                                                                      color: selectedQuestity==0.75?Theme.of(context).primaryColor:Colors.white,
 
+                                                                                      borderRadius: BorderRadius.all(Radius.circular(8))
+
+
+                                                                                  ),
+                                                                                ),
                                                                               ),
-                                                                              child: Row(
-                                                                                mainAxisSize: MainAxisSize.min,
-                                                                                children: [
-                                                                                  InkWell(
-                                                                                      onTap: () {
-                                                                                        setState(() {
-                                                                                          if (quantity >
-                                                                                              1) {
-                                                                                            quantity--;
-                                                                                          }
-                                                                                        });
-                                                                                      },
-                                                                                      child: Image.asset(
-                                                                                        'images/minus_icn.png',
-                                                                                        width: 16,
-                                                                                        height: 16,)),
-                                                                                  SizedBox(width: 2,),
-                                                                                  Text("  ${ widget.allFrenchisiViewModel.itemsIds.contains(relitem.itemId)?
-                                                                                  widget.allFrenchisiViewModel.getQuantityData(selectedQuestity,relitem.itemId)??quantity:quantity} ",
-                                                                                    style: TextStyle(
-                                                                                        backgroundColor: Theme
-                                                                                            .of(context)
-                                                                                            .primaryColor
-                                                                                            .withOpacity(
-                                                                                            0.3)),),
-                                                                                  SizedBox(width: 2,),
-                                                                                  InkWell(
-                                                                                      onTap: () {
-                                                                                        setState(() {
-                                                                                          quantity++;
-                                                                                        });
-                                                                                      },
-                                                                                      child: Image.asset(
-                                                                                        'images/plus_icon.png',
-                                                                                        width: 16,
-                                                                                        height: 16,)),
+                                                                              InkWell(
+                                                                                onTap:(){
+                                                                                  setState((){
+                                                                                    selected='1000g';
+                                                                                    selectedQuestity=1.0;
+                                                                                  });
+                                                                                },
+                                                                                child: Container(
+
+                                                                                  child: Text('1000g',
+                                                                                    style: Theme.of(context).textTheme.subtitle2
+                                                                                        .copyWith(color: selectedQuestity==1.0?Colors.white:Colors.black,),
+                                                                                  ),
+                                                                                  padding: EdgeInsets.all(8),
+                                                                                  decoration: BoxDecoration(
+                                                                                      border: Border.all(color: Theme.of(context).primaryColor),
+                                                                                      shape: BoxShape.rectangle,
+                                                                                      color: selectedQuestity==1.0?Theme.of(context).primaryColor:Colors.white,
+
+                                                                                      borderRadius: BorderRadius.all(Radius.circular(8))
 
 
-                                                                                ],
+                                                                                  ),
+                                                                                ),
                                                                               ),
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                        SizedBox(height: 16,),
-                                                                        Align(
-                                                                          alignment: Alignment.center,
-                                                                          child: RaisedButton(onPressed: (){
-
-                                                                            CartItem cartItem = CartItem(
-                                                                                relitem.itemId, selectedQuestity, quantity,
-                                                                                relitem.itemName,
-                                                                                relitem.spRateAmt,
-                                                                                relitem.itemUom);
-                                                                            widget.allFrenchisiViewModel.addCartItem(
-                                                                                cartItem);
-
-                                                                            _showSnackbar("Item Added!", true);
-                                                                            Navigator.pop(context);
-                                                                          },
-                                                                            color: Theme.of(context).primaryColor,
-                                                                            child: Text("Done",style: Theme.of(context).textTheme.button.copyWith(color: Colors.white),),
+                                                                            ],
                                                                           ),
-                                                                        ),
+                                                                          SizedBox(height: 16,),
+                                                                          Row(
+                                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                                            children: [
 
-                                                                        SizedBox(height: 16,),
+                                                                              Text('Select Quantity',style: Theme.of(context).textTheme.subtitle2,),
 
-                                                                      ],
+                                                                              SizedBox(width: 16,),
+                                                                              Container(
+                                                                                padding: EdgeInsets.only(left:8,right:8,top:4,bottom: 4),
+                                                                                decoration: BoxDecoration(
+                                                                                    border: Border.all(color: Theme.of(context).primaryColor),
+                                                                                    shape: BoxShape.rectangle,
+                                                                                    color: Colors.white,
+                                                                                    borderRadius: BorderRadius.all(Radius.circular(4))
+
+                                                                                ),
+                                                                                child: Row(
+                                                                                  mainAxisSize: MainAxisSize.min,
+                                                                                  children: [
+                                                                                    InkWell(
+                                                                                        onTap: () {
+                                                                                          setState(() {
+                                                                                            widget.allFrenchisiViewModel.decreaseQuentityForDecimal(widget.itemData.itemId,selectedQuestity);
+
+                                                                                          });
+                                                                                        },
+                                                                                        child: Image.asset(
+                                                                                          'images/minus_icn.png',
+                                                                                          width: 16,
+                                                                                          height: 16,)),
+                                                                                    SizedBox(width: 2,),
+                                                                                    Text("${widget.allFrenchisiViewModel.getQuantityData(selectedQuestity,widget.itemData.itemId)} ",
+                                                                                    ),
+                                                                                    SizedBox(width: 2,),
+                                                                                    InkWell(
+                                                                                        onTap: () {
+                                                                                          setState(() {
+                                                                                            widget.allFrenchisiViewModel.increseQuentityForDecimal(widget.itemData.itemId,selectedQuestity);
+
+                                                                                          });
+                                                                                        },
+                                                                                        child: Image.asset(
+                                                                                          'images/plus_icon.png',
+                                                                                          width: 16,
+                                                                                          height: 16,)),
+
+
+                                                                                  ],
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                          SizedBox(height: 16,),
+                                                                          Align(
+                                                                            alignment: Alignment.center,
+                                                                            child: RaisedButton(onPressed: (){
+
+                                                                              CartItem cartItem = CartItem(
+                                                                                  widget.itemData.itemId, selectedQuestity, int.parse(widget.allFrenchisiViewModel.getQuantityData(selectedQuestity,widget.itemData.itemId)),
+                                                                                  widget.itemData.itemName,
+                                                                                  widget.itemData.spRateAmt,
+                                                                                  widget.itemData.itemUom);
+                                                                              widget.allFrenchisiViewModel.addCartItem(
+                                                                                  cartItem);
+                                                                              // _showSnackbar("Item Added!", true);
+                                                                              Navigator.pop(context);
+                                                                            },
+                                                                              color: Theme.of(context).primaryColor,
+                                                                              child: Text("Done",style: Theme.of(context).textTheme.button.copyWith(color: Colors.white),),
+                                                                            ),
+                                                                          ),
+
+                                                                          SizedBox(height: 16,),
+
+                                                                        ],
+                                                                      ),
                                                                     ),
                                                                   );
                                                                 }
@@ -596,51 +599,729 @@ class _MenuDetailsState extends State<MenuDetails> {
                                                     },
                                                     child: Observer(
                                                       builder: (_)=> Row(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                        mainAxisAlignment: MainAxisAlignment.center,
                                                         mainAxisSize: MainAxisSize.min,
                                                         children: [
                                                           widget.allFrenchisiViewModel.itemsIds.contains(widget.itemData.itemId)?InkWell(
-                                                              onTap: (){
-                                                                widget.allFrenchisiViewModel. items.forEach((element) {
-                                                                  if(element.itemId==widget.itemData.itemId){
-                                                                    setState(() {
-                                                                      element.qty++;
+                                                              onTap: () {
+                                                                if (widget.itemData.isDecimal != 1) {
+                                                                  widget.allFrenchisiViewModel.items
+                                                                      .forEach((element) {
+                                                                    if (element.itemId ==
+                                                                        widget.itemData.itemId) {
+                                                                      setState(() {
+                                                                        element.qty++;
+                                                                      });
+                                                                    }
+                                                                  });
+                                                                } else {
+                                                                  String selected = '250g';
+                                                                  double selectedQuestity = 0.25;
 
-                                                                    });
-                                                                  }
-                                                                });
+                                                                  scaffoldState.currentState
+                                                                      .showBottomSheet((context) =>
+                                                                      StatefulBuilder(
+                                                                          builder: (
+                                                                              BuildContext context,
+                                                                              StateSetter setState
+                                                                              /*You can rename this!*/) {
+                                                                            return Container(
+                                                                              height: 200,
+                                                                              margin: EdgeInsets.all(
+                                                                                  16),
+                                                                              padding: EdgeInsets
+                                                                                  .only(
+                                                                                  left: 8, right: 8),
+                                                                              child: Observer(
+                                                                                builder:(_)=> Column(
+                                                                                  crossAxisAlignment: CrossAxisAlignment
+                                                                                      .start,
+                                                                                  children: [
+                                                                                    Text('Select Size'),
+
+                                                                                    // Container(
+                                                                                    //   width: MediaQuery
+                                                                                    //       .of(context)
+                                                                                    //       .size
+                                                                                    //       .width,
+                                                                                    //   height: 1,
+                                                                                    //   color: Colors.grey,
+                                                                                    // ),
+
+                                                                                    SizedBox(
+                                                                                      height: 16,),
+
+                                                                                    Row(
+                                                                                      mainAxisAlignment: MainAxisAlignment
+                                                                                          .spaceEvenly,
+                                                                                      children: [
+                                                                                        InkWell(
+                                                                                          onTap: () {
+                                                                                            setState(() {
+                                                                                              selected =
+                                                                                              '250g';
+                                                                                              selectedQuestity =
+                                                                                              .25;
+                                                                                            });
+                                                                                          },
+
+                                                                                          child: Container(
+
+                                                                                            child: Text(
+                                                                                              '250g',
+                                                                                              style: Theme
+                                                                                                  .of(
+                                                                                                  context)
+                                                                                                  .textTheme
+                                                                                                  .subtitle2
+                                                                                                  .copyWith(
+                                                                                                color: selectedQuestity ==
+                                                                                                    0.25
+                                                                                                    ? Colors
+                                                                                                    .white
+                                                                                                    : Colors
+                                                                                                    .black,),
+                                                                                            ),
+                                                                                            padding: EdgeInsets
+                                                                                                .all(8),
+                                                                                            decoration: BoxDecoration(
+                                                                                                border: Border
+                                                                                                    .all(
+                                                                                                    color: Theme
+                                                                                                        .of(
+                                                                                                        context)
+                                                                                                        .primaryColor),
+                                                                                                shape: BoxShape
+                                                                                                    .rectangle,
+                                                                                                color: selectedQuestity ==
+                                                                                                    0.25
+                                                                                                    ? Theme
+                                                                                                    .of(
+                                                                                                    context)
+                                                                                                    .primaryColor
+                                                                                                    : Colors
+                                                                                                    .white,
+                                                                                                borderRadius: BorderRadius
+                                                                                                    .all(
+                                                                                                    Radius
+                                                                                                        .circular(
+                                                                                                        8))
+
+
+                                                                                            ),
+                                                                                          ),
+                                                                                        ),
+                                                                                        InkWell(
+                                                                                          onTap: () {
+                                                                                            setState(() {
+                                                                                              selected =
+                                                                                              '500g';
+                                                                                              selectedQuestity =
+                                                                                              0.5;
+                                                                                            });
+                                                                                          },
+
+                                                                                          child: Container(
+
+                                                                                            child: Text(
+                                                                                              '500g',
+                                                                                              style: Theme
+                                                                                                  .of(
+                                                                                                  context)
+                                                                                                  .textTheme
+                                                                                                  .subtitle2
+                                                                                                  .copyWith(
+                                                                                                color: selectedQuestity ==
+                                                                                                    0.5
+                                                                                                    ? Colors
+                                                                                                    .white
+                                                                                                    : Colors
+                                                                                                    .black,),
+                                                                                            ),
+                                                                                            padding: EdgeInsets
+                                                                                                .all(8),
+                                                                                            decoration: BoxDecoration(
+                                                                                                border: Border
+                                                                                                    .all(
+                                                                                                    color: Theme
+                                                                                                        .of(
+                                                                                                        context)
+                                                                                                        .primaryColor),
+                                                                                                shape: BoxShape
+                                                                                                    .rectangle,
+                                                                                                color: selectedQuestity ==
+                                                                                                    0.5
+                                                                                                    ? Theme
+                                                                                                    .of(
+                                                                                                    context)
+                                                                                                    .primaryColor
+                                                                                                    : Colors
+                                                                                                    .white,
+
+                                                                                                borderRadius: BorderRadius
+                                                                                                    .all(
+                                                                                                    Radius
+                                                                                                        .circular(
+                                                                                                        8))
+
+
+                                                                                            ),
+                                                                                          ),
+                                                                                        ),
+                                                                                        InkWell(
+                                                                                          onTap: () {
+                                                                                            setState(() {
+                                                                                              selected =
+                                                                                              '750g';
+                                                                                              selectedQuestity =
+                                                                                              0.75;
+                                                                                            });
+                                                                                          },
+
+                                                                                          child: Container(
+
+                                                                                            child: Text(
+                                                                                              '750g',
+                                                                                              style: Theme
+                                                                                                  .of(
+                                                                                                  context)
+                                                                                                  .textTheme
+                                                                                                  .subtitle2
+                                                                                                  .copyWith(
+                                                                                                color: selectedQuestity ==
+                                                                                                    0.75
+                                                                                                    ? Colors
+                                                                                                    .white
+                                                                                                    : Colors
+                                                                                                    .black,),
+                                                                                            ),
+                                                                                            padding: EdgeInsets
+                                                                                                .all(8),
+                                                                                            decoration: BoxDecoration(
+                                                                                                border: Border
+                                                                                                    .all(
+                                                                                                    color: Theme
+                                                                                                        .of(
+                                                                                                        context)
+                                                                                                        .primaryColor),
+                                                                                                shape: BoxShape
+                                                                                                    .rectangle,
+                                                                                                color: selectedQuestity ==
+                                                                                                    0.75
+                                                                                                    ? Theme
+                                                                                                    .of(
+                                                                                                    context)
+                                                                                                    .primaryColor
+                                                                                                    : Colors
+                                                                                                    .white,
+
+                                                                                                borderRadius: BorderRadius
+                                                                                                    .all(
+                                                                                                    Radius
+                                                                                                        .circular(
+                                                                                                        8))
+
+
+                                                                                            ),
+                                                                                          ),
+                                                                                        ),
+                                                                                        InkWell(
+                                                                                          onTap: () {
+                                                                                            setState(() {
+                                                                                              selected =
+                                                                                              '1000g';
+                                                                                              selectedQuestity =
+                                                                                              1.0;
+                                                                                            });
+                                                                                          },
+                                                                                          child: Container(
+
+                                                                                            child: Text(
+                                                                                              '1000g',
+                                                                                              style: Theme
+                                                                                                  .of(
+                                                                                                  context)
+                                                                                                  .textTheme
+                                                                                                  .subtitle2
+                                                                                                  .copyWith(
+                                                                                                color: selectedQuestity ==
+                                                                                                    1.0
+                                                                                                    ? Colors
+                                                                                                    .white
+                                                                                                    : Colors
+                                                                                                    .black,),
+                                                                                            ),
+                                                                                            padding: EdgeInsets
+                                                                                                .all(8),
+                                                                                            decoration: BoxDecoration(
+                                                                                                border: Border
+                                                                                                    .all(
+                                                                                                    color: Theme
+                                                                                                        .of(
+                                                                                                        context)
+                                                                                                        .primaryColor),
+                                                                                                shape: BoxShape
+                                                                                                    .rectangle,
+                                                                                                color: selectedQuestity ==
+                                                                                                    1.0
+                                                                                                    ? Theme
+                                                                                                    .of(
+                                                                                                    context)
+                                                                                                    .primaryColor
+                                                                                                    : Colors
+                                                                                                    .white,
+
+                                                                                                borderRadius: BorderRadius
+                                                                                                    .all(
+                                                                                                    Radius
+                                                                                                        .circular(
+                                                                                                        8))
+
+
+                                                                                            ),
+                                                                                          ),
+                                                                                        ),
+                                                                                      ],
+                                                                                    ),
+                                                                                    SizedBox(
+                                                                                      height: 16,),
+                                                                                    Row(
+                                                                                      mainAxisAlignment: MainAxisAlignment
+                                                                                          .center,
+                                                                                      children: [
+
+                                                                                        Text(
+                                                                                          'Select Quantity',
+                                                                                          style: Theme
+                                                                                              .of(
+                                                                                              context)
+                                                                                              .textTheme
+                                                                                              .subtitle2,),
+
+                                                                                        SizedBox(
+                                                                                          width: 16,),
+                                                                                        Container(
+                                                                                          padding: EdgeInsets
+                                                                                              .only(
+                                                                                              left: 8,
+                                                                                              right: 8,
+                                                                                              top: 4,
+                                                                                              bottom: 4),
+                                                                                          decoration: BoxDecoration(
+                                                                                              border: Border
+                                                                                                  .all(
+                                                                                                  color: Theme
+                                                                                                      .of(
+                                                                                                      context)
+                                                                                                      .primaryColor),
+                                                                                              shape: BoxShape
+                                                                                                  .rectangle,
+                                                                                              color: Colors
+                                                                                                  .white,
+                                                                                              borderRadius: BorderRadius
+                                                                                                  .all(
+                                                                                                  Radius
+                                                                                                      .circular(
+                                                                                                      4))
+
+                                                                                          ),
+                                                                                          child: Row(
+                                                                                            mainAxisSize: MainAxisSize
+                                                                                                .min,
+                                                                                            children: [
+                                                                                              InkWell(
+                                                                                                  onTap: () {
+                                                                                                    setState(() {
+                                                                                                      widget. allFrenchisiViewModel
+                                                                                                          .decreaseQuentityForDecimal(
+                                                                                                          widget
+                                                                                                              .itemData
+                                                                                                              .itemId,
+                                                                                                          selectedQuestity);
+                                                                                                    });
+                                                                                                  },
+                                                                                                  child: Image
+                                                                                                      .asset(
+                                                                                                    'images/minus_icn.png',
+                                                                                                    width: 16,
+                                                                                                    height: 16,)),
+                                                                                              SizedBox(
+                                                                                                width: 2,),
+                                                                                              Text(
+                                                                                                "  ${ widget
+                                                                                                    .allFrenchisiViewModel
+                                                                                                    .itemsIds
+                                                                                                    .contains(
+                                                                                                    widget
+                                                                                                        .itemData
+                                                                                                        .itemId)
+                                                                                                    ?
+                                                                                                widget.allFrenchisiViewModel
+                                                                                                    .getQuantityData(
+                                                                                                    selectedQuestity,
+                                                                                                    widget
+                                                                                                        .itemData
+                                                                                                        .itemId) ??
+                                                                                                    1
+                                                                                                    : 1} ",
+                                                                                              ),
+                                                                                              SizedBox(
+                                                                                                width: 2,),
+                                                                                              InkWell(
+                                                                                                  onTap: () {
+                                                                                                    setState(() {
+                                                                                                      widget.  allFrenchisiViewModel
+                                                                                                          .increseQuentityForDecimal(
+                                                                                                          widget
+                                                                                                              .itemData
+                                                                                                              .itemId,
+                                                                                                          selectedQuestity);
+                                                                                                    });
+                                                                                                  },
+                                                                                                  child: Image
+                                                                                                      .asset(
+                                                                                                    'images/plus_icon.png',
+                                                                                                    width: 16,
+                                                                                                    height: 16,)),
+
+
+                                                                                            ],
+                                                                                          ),
+                                                                                        ),
+                                                                                      ],
+                                                                                    ),
+                                                                                    SizedBox(
+                                                                                      height: 16,),
+                                                                                    Align(
+                                                                                      alignment: Alignment
+                                                                                          .center,
+                                                                                      child: RaisedButton(
+                                                                                        onPressed: () {
+                                                                                          CartItem cartItem = CartItem(
+                                                                                              widget
+                                                                                                  .itemData
+                                                                                                  .itemId,
+                                                                                              selectedQuestity,
+                                                                                              int.parse(
+                                                                                                  widget.  allFrenchisiViewModel
+                                                                                                      .getQuantityData(
+                                                                                                      selectedQuestity,
+                                                                                                      widget
+                                                                                                          .itemData
+                                                                                                          .itemId)),
+                                                                                              widget
+                                                                                                  .itemData
+                                                                                                  .itemName,
+                                                                                              widget
+                                                                                                  .itemData
+                                                                                                  .spRateAmt,
+                                                                                              widget
+                                                                                                  .itemData
+                                                                                                  .itemUom);
+                                                                                          widget
+                                                                                              .allFrenchisiViewModel
+                                                                                              .addCartItem(
+                                                                                              cartItem);
+
+                                                                                          // _showSnackbar(
+                                                                                          //     "Item Added!",
+                                                                                          //     true);
+                                                                                          Navigator.pop(
+                                                                                              context);
+                                                                                        },
+                                                                                        color: Theme
+                                                                                            .of(context)
+                                                                                            .primaryColor,
+                                                                                        child: Text(
+                                                                                          "Done",
+                                                                                          style: Theme
+                                                                                              .of(
+                                                                                              context)
+                                                                                              .textTheme
+                                                                                              .button
+                                                                                              .copyWith(
+                                                                                              color: Colors
+                                                                                                  .white),),
+                                                                                      ),
+                                                                                    ),
+
+                                                                                    SizedBox(
+                                                                                      height: 16,),
+
+                                                                                  ],
+                                                                                ),
+                                                                              ),
+                                                                            );
+                                                                          }
+                                                                      )
+                                                                  );
+                                                                }
                                                               },
-                                                              child: Image.asset('images/plus_icon.png',width: 16,height: 16,color: Colors.black,)):Container(),
+                                                              child:widget.itemData.isDecimal!=0?Container():Image.asset('images/plus_icon.png',width: 16,height: 16,color: Colors.black,)):Container(),
                                                           SizedBox(width: 4,),
 
-                                                          Text(
-                                                            widget. allFrenchisiViewModel.itemsIds.contains(widget.itemData.itemId)?"${widget.allFrenchisiViewModel.getQuantity(widget.itemData.itemId)}":"Add",style: Theme.of(context).textTheme.subtitle2.copyWith(color: Theme.of(context).primaryColor),),
+                                                          Padding(
+                                                            padding: const EdgeInsets.only(left:8,right:8),
+                                                            child: Row(
+                                                              children: [
+                                                                Text(
+                                                                  widget. allFrenchisiViewModel.itemsIds.contains(widget.itemData.itemId)?widget.itemData.isDecimal!=0?"Added":"${widget.allFrenchisiViewModel.getQuantity(widget.itemData.itemId)}":"Add",style: Theme.of(context).textTheme.subtitle2.copyWith(color: Theme.of(context).primaryColor),),
+                                                                widget.allFrenchisiViewModel.itemsIds.contains(widget.itemData.itemId)? Container():SizedBox(width: 4,),
+                                                                widget.allFrenchisiViewModel.itemsIds.contains(widget.itemData.itemId)? Container():Image.asset('images/plus_icon.png',width: 12,height: 12,color: Colors.black,),
 
-
+                                                              ],
+                                                            ),
+                                                          ),
                                                           SizedBox(width: 4,),
-
                                                           widget.allFrenchisiViewModel.itemsIds.contains(widget.itemData.itemId)?
-
                                                           InkWell(
                                                               onTap: (){
                                                                 widget.allFrenchisiViewModel. items.forEach((element) {
-                                                                  if(element.itemId==widget.itemData.itemId){
-                                                                    setState(() {
-                                                                      if(element.qty>1)
-                                                                      {
-                                                                        element.qty--;
-                                                                      }else{
-                                                                        setState(() {
-                                                                          widget.allFrenchisiViewModel.removeItem(element);
-                                                                        });
 
-                                                                      }
+                                                                  if(widget.itemData.isDecimal!=1) {
+                                                                    if (element.itemId ==
+                                                                        widget.itemData.itemId) {
+                                                                      setState(() {
+                                                                        if (element.qty > 1) {
+                                                                          element.qty--;
+                                                                        } else {
+                                                                          setState(() {
+                                                                            widget
+                                                                                .allFrenchisiViewModel
+                                                                                .removeItem(element);
+                                                                          });
+                                                                        }
+                                                                      });
+                                                                    }
+                                                                  }else{
 
-                                                                    });
+
+                                                                    String selected='250g';
+                                                                    double selectedQuestity=0.25;
+
+                                                                    scaffoldState.currentState.showBottomSheet((context) =>
+                                                                        StatefulBuilder(
+                                                                            builder: (BuildContext context, StateSetter setState /*You can rename this!*/) {
+                                                                              return Container(
+                                                                                height: 200,
+                                                                                margin: EdgeInsets.all(16),
+                                                                                padding: EdgeInsets.only(
+                                                                                    left: 8, right: 8),
+                                                                                child: Observer(
+                                                                                  builder:(_)=> Column(
+                                                                                    crossAxisAlignment: CrossAxisAlignment
+                                                                                        .start,
+                                                                                    children: [
+                                                                                      Text('Select Size'),
+
+                                                                                      // Container(
+                                                                                      //   width: MediaQuery
+                                                                                      //       .of(context)
+                                                                                      //       .size
+                                                                                      //       .width,
+                                                                                      //   height: 1,
+                                                                                      //   color: Colors.grey,
+                                                                                      // ),
+
+                                                                                      SizedBox(height: 16,),
+
+                                                                                      Row(
+                                                                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                                                        children: [
+                                                                                          InkWell(
+                                                                                            onTap:(){
+                                                                                              setState((){
+                                                                                                selected='250g';
+                                                                                                selectedQuestity=.25;
+                                                                                              });
+                                                                                            },
+
+                                                                                            child: Container(
+
+                                                                                              child: Text('250g',
+                                                                                                style: Theme.of(context).textTheme.subtitle2
+                                                                                                    .copyWith(color: selectedQuestity==0.25?Colors.white:Colors.black,),
+                                                                                              ),
+                                                                                              padding: EdgeInsets.all(8),
+                                                                                              decoration: BoxDecoration(
+                                                                                                  border: Border.all(color: Theme.of(context).primaryColor),
+                                                                                                  shape: BoxShape.rectangle,
+                                                                                                  color: selectedQuestity==0.25?Theme.of(context).primaryColor:Colors.white,
+                                                                                                  borderRadius: BorderRadius.all(Radius.circular(8))
+
+
+                                                                                              ),
+                                                                                            ),
+                                                                                          ),
+                                                                                          InkWell(
+                                                                                            onTap:(){
+                                                                                              setState((){
+                                                                                                selected='500g';
+                                                                                                selectedQuestity=0.5;
+                                                                                              });
+                                                                                            },
+
+                                                                                            child: Container(
+
+                                                                                              child: Text('500g',
+                                                                                                style: Theme.of(context).textTheme.subtitle2
+                                                                                                    .copyWith(color: selectedQuestity==0.5?Colors.white:Colors.black,),
+                                                                                              ),
+                                                                                              padding: EdgeInsets.all(8),
+                                                                                              decoration: BoxDecoration(
+                                                                                                  border: Border.all(color: Theme.of(context).primaryColor),
+                                                                                                  shape: BoxShape.rectangle,
+                                                                                                  color: selectedQuestity==0.5?Theme.of(context).primaryColor:Colors.white,
+
+                                                                                                  borderRadius: BorderRadius.all(Radius.circular(8))
+
+
+                                                                                              ),
+                                                                                            ),
+                                                                                          ),
+                                                                                          InkWell(
+                                                                                            onTap:(){
+                                                                                              setState((){
+                                                                                                selected='750g';
+                                                                                                selectedQuestity=0.75;
+                                                                                              });
+                                                                                            },
+
+                                                                                            child: Container(
+
+                                                                                              child: Text('750g',
+                                                                                                style: Theme.of(context).textTheme.subtitle2
+                                                                                                    .copyWith(color: selectedQuestity==0.75?Colors.white:Colors.black,),
+                                                                                              ),
+                                                                                              padding: EdgeInsets.all(8),
+                                                                                              decoration: BoxDecoration(
+                                                                                                  border: Border.all(color: Theme.of(context).primaryColor),
+                                                                                                  shape: BoxShape.rectangle,
+                                                                                                  color: selectedQuestity==0.75?Theme.of(context).primaryColor:Colors.white,
+
+                                                                                                  borderRadius: BorderRadius.all(Radius.circular(8))
+
+
+                                                                                              ),
+                                                                                            ),
+                                                                                          ),
+                                                                                          InkWell(
+                                                                                            onTap:(){
+                                                                                              setState((){
+                                                                                                selected='1000g';
+                                                                                                selectedQuestity=1.0;
+                                                                                              });
+                                                                                            },
+                                                                                            child: Container(
+
+                                                                                              child: Text('1000g',
+                                                                                                style: Theme.of(context).textTheme.subtitle2
+                                                                                                    .copyWith(color: selectedQuestity==1.0?Colors.white:Colors.black,),
+                                                                                              ),
+                                                                                              padding: EdgeInsets.all(8),
+                                                                                              decoration: BoxDecoration(
+                                                                                                  border: Border.all(color: Theme.of(context).primaryColor),
+                                                                                                  shape: BoxShape.rectangle,
+                                                                                                  color: selectedQuestity==1.0?Theme.of(context).primaryColor:Colors.white,
+
+                                                                                                  borderRadius: BorderRadius.all(Radius.circular(8))
+
+
+                                                                                              ),
+                                                                                            ),
+                                                                                          ),
+                                                                                        ],
+                                                                                      ),
+                                                                                      SizedBox(height: 16,),
+                                                                                      Row(
+                                                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                                                        children: [
+
+                                                                                          Text('Select Quantity',style: Theme.of(context).textTheme.subtitle2,),
+
+                                                                                          SizedBox(width: 16,),
+                                                                                          Container(
+                                                                                            padding: EdgeInsets.only(left:8,right:8,top:4,bottom: 4),
+                                                                                            decoration: BoxDecoration(
+                                                                                                border: Border.all(color: Theme.of(context).primaryColor),
+                                                                                                shape: BoxShape.rectangle,
+                                                                                                color: Colors.white,
+                                                                                                borderRadius: BorderRadius.all(Radius.circular(4))
+
+                                                                                            ),
+                                                                                            child: Row(
+                                                                                              mainAxisSize: MainAxisSize.min,
+                                                                                              children: [
+                                                                                                InkWell(
+                                                                                                    onTap: () {
+                                                                                                      setState(() {
+
+                                                                                                        widget.  allFrenchisiViewModel.decreaseQuentityForDecimal(widget.itemData.itemId,selectedQuestity);
+
+                                                                                                      });
+                                                                                                    },
+                                                                                                    child: Image.asset(
+                                                                                                      'images/minus_icn.png',
+                                                                                                      width: 16,
+                                                                                                      height: 16,)),
+                                                                                                SizedBox(width: 2,),
+                                                                                                Text("  ${ widget.allFrenchisiViewModel.itemsIds.contains(widget.itemData.itemId)?
+                                                                                                widget. allFrenchisiViewModel.getQuantityData(selectedQuestity,widget.itemData.itemId)??1:1} ",
+                                                                                                ),
+                                                                                                SizedBox(width: 2,),
+                                                                                                InkWell(
+                                                                                                    onTap: () {
+                                                                                                      setState(() {
+                                                                                                        widget.   allFrenchisiViewModel.increseQuentityForDecimal(widget.itemData.itemId,selectedQuestity);
+
+                                                                                                      });
+                                                                                                    },
+                                                                                                    child: Image.asset(
+                                                                                                      'images/plus_icon.png',
+                                                                                                      width: 16,
+                                                                                                      height: 16,)),
+
+
+                                                                                              ],
+                                                                                            ),
+                                                                                          ),
+                                                                                        ],
+                                                                                      ),
+                                                                                      SizedBox(height: 16,),
+                                                                                      Align(
+                                                                                        alignment: Alignment.center,
+                                                                                        child: RaisedButton(onPressed: (){
+
+                                                                                          CartItem cartItem = CartItem(
+                                                                                              widget.itemData.itemId, selectedQuestity, int.parse(widget.allFrenchisiViewModel.getQuantityData(selectedQuestity,widget.itemData.itemId)),
+                                                                                              widget.itemData.itemName,
+                                                                                              widget.itemData.spRateAmt,
+                                                                                              widget.itemData.itemUom);
+                                                                                          widget.allFrenchisiViewModel.addCartItem(
+                                                                                              cartItem);
+
+                                                                                          // _showSnackbar("Item Added!", true);
+                                                                                          Navigator.pop(context);
+                                                                                        },
+                                                                                          color: Theme.of(context).primaryColor,
+                                                                                          child: Text("Done",style: Theme.of(context).textTheme.button.copyWith(color: Colors.white),),
+                                                                                        ),
+                                                                                      ),
+
+                                                                                      SizedBox(height: 16,),
+
+                                                                                    ],
+                                                                                  ),
+                                                                                ),
+                                                                              );
+                                                                            }
+                                                                        )
+                                                                    );
                                                                   }
                                                                 });
                                                               },
-                                                              child: Image.asset('images/minus_icn.png',width: 16,height: 16,color: Colors.black,)):Container(),
+                                                              child:widget.itemData.isDecimal!=0?Container(): Image.asset('images/minus_icn.png',width: 16,height: 16,color: Colors.black,)):Container(),
                                                         ],
                                                       ),
                                                     ),
@@ -658,8 +1339,8 @@ class _MenuDetailsState extends State<MenuDetails> {
                                       ),
                                     );
                                   },
-                                ),
-*/
+                                ):Container(),
+
                                 // Container(
                                 //   child: Padding(
                                 //     padding: EdgeInsets.all(8.0),

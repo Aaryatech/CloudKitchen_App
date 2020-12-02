@@ -65,8 +65,8 @@ abstract class _AllFrenchisiViewModel with Store {
 
   @observable
   DeliveryInstruction deliveryInstruction = DeliveryInstruction(
-    instruId: 1,
-    instructnCaption: 'Leave outside my door (contact-less delivery)'
+      instruId: 1,
+      instructnCaption: 'Leave outside my door (contact-less delivery)'
   );
 
 
@@ -86,7 +86,7 @@ abstract class _AllFrenchisiViewModel with Store {
 
 
   @observable
- int selectedOutlet = 1;
+  int selectedOutlet = 1;
 
 
   @observable
@@ -125,12 +125,12 @@ abstract class _AllFrenchisiViewModel with Store {
   PlaceOrderModel placeOrderModel;
 
 
- @observable
- OrderHistory  orderHistory;
+  @observable
+  OrderHistory  orderHistory;
 
 
- @observable
- Frainchise  selectedFranchise;
+  @observable
+  Frainchise  selectedFranchise;
 
 
   @observable
@@ -226,58 +226,58 @@ abstract class _AllFrenchisiViewModel with Store {
 
 
   Future<bool> addAllItemsInCart(OrderHistoryItem orderHistoryItem){
-   final future =Future((){
+    final future =Future((){
 
-     List<CartItem> tempItems=[];
-     List<int> tempIds=[];
+      List<CartItem> tempItems=[];
+      List<int> tempIds=[];
 
-     orderHistoryItem.detailList.forEach((element) {
+      orderHistoryItem.detailList.forEach((element) {
 
-       tempIds.add(element.orderId);
-       tempItems.add(
-           CartItem(
-               element.itemId,
-               element.exFloat2,
-               element.exInt1,
-               element.itemName,
-               element.mrp,
-               "${element.exVar1}"));
+        tempIds.add(element.orderId);
+        tempItems.add(
+            CartItem(
+                element.itemId,
+                element.exFloat2,
+                element.exInt1,
+                element.itemName,
+                element.mrp,
+                "${element.exVar1}"));
 
-     });
+      });
 
-     items=tempItems;
-     itemsIds=tempIds;
-     return true;
-   });
+      items=tempItems;
+      itemsIds=tempIds;
+      return true;
+    });
   }
 
   Future<String> fetchUserOrder() {
     Future.delayed(Duration(milliseconds: 1000), () {
 
-          getCustAddress();
-          getCustAddressCaption();
-          getSelectedOutlet();
-          getSelectedDelMode();
-          getCustName();
-          getCustMobile();
-          // outletType=myLocalPrefes.getSelectedOutletType();
+      getCustAddress();
+      getCustAddressCaption();
+      getSelectedOutlet();
+      getSelectedDelMode();
+      getCustName();
+      getCustMobile();
+      // outletType=myLocalPrefes.getSelectedOutletType();
 
-           return 'Large Latte';
-          }
+      return 'Large Latte';
+    }
     );
   }
 
 
- @action getSelectedOutlet(){
+  @action getSelectedOutlet(){
     outletType=myLocalPrefes.getSelectedOutletType();
   }
 
 
-   @action getSelectedDelMode(){
+  @action getSelectedDelMode(){
     selectedDelMode=myLocalPrefes.getDefType();
   }
 
-   @action setDelMode(int mode){
+  @action setDelMode(int mode){
     selectedDelMode=mode;
     myLocalPrefes.setDefType(mode);
   }
@@ -324,7 +324,7 @@ abstract class _AllFrenchisiViewModel with Store {
   DateTime currentDateTime = DateTime.now();
 
   @action
- Future<HttpResponse> placeOrder(double itemTotal,int payMode,int offerId,double deliveryCharges,double descAmt,String dateTime)async{
+  Future<HttpResponse> placeOrder(double itemTotal,int payMode,int offerId,double deliveryCharges,double descAmt,String dateTime)async{
     int id=0;
     if(myLocalPrefes.getSelectedOutletType()==1){
       id=myLocalPrefes.getdefFranchiseDairy();
@@ -339,54 +339,63 @@ abstract class _AllFrenchisiViewModel with Store {
     List<OrderDetailList> orderDetailedList=[];
     items.forEach((element) {
       orderDetailedList.add(OrderDetailList(
-        itemId: element.itemId,
-        qty: element.qty,
-        selectedQty: element.selectedQty
+          itemId: element.itemId,
+          qty: element.qty,
+          selectedQty: element.selectedQty
       ));
     });
 
 
-  PlaceOrder placeOrder=  PlaceOrder(
+    PlaceOrder placeOrder=  PlaceOrder(
       orderDetailParamList: orderDetailedList,
-          addressId: myLocalPrefes.getAddressId(), //,
-          applicableFor: 2,
-          custId: myLocalPrefes.getCustId(),
-          deliveryCharges: deliveryCharges,
-          discAmt: descAmt??0,
-          itemTotal: itemTotal,
-          deliveryDate: '${dateTime.trim().split(' ')[0]}',
-          deliveryTime: '${dateTime.trim().split(' ')[1].substring(0,7)}',
-          frId:id,
-          wallet: 0,
-          deliveryInstructionId: deliveryInstruction.instruId,
-          deliveryInstructionText: deliveryInstruction.instructnCaption,
-          deliveryType: selectedDelMode,
-          km: 5,
-          offerId: offerId,
-          orderPlatform: 2,
-          orderStatus:1,
-          payMode: payMode,);
+      addressId: myLocalPrefes.getAddressId(), //,
+      applicableFor: 2,
+      custId: myLocalPrefes.getCustId(),
+      deliveryCharges: deliveryCharges,
+      discAmt: descAmt??0,
+      itemTotal: itemTotal,
+      deliveryDate: '${dateTime.trim().split(' ')[0]}',
+      deliveryTime: '${dateTime.trim().split(' ')[1].substring(0,7)}',
+      frId:id,
+      wallet: 0,
+      deliveryInstructionId: deliveryInstruction.instruId,
+      deliveryInstructionText: deliveryInstruction.instructnCaption,
+      deliveryType: selectedDelMode,
+      km: 5,
+      offerId: offerId,
+      orderPlatform: 2,
+      orderStatus:1,
+      payMode: payMode,);
 
-  HttpResponse httpResponse = await orderRepo.placeOredr(placeOrder);
+    HttpResponse httpResponse = await orderRepo.placeOredr(placeOrder);
     isPlaceingOrder=false;
-   if(httpResponse.status==200){
-   placeOrderModel = httpResponse.data;
-   initiatePayment=true;
+    if(httpResponse.status==200){
+      placeOrderModel = httpResponse.data;
+      initiatePayment=true;
 
-   }
+    }
     return httpResponse;
   }
 
 
   @action
-  addCartItem(CartItem item){
+  addCartItem(CartItem item) {
     // getOffersandAdditionalCharge();
-    List<int> tempitemsids=itemsIds;
-    List<CartItem> tempitems=items;
-    tempitemsids.add(item.itemId);
-    tempitems.add(item);
-    itemsIds=tempitemsids;
-    items=tempitems;
+
+    bool itemAvailbele=false;
+    items.forEach((element) {
+      if (element.itemId == item.itemId && element.selectedQty==item.selectedQty) {
+        itemAvailbele = true;
+      }
+    });
+    if(!itemAvailbele) {
+      List<int> tempitemsids = itemsIds;
+      List<CartItem> tempitems = items;
+      tempitemsids.add(item.itemId);
+      tempitems.add(item);
+      itemsIds = tempitemsids;
+      items = tempitems;
+    }
   }
 
   @action
@@ -397,14 +406,15 @@ abstract class _AllFrenchisiViewModel with Store {
 
   @action
   String getQuantityData(double decimal,int itemIdcurrent){
-    String qty=null;
+    int qty=1;
     items.forEach((element) {
       if(element.itemId==itemIdcurrent && element.selectedQty==decimal){
-        qty= '${element.qty}';
+        qty= element.qty;
       }
     });
-    return qty;
+    return '$qty';
   }
+
 
 
   @action
@@ -444,11 +454,50 @@ abstract class _AllFrenchisiViewModel with Store {
     });
   }
 
+
+  @action
+  String increseQuentityForDecimal(int itemIdcurrent,double decimal){
+    // getOffersandAdditionalCharge();
+    bool itemNotFound=false;
+    items.forEach((element) {
+      if(element.itemId==itemIdcurrent && element.selectedQty==decimal){
+        element.qty++;
+        itemNotFound=true;
+      }
+    });
+
+    if(!itemNotFound){
+
+      frainchiseHomeData.itemData.forEach((element) {
+        if(element.itemId==itemIdcurrent)
+        {
+          addCartItem(CartItem(itemIdcurrent, decimal, 2, element.itemName, element.spRateAmt, element.itemUom));
+        }
+
+      });
+
+
+    }
+
+  }
+
+  @action
+  String decreaseQuentityForDecimal(int itemIdcurrent,double decimal){
+    // getOffersandAdditionalCharge();
+
+    items.forEach((element) {
+      if(element.itemId==itemIdcurrent && element.selectedQty==decimal){
+        element.qty--;
+
+      }
+    });
+  }
+
   @action
   String decreseQuentity(int itemIdcurrent){
     items.forEach((element) {
       if(element.itemId==itemIdcurrent){
-       if(element.qty>1)
+        if(element.qty>1)
         {
           element.qty--;
         }
@@ -479,7 +528,7 @@ abstract class _AllFrenchisiViewModel with Store {
     HttpResponse httpResponse= await orderRepo.updatePaymentStatus(orderId,status,paid,txStatus);
     iPaymetnLading=false;
     if(httpResponse.status==200){
-     return httpResponse;
+      return httpResponse;
     }
   }
 
@@ -504,7 +553,7 @@ abstract class _AllFrenchisiViewModel with Store {
   }
 
   @action setCustName(String name)async{
-   await myLocalPrefes.setCustName(name);
+    await myLocalPrefes.setCustName(name);
 
     custName=name;
 
@@ -519,17 +568,17 @@ abstract class _AllFrenchisiViewModel with Store {
   @action String getCustAddressCaption(){
     custAdrressCaption=myLocalPrefes.getSelectedAddressCaption();
 
-     return custAdrressCaption??"";
+    return custAdrressCaption??"";
   }
 
 
   @action String getFrAddress(){
     return myLocalPrefes.getdefFranchiseAddrress();
-}
+  }
 
-@action String getFrName(){
+  @action String getFrName(){
     return myLocalPrefes.getdefFranchiseName();
-}
+  }
 
 
 
@@ -544,14 +593,14 @@ abstract class _AllFrenchisiViewModel with Store {
 
       if (httpResponse.status == 200) {
 
-            orderHistory= httpResponse.data;
+        orderHistory= httpResponse.data;
 
 
       } else {
         error = httpResponse.message;
         isLoadingForHistory = false;
       }
-    return httpResponse;
+      return httpResponse;
     }
 
   }
@@ -559,7 +608,7 @@ abstract class _AllFrenchisiViewModel with Store {
 
   @action
   Future getAllFranchise()async{
-   await fetchUserOrder();
+    await fetchUserOrder();
     if(myLocalPrefes.getdefFranchiseDairy()==0) {
       isLoading = true;
       loadingMessage = 'Fetching nearest franchise';
@@ -599,14 +648,14 @@ abstract class _AllFrenchisiViewModel with Store {
     bool bar=false;
     frainchise.forEach((element) {
       if (bar)
-     {
-       buffer.write('|${element.fromLatitude},${element.fromLongitude}');
-    } else
       {
-    buffer.write('${element.fromLatitude},${element.fromLongitude}');
-    bar=true;
-    }
-        // ('${element.fromLatitude},${element.fromLongitude}|');
+        buffer.write('|${element.fromLatitude},${element.fromLongitude}');
+      } else
+      {
+        buffer.write('${element.fromLatitude},${element.fromLongitude}');
+        bar=true;
+      }
+      // ('${element.fromLatitude},${element.fromLongitude}|');
     });
     // myLocalPrefes.setDefFranchise('${frainchise[1].frId}-${frainchise[1].frType}-${frainchise[1].compId}');
     // myLocalPrefes.setFrSelected(true);
@@ -635,86 +684,86 @@ abstract class _AllFrenchisiViewModel with Store {
     isNoDataAvailable=false;
     bool isSelected=false;
     if(distanceMatrix.status=="OK"){
-       for(int index=0;index < distanceMatrix.elements.length;index++) {
+      for(int index=0;index < distanceMatrix.elements.length;index++) {
 
 
-         if(distanceMatrix.elements[index].status=="OK"){
-           if(frainchise[index].frType==1){
+        if(distanceMatrix.elements[index].status=="OK"){
+          if(frainchise[index].frType==1){
 
-             if(selectedDistanceDairy>distanceMatrix.elements[index].distance.value) {
-               selectedDistanceDairy = distanceMatrix.elements[index].distance.value;
+            if(selectedDistanceDairy>distanceMatrix.elements[index].distance.value) {
+              selectedDistanceDairy = distanceMatrix.elements[index].distance.value;
 
-               if (((frainchise[index].kmAreaCovered)*1000 )>=
-                   distanceMatrix.elements[index].distance.value) {
-                 selectedFranchiseId = frainchise[index].frId;
-               isSelected=true;
-               print('selected dairy $selectedDistanceDairy');
-             await  myLocalPrefes.setdefFranchiseDairy(frainchise[index].frId);
-                 await  myLocalPrefes.setdefFranchiseAddrress(frainchise[index].frAddress);
-                 await    myLocalPrefes.setdefFranchiseName(frainchise[index].frName);
-             }
-             }
+              if (((frainchise[index].kmAreaCovered)*1000 )>=
+                  distanceMatrix.elements[index].distance.value) {
+                selectedFranchiseId = frainchise[index].frId;
+                isSelected=true;
+                print('selected dairy $selectedDistanceDairy');
+                await  myLocalPrefes.setdefFranchiseDairy(frainchise[index].frId);
+                await  myLocalPrefes.setdefFranchiseAddrress(frainchise[index].frAddress);
+                await    myLocalPrefes.setdefFranchiseName(frainchise[index].frName);
+              }
+            }
 
-           }
-           if(frainchise[index].frType==2) {
-               if (selectedDistanceRest >
-                   distanceMatrix.elements[index].distance.value) {
-                 if (((frainchise[index].kmAreaCovered)*1000 ) >=
-                     distanceMatrix.elements[index].distance.value) {
-                   isSelected=true;
+          }
+          if(frainchise[index].frType==2) {
+            if (selectedDistanceRest >
+                distanceMatrix.elements[index].distance.value) {
+              if (((frainchise[index].kmAreaCovered)*1000 ) >=
+                  distanceMatrix.elements[index].distance.value) {
+                isSelected=true;
 
-                   selectedDistanceRest =
-                     distanceMatrix.elements[index].distance.value;
-                 selectedFranchiseId = frainchise[index].frId;
-                 print('selected restaurent $selectedDistanceRest');
-                   await myLocalPrefes.setDefFranchiseRest(frainchise[index].frId);
-                   await myLocalPrefes.setdefFranchiseAddrress(frainchise[index].frAddress);
-                   await myLocalPrefes.setdefFranchiseName(frainchise[index].frName);
-               }
-             }
-           }
-           if(frainchise[index].frType==3) {
-               if (selectedDistanceRest >
-                   distanceMatrix.elements[index].distance.value) {
-                 if (((frainchise[index].kmAreaCovered)*1000) >=
-                     distanceMatrix.elements[index].distance.value) {
+                selectedDistanceRest =
+                    distanceMatrix.elements[index].distance.value;
+                selectedFranchiseId = frainchise[index].frId;
+                print('selected restaurent $selectedDistanceRest');
+                await myLocalPrefes.setDefFranchiseRest(frainchise[index].frId);
+                await myLocalPrefes.setdefFranchiseAddrress(frainchise[index].frAddress);
+                await myLocalPrefes.setdefFranchiseName(frainchise[index].frName);
+              }
+            }
+          }
+          if(frainchise[index].frType==3) {
+            if (selectedDistanceRest >
+                distanceMatrix.elements[index].distance.value) {
+              if (((frainchise[index].kmAreaCovered)*1000) >=
+                  distanceMatrix.elements[index].distance.value) {
 
-                   isSelected=true;
-                 selectedDistanceRest =
-                     distanceMatrix.elements[index].distance.value;
-                 selectedFranchiseId = frainchise[index].frId;
-                 print('selected restaurent $selectedDistanceRest');
-                   await  myLocalPrefes.setDefFranchiseRest(frainchise[index].frId);
-                   await   myLocalPrefes.setdefFranchiseAddrress(frainchise[index].frAddress);
-                   await myLocalPrefes.setdefFranchiseName(frainchise[index].frName);
-               }
-               if (selectedDistanceDairy >
-                   distanceMatrix.elements[index].distance.value) {
-                 if (((frainchise[index].kmAreaCovered)*1000) >=
-                     distanceMatrix.elements[index].distance.value) {
-                 selectedDistanceDairy =
-                     distanceMatrix.elements[index].distance.value;
-                 selectedFranchiseId = frainchise[index].frId;
-                 isSelected=true;
-                 print('selected dairy $selectedDistanceDairy');
-                 await myLocalPrefes.setdefFranchiseDairy(frainchise[index].frId);
-                 await myLocalPrefes.setdefFranchiseAddrress(frainchise[index].frAddress);
-                 await myLocalPrefes.setdefFranchiseName(frainchise[index].frName);
-               }
-             }
-               }
-           }
-         }
-
-         if(!isSelected){
-           isNoDataAvailable=true;
-         }
-
-
+                isSelected=true;
+                selectedDistanceRest =
+                    distanceMatrix.elements[index].distance.value;
+                selectedFranchiseId = frainchise[index].frId;
+                print('selected restaurent $selectedDistanceRest');
+                await  myLocalPrefes.setDefFranchiseRest(frainchise[index].frId);
+                await   myLocalPrefes.setdefFranchiseAddrress(frainchise[index].frAddress);
+                await myLocalPrefes.setdefFranchiseName(frainchise[index].frName);
+              }
+              if (selectedDistanceDairy >
+                  distanceMatrix.elements[index].distance.value) {
+                if (((frainchise[index].kmAreaCovered)*1000) >=
+                    distanceMatrix.elements[index].distance.value) {
+                  selectedDistanceDairy =
+                      distanceMatrix.elements[index].distance.value;
+                  selectedFranchiseId = frainchise[index].frId;
+                  isSelected=true;
+                  print('selected dairy $selectedDistanceDairy');
+                  await myLocalPrefes.setdefFranchiseDairy(frainchise[index].frId);
+                  await myLocalPrefes.setdefFranchiseAddrress(frainchise[index].frAddress);
+                  await myLocalPrefes.setdefFranchiseName(frainchise[index].frName);
+                }
+              }
+            }
+          }
         }
 
-       isLoading = false;
-       getNearestFranchiseById();
+        if(!isSelected){
+          isNoDataAvailable=true;
+        }
+
+
+      }
+
+      isLoading = false;
+      getNearestFranchiseById();
 
 
     }
@@ -769,7 +818,7 @@ abstract class _AllFrenchisiViewModel with Store {
       if(value.status==200){
         frainchiseHomeData=value.data,
         print('${frainchiseHomeData.itemData[1].tagName}'),
-        
+
         // myLocalPrefes.setdefFranchiseName(frainchiseHomeData)
 
         if(frainchiseHomeData==null){
@@ -849,10 +898,10 @@ abstract class _AllFrenchisiViewModel with Store {
     }else{
       id=myLocalPrefes.getDefFranchiseRest();
     }
-   isLoadingForOffers=true;
-   HttpResponse httpResponse= await additionalChargesAndOffersRepo.getAdditionChargesAnadOffers('$id',myLocalPrefes.getCustId() , 2);
-   isLoadingForOffers=false;
-   offersMain=httpResponse.data;
+    isLoadingForOffers=true;
+    HttpResponse httpResponse= await additionalChargesAndOffersRepo.getAdditionChargesAnadOffers('$id',myLocalPrefes.getCustId() , 2);
+    isLoadingForOffers=false;
+    offersMain=httpResponse.data;
 
   }
 
@@ -860,7 +909,7 @@ abstract class _AllFrenchisiViewModel with Store {
 
   getSelectedFranchise(){
 
-   frainchise.forEach((element) {
+    frainchise.forEach((element) {
       int id=0;
       if(myLocalPrefes.getSelectedOutletType()==1){
         id=myLocalPrefes.getdefFranchiseDairy();
@@ -880,47 +929,47 @@ abstract class _AllFrenchisiViewModel with Store {
 
 
 
- Future<List<Frainchise>>  getFranchise()async{
+  Future<List<Frainchise>>  getFranchise()async{
     List<Frainchise> filterid=[];
     await getAllFranchiseForTackAway();
 
-      frainchise.forEach((element) {
-        if(element.frType==outletType || element.frType==3){
-          filterid.add(element);
-        }
-      });
-      filterid.sort((a, b) => a.distance.compareTo(b.distance));
-      isLoading=false;
-      return filterid;
+    frainchise.forEach((element) {
+      if(element.frType==outletType || element.frType==3){
+        filterid.add(element);
+      }
+    });
+    filterid.sort((a, b) => a.distance.compareTo(b.distance));
+    isLoading=false;
+    return filterid;
   }
 
   @action
   Future getAllFranchiseForTackAway()async{
     await fetchUserOrder();
-      isLoading = true;
-      loadingMessage = 'Fetching nearest franchise';
-      HttpResponse httpResponse = await allFranchiseRepo.allFranchise();
+    isLoading = true;
+    loadingMessage = 'Fetching nearest franchise';
+    HttpResponse httpResponse = await allFranchiseRepo.allFranchise();
 
 
-      if (httpResponse.status == 200) {
-        if (httpResponse.info.error) {
-          error = httpResponse.info.messege;
-        } else {
-          frainchiseMain = httpResponse.data;
-
-          print(frainchiseMain.franchiseList[1].toString());
-
-          frainchise = frainchiseMain.franchiseList;
-
-         await sortFranchiseByKmForTakeAway();
-          getSelectedFranchise();
-          isLoading = false;
-        }
+    if (httpResponse.status == 200) {
+      if (httpResponse.info.error) {
+        error = httpResponse.info.messege;
       } else {
-        error = httpResponse.message;
+        frainchiseMain = httpResponse.data;
+
+        print(frainchiseMain.franchiseList[1].toString());
+
+        frainchise = frainchiseMain.franchiseList;
+
+        await sortFranchiseByKmForTakeAway();
+        getSelectedFranchise();
         isLoading = false;
       }
+    } else {
+      error = httpResponse.message;
+      isLoading = false;
     }
+  }
 
 
   @action

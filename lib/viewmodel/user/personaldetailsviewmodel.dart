@@ -81,7 +81,7 @@ abstract class _PersonalDetailsViewModel with Store{
   setUserName(String usename) {
     username = usename;
   }
-    @action
+  @action
   setemial(String emial){
     email=emial;
   }
@@ -121,7 +121,7 @@ abstract class _PersonalDetailsViewModel with Store{
 
     isLoadingForLogin=false;
 
- }
+  }
 
 
   Future<UserCredential> signInWithFacebook() async {
@@ -143,46 +143,44 @@ abstract class _PersonalDetailsViewModel with Store{
 
   Future<bool> saveUserDetails(SaveCustomer saveUserDetails) async {
     isLoading=true;
-   HttpResponse httpResponse=  await saveUserRepo.saveUser(saveUserDetails);
-      if(httpResponse.status==200){
+    HttpResponse httpResponse=  await saveUserRepo.saveUser(saveUserDetails);
+    if(httpResponse.status==200){
 
-        if(!httpResponse.info.error)
-        {
-          customerDetails=httpResponse.data;
-          print(customerDetails.custName);
-          myLocalPrefes.setCustId(customerDetails.custId);
-          myLocalPrefes.setCustDetails(true);
-          myLocalPrefes.setCustName(customerDetails.custName);
+      if(!httpResponse.info.error)
+      {
+        customerDetails=httpResponse.data;
+        print(customerDetails.custName);
+        myLocalPrefes.setCustId(customerDetails.custId);
+        myLocalPrefes.setCustDetails(true);
+        myLocalPrefes.setCustName(customerDetails.custName);
         return true;
-        }
-
-      }else if(httpResponse.status==500) {
-        errorMessage=httpResponse.message;
-      return false;
       }
-      isLoading=false;
 
-
+    }else if(httpResponse.status==500) {
+      errorMessage=httpResponse.message;
+      return false;
+    }
+    isLoading=false;
   }
 
   void getUserDetailsIfExist(String mobile){
 
     isLoading=true;
     saveUserRepo.getUserDetails(mobile).then((value)
- {
-   isLoading=false;
-   if(value.status==200){
+    {
+      isLoading=false;
+      if(value.status==200){
 
-     if(!value.info.error) {
-       customerDetails = value.data;
-       username = customerDetails.custName;
-       email = customerDetails.emailId;
-     }
-     }else if(value.status==500) {
-     errorMessage=value.message;
-   }
+        if(!value.info.error) {
+          customerDetails = value.data;
+          username = customerDetails.custName;
+          email = customerDetails.emailId;
+        }
+      }else if(value.status==500) {
+        errorMessage=value.message;
+      }
 
- } ).catchError((onError){
+    } ).catchError((onError){
       isLoading=false;
 
     });

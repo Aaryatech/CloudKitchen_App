@@ -593,6 +593,22 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
         .run(() => super.postPaymentService(orderId, status, paid, txStatus));
   }
 
+  final _$setCustNameAsyncAction =
+      AsyncAction('_AllFrenchisiViewModel.setCustName');
+
+  @override
+  Future setCustName(String name) {
+    return _$setCustNameAsyncAction.run(() => super.setCustName(name));
+  }
+
+  final _$setCustNumberAsyncAction =
+      AsyncAction('_AllFrenchisiViewModel.setCustNumber');
+
+  @override
+  Future setCustNumber(String name) {
+    return _$setCustNumberAsyncAction.run(() => super.setCustNumber(name));
+  }
+
   final _$getOrderHistoryAsyncAction =
       AsyncAction('_AllFrenchisiViewModel.getOrderHistory');
 
@@ -791,6 +807,28 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
         name: '_AllFrenchisiViewModel.increseQuentity');
     try {
       return super.increseQuentity(itemIdcurrent);
+    } finally {
+      _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  String increseQuentityForDecimal(int itemIdcurrent, double decimal) {
+    final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
+        name: '_AllFrenchisiViewModel.increseQuentityForDecimal');
+    try {
+      return super.increseQuentityForDecimal(itemIdcurrent, decimal);
+    } finally {
+      _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  String decreaseQuentityForDecimal(int itemIdcurrent, double decimal) {
+    final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
+        name: '_AllFrenchisiViewModel.decreaseQuentityForDecimal');
+    try {
+      return super.decreaseQuentityForDecimal(itemIdcurrent, decimal);
     } finally {
       _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
     }
