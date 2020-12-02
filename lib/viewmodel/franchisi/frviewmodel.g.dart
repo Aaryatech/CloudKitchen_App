@@ -417,6 +417,22 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
     });
   }
 
+  final _$notificationsAtom =
+      Atom(name: '_AllFrenchisiViewModel.notifications');
+
+  @override
+  NotificationMain get notifications {
+    _$notificationsAtom.reportRead();
+    return super.notifications;
+  }
+
+  @override
+  set notifications(NotificationMain value) {
+    _$notificationsAtom.reportWrite(value, super.notifications, () {
+      super.notifications = value;
+    });
+  }
+
   final _$frainchiseHomeDataAtom =
       Atom(name: '_AllFrenchisiViewModel.frainchiseHomeData');
 
@@ -554,6 +570,30 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
     _$searchStringAtom.reportWrite(value, super.searchString, () {
       super.searchString = value;
     });
+  }
+
+  final _$selectedAtom = Atom(name: '_AllFrenchisiViewModel.selected');
+
+  @override
+  List<String> get selected {
+    _$selectedAtom.reportRead();
+    return super.selected;
+  }
+
+  @override
+  set selected(List<String> value) {
+    _$selectedAtom.reportWrite(value, super.selected, () {
+      super.selected = value;
+    });
+  }
+
+  final _$getAllNotificationsAsyncAction =
+      AsyncAction('_AllFrenchisiViewModel.getAllNotifications');
+
+  @override
+  Future<dynamic> getAllNotifications() {
+    return _$getAllNotificationsAsyncAction
+        .run(() => super.getAllNotifications());
   }
 
   final _$changeDefAddressAsyncAction =
@@ -934,6 +974,17 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
   }
 
   @override
+  List<Frainchise> getDairys(int outletType) {
+    final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
+        name: '_AllFrenchisiViewModel.getDairys');
+    try {
+      return super.getDairys(outletType);
+    } finally {
+      _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   dynamic lookforNearestFranchiseForTakAway() {
     final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
         name: '_AllFrenchisiViewModel.lookforNearestFranchiseForTakAway');
@@ -973,6 +1024,7 @@ selectedFranchise: ${selectedFranchise},
 loadingMessage: ${loadingMessage},
 outletType: ${outletType},
 frainchise: ${frainchise},
+notifications: ${notifications},
 frainchiseHomeData: ${frainchiseHomeData},
 distanceMatrix: ${distanceMatrix},
 frainchiseMain: ${frainchiseMain},
@@ -981,7 +1033,8 @@ custAdrress: ${custAdrress},
 custName: ${custName},
 custAdrressCaption: ${custAdrressCaption},
 offersMain: ${offersMain},
-searchString: ${searchString}
+searchString: ${searchString},
+selected: ${selected}
     ''';
   }
 }

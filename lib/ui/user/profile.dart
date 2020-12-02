@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_kitchen/ui/cantact/contactUs_2.dart';
 import 'package:cloud_kitchen/ui/grivience/grievance_1.dart';
+import 'package:cloud_kitchen/ui/outlettypes/outlettypes.dart';
 import 'package:cloud_kitchen/ui/terms/terms.dart';
 import 'package:cloud_kitchen/ui/wallet/MadhviCreadits.dart';
 import 'package:cloud_kitchen/ui/user/editProfile.dart';
@@ -213,16 +214,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             'APP INFORMATION',style:Theme.of(context).textTheme.subtitle2.copyWith(color:Colors.grey,letterSpacing: 4)),
                           SizedBox(height: 20,),
 
-                          // Padding(
-                          //   padding: const EdgeInsets.all(8.0),
-                          //   child: Row(children: [
-                          //     Icon(Icons.restaurant,color: Colors.grey,),
-                          //     SizedBox(width: 8,),
-                          //     Text(
-                          //       'Our restaurents/Outlets',style:Theme.of(context).textTheme.subtitle1.copyWith(color:Colors.black)),
-                          //
-                          //   ],),
-                          // ),
+                          InkWell(
+                            onTap: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=> OutletTypes(widget.allFrenchisiViewModel)));
+
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(children: [
+                                Icon(Icons.restaurant,color: Colors.grey,),
+                                SizedBox(width: 8,),
+                                Text(
+                                  'Our restaurents/Outlets',style:Theme.of(context).textTheme.subtitle1.copyWith(color:Colors.black)),
+
+                              ],),
+                            ),
+                          ),
 
                           InkWell(
                             onTap: (){

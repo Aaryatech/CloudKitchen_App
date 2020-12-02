@@ -44,6 +44,8 @@ class _MenuDetailsState extends State<MenuDetails> {
           height: MediaQuery.of(context).size.height,
           child: Stack(
             children: [
+
+
               SingleChildScrollView(
                 child: Observer(
                   builder:(_)=> Container(
@@ -64,6 +66,7 @@ class _MenuDetailsState extends State<MenuDetails> {
 
                         Container(
                           padding: EdgeInsets.all(16),
+                          margin:widget.itemData.imageList.isEmpty?  EdgeInsets.only(top: 24):EdgeInsets.only(top: 4),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -1704,6 +1707,13 @@ class _MenuDetailsState extends State<MenuDetails> {
 
 
 
+              Positioned(
+                left: 5,
+                top: 5,
+                child: IconButton(icon: Icon(Icons.arrow_back_outlined,color: Colors.black,), onPressed: (){
+                  Navigator.pop(context);
+                }),
+              ),
 
 
 

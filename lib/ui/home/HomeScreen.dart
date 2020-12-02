@@ -7,6 +7,7 @@ import 'package:cloud_kitchen/network/model/response/ItemData.dart';
 import 'package:cloud_kitchen/network/model/response/SubCategoryData.dart';
 import 'package:cloud_kitchen/ui/home/dashboard.dart';
 import 'package:cloud_kitchen/ui/home/homeItem.dart';
+import 'package:cloud_kitchen/ui/notification/notificationui.dart';
 import 'package:cloud_kitchen/ui/user/locationScreen.dart';
 import 'package:cloud_kitchen/ui/order/menudetailspage.dart';
 import 'package:cloud_kitchen/ui/supportui/nodataavailable.dart';
@@ -839,6 +840,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 actions: [
                   IconButton(icon:Icon( Icons.arrow_drop_down), onPressed:(){
                     openAddressedBottomSheet();
+                  }),
+
+                  IconButton(icon:Icon( Icons.notifications), onPressed:(){
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=> NotificationsUi(widget.allFrenchisiViewModel)));
+
                   })
                 ],
 

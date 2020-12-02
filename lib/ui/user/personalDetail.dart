@@ -151,7 +151,7 @@ void generateTocken()async{
                                 TextField(
                                   controller: usernameController,
                                   textAlign: TextAlign.start,
-
+                                  autofillHints: [AutofillHints.name],
                                   keyboardType: TextInputType.text,
                                   onChanged: (str){
                                   personalDetailsViewModel.username=str;
@@ -183,6 +183,7 @@ void generateTocken()async{
                                   onChanged: (str) {
                                     personalDetailsViewModel.email=str;
                                     },
+                                  autofillHints: [AutofillHints.email],
                                   decoration: new InputDecoration(
                                     hintText: 'Enter Your Email Address',
                                     errorText: personalDetailsViewModel

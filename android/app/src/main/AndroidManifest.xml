@@ -79,7 +79,7 @@
         <!-- Update this value to your google maps api key. -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyD4PZa3KdtvG-IFSQL53Bi9_lSRCmuDIjY" />
+            android:value="AIzaSyDoZNitFuu1-UUwze_LpezI-qnd1g2r_CU" />
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"

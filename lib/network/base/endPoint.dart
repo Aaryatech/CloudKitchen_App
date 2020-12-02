@@ -34,6 +34,7 @@ class Auth{
 
 
   final saveContactUs='saveContactUs';
+  final snotificationList='getAllNotificationsForApp';
 
 
 

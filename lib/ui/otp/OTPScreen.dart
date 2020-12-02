@@ -19,6 +19,7 @@ class _OTPScreenState extends State<OTPScreen> {
 
   String errortext=null;
   String mobileno='';
+  int maxLength=13;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   MyLocalPrefes myLocalPrefes;
@@ -87,9 +88,18 @@ myLocalPrefes=MyLocalPrefes();
                             TextField(
                               enableSuggestions: true,
         textAlign: TextAlign.start,
-        keyboardType: TextInputType.number,
-        maxLength: 10,
+        keyboardType: TextInputType.phone,
+        autofillHints: [AutofillHints.telephoneNumber],
+        maxLength: maxLength,
         onChanged: (str){
+
+
+
+                                if(!str.characters.startsWith(Characters('+'))){
+                                  setState(() {
+                                    maxLength=10;
+                                  });
+                                }
                                 mobileno=str;
                     if(str.length==10){
                       setState(() {
@@ -101,6 +111,9 @@ myLocalPrefes=MyLocalPrefes();
                       });
                     }
         },
+
+                              autofocus: true,
+
         decoration: new InputDecoration(
           errorText: errortext,
           hintText: 'Enter Mobile Number',
@@ -115,6 +128,7 @@ myLocalPrefes=MyLocalPrefes();
                     ),
           ),
         ),
+
       ),
 
                              SizedBox(height: 20),
@@ -125,7 +139,9 @@ myLocalPrefes=MyLocalPrefes();
           onTap: ()  {
                   if(!otpViewModel.isLoading)
           {
-                  if(mobileno.trim().length==10) {
+
+
+                  if(mobileno.trim().length==maxLength) {
                     int otp=new Random().nextInt(888888) + 111111;
                     otpViewModel.mobileVerification(mobileno, '$otp').then((
                         value) async =>

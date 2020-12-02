@@ -112,6 +112,7 @@ class _OTPVerificationState extends State<OTPVerification> {
                 submittedFieldDecoration: _pinPutDecoration.copyWith(
                   borderRadius: BorderRadius.circular(20.0),
                 ),
+
                 selectedFieldDecoration: _pinPutDecoration,
                 followingFieldDecoration: _pinPutDecoration.copyWith(
                   borderRadius: BorderRadius.circular(5.0),

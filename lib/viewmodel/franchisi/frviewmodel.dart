@@ -1,7 +1,4 @@
 
-
-import 'dart:convert';
-
 import 'package:cloud_kitchen/local/prefs.dart';
 import 'package:cloud_kitchen/network/model/httpresponce.dart';
 import 'package:cloud_kitchen/network/model/request/PlaceOrder/OrderDetailList.dart';
@@ -17,11 +14,13 @@ import 'package:cloud_kitchen/network/model/response/OrderHistory.dart';
 import 'package:cloud_kitchen/network/model/response/distancematrics/distancematricsone.dart';
 import 'package:cloud_kitchen/network/model/response/franchiseMain.dart';
 import 'package:cloud_kitchen/network/model/response/franchiseoffers/offersmain.dart';
+import 'package:cloud_kitchen/network/model/response/notifications/notificationsmain.dart';
 import 'package:cloud_kitchen/network/model/response/placeorder/placeordermain.dart';
 import 'package:cloud_kitchen/network/repository/additionalcharges/additionalchargesRepo.dart';
 import 'package:cloud_kitchen/network/repository/allFranchiseRepo.dart';
 import 'package:cloud_kitchen/network/repository/customerAddressRepo.dart';
 import 'package:cloud_kitchen/network/repository/distancematrixrepo.dart';
+import 'package:cloud_kitchen/network/repository/notification/notificationrepo.dart';
 import 'package:cloud_kitchen/network/repository/order/orderrepo.dart';
 import 'package:cloud_kitchen/network/repository/orderHistoryRepo.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +40,7 @@ abstract class _AllFrenchisiViewModel with Store {
   MyLocalPrefes myLocalPrefes;
   DistancematrixRepo distancematrixRepo;
   CustomerAddressRepo customerAddressRepo;
+  NotificaionRepo notificaionRepo;
   AdditionalChargesAndOffersRepo additionalChargesAndOffersRepo;
 
 
@@ -145,6 +145,9 @@ abstract class _AllFrenchisiViewModel with Store {
   List<Frainchise> frainchise;
 
   @observable
+  NotificationMain notifications;
+
+  @observable
   FranchiseId frainchiseHomeData;
 
 
@@ -175,6 +178,8 @@ abstract class _AllFrenchisiViewModel with Store {
   @observable
   String searchString='';
 
+
+  @observable
   List<String> selected;
 
 
@@ -216,6 +221,7 @@ abstract class _AllFrenchisiViewModel with Store {
     orderHistoryRepo=OrderHistoryRepo();
     customerAddressRepo = CustomerAddressRepo();
     additionalChargesAndOffersRepo = AdditionalChargesAndOffersRepo();
+    notificaionRepo=NotificaionRepo();
   }
 
 
@@ -224,6 +230,20 @@ abstract class _AllFrenchisiViewModel with Store {
     currentIndex=int;
   }
 
+
+  @action
+  Future getAllNotifications()async{
+    isLoading=true;
+    HttpResponse httpResponse= await notificaionRepo.getNotificaions();
+
+    if(httpResponse.status==200){
+      notifications=httpResponse.data;
+      isLoading=false;
+    }else {
+      error = httpResponse.message;
+      isLoading = false;
+    }
+  }
 
   Future<bool> addAllItemsInCart(OrderHistoryItem orderHistoryItem){
     final future =Future((){
@@ -933,6 +953,7 @@ abstract class _AllFrenchisiViewModel with Store {
     List<Frainchise> filterid=[];
     await getAllFranchiseForTackAway();
 
+
     frainchise.forEach((element) {
       if(element.frType==outletType || element.frType==3){
         filterid.add(element);
@@ -970,6 +991,22 @@ abstract class _AllFrenchisiViewModel with Store {
       isLoading = false;
     }
   }
+
+
+  @action
+  List<Frainchise> getDairys(int outletType){
+    List<Frainchise> list=[];
+    list.clear();
+    getAllFranchiseForTackAway();
+
+      frainchise.forEach((element) {
+        if (element.frType == outletType || element.frType == 3) {
+          list.add(element);
+        }
+      });
+    return list;
+  }
+
 
 
   @action

@@ -418,6 +418,15 @@ class _LocationScreenState extends State<LocationScreen> {
                     onTap:(){ showImagePickerBottomSheet(context);},
                     child: Text( 'SET YOUR LOCATION', style:Theme.of(context).textTheme.button.copyWith(fontWeight: FontWeight.bold).copyWith(color:Theme.of(context).primaryColor))),
 
+
+                SizedBox(height: 20),
+
+                InkWell(
+                    onTap:(){ openAddressedBottomSheet();},
+                    child: Text( 'Address History', style:Theme.of(context).textTheme.button.copyWith(fontWeight: FontWeight.bold).copyWith(color:Theme.of(context).primaryColor))),
+
+
+
                 SizedBox(height: 40),
                 Text( 'We only access your location while you are using the app to improve your experience',style:Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.grey)),
                 // Text( '', style:Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.grey)),
@@ -428,5 +437,125 @@ class _LocationScreenState extends State<LocationScreen> {
         ),
       ),
     );
+  }
+
+  void openAddressedBottomSheet(){
+
+
+    allFrenchisiViewModel.getAddress();
+    showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        enableDrag: true,
+        builder: (BuildContext bc){
+          return StatefulBuilder(
+              builder: (context, setState) {
+
+                return Container(
+
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width,
+                  height: MediaQuery
+                      .of(context)
+                      .size
+                      .height*.5,
+                  padding: EdgeInsets.all(16),
+
+
+                  child: Observer(
+                    builder:(_)=>
+
+                        Column(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+
+                              Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text("Search Location",style: Theme.of(context).textTheme.headline6,),
+
+                                      IconButton(icon: Icon(Icons.close,), onPressed:(){
+                                        Navigator.pop(context);
+                                      })
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 4,
+                                  ),
+
+                                  Container(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    height: 1,
+                                    width: MediaQuery.of(context).size.width,
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+
+                                  allFrenchisiViewModel.isAddressLoading?Container( height: 2, child: LinearProgressIndicator(
+                                    valueColor:AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor) ,
+
+                                  )):
+
+                                  SizedBox(
+                                    height: MediaQuery.of(context).size.height*.3,
+                                    child: ListView.separated(
+                                        itemCount:  allFrenchisiViewModel.adressesMain.addressList.length,
+                                        separatorBuilder: (context, index) => Divider(
+                                          color: Colors.black,
+                                        ),
+                                        itemBuilder: (context, index) {
+                                          return ListTile(
+                                            onTap: (){
+
+                                              allFrenchisiViewModel.changeDefAddress(allFrenchisiViewModel.adressesMain.addressList[index]);
+
+                                              Navigator.pushAndRemoveUntil(context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          Dashboard()),(r) => false);
+
+                                            },
+                                            title: Text(allFrenchisiViewModel
+                                                .adressesMain
+                                                .addressList[index]
+                                                .addressCaption),
+
+                                            subtitle: Text(allFrenchisiViewModel
+                                                .adressesMain
+                                                .addressList[index]
+                                                .landmark),
+
+                                            leading: Image.asset('images/location_icn.png',width: 24,height: 24,color: Theme.of(context).primaryColor,),
+                                          );
+                                        }
+
+                                    ),
+                                  ),
+
+                                ],
+
+
+
+                              ),
+
+                            ]
+                        ),
+                  ),
+                );
+              }
+          );
+        }
+
+    );
+
   }
 }
