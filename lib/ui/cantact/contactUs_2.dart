@@ -43,6 +43,10 @@ final messageController = TextEditingController();
                      // width: 300,
                       ),
 
+                    SizedBox(
+                      height: 30,
+                    ),
+
                     TextField(
             textAlign: TextAlign.start,
             keyboardType: TextInputType.text,

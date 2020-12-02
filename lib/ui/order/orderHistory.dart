@@ -1,17 +1,23 @@
 import 'package:cloud_kitchen/network/model/response/DetailList.dart';
 import 'package:cloud_kitchen/network/model/response/OrderHistory.dart';
+import 'package:cloud_kitchen/network/model/response/Type.dart';
 import 'package:cloud_kitchen/ui/supportui/nodataavailable.dart';
 import 'package:cloud_kitchen/ui/wallet/MadhviCreadits.dart';
 import 'package:cloud_kitchen/ui/order/OrderSummary.dart';
 import 'package:cloud_kitchen/viewmodel/franchisi/frviewmodel.dart';
+import 'package:cloud_kitchen/viewmodel/type/typeviewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+TypeViewModel typeViewModelStore = TypeViewModel();
+
 class OrderHistory extends StatefulWidget {
 
   AllFrenchisiViewModel allFrenchisiViewModel;
+
   OrderHistory(this.allFrenchisiViewModel);
+
 
   @override
   _OrderHistoryState createState() => _OrderHistoryState();
@@ -19,9 +25,9 @@ class OrderHistory extends StatefulWidget {
 
 class _OrderHistoryState extends State<OrderHistory> {
 
+  final remarkController = TextEditingController();
 
-
-
+  List<Type> _type = [];
 List<Widget>  getItems(List<DetailList> list){
   List<Widget> widgets=[];
 
@@ -42,6 +48,7 @@ void initiateHelpCall(){
   void initState() {
     // TODO: implement initState
     widget.allFrenchisiViewModel.getOrderHistory();
+    typeViewModelStore.getType();
     super.initState();
   }
 
@@ -174,8 +181,23 @@ void initiateHelpCall(){
                       'TOTAL AMOUNT',
                       style:Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.grey)),
                   SizedBox(height: 4,),
-                  Text(
-                      '${item.totalAmt}',style:Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.bold).copyWith(color:Colors.black)),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                     Text(
+                        '${item.totalAmt}',style:Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.bold).copyWith(color:Colors.black)),
+
+                      InkWell(
+                        onTap: (){
+                          openGrievanceBottomSheet();
+                        },
+                        child: Text(
+                            'ADD GRIEVANCES',
+                            style:Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.bold).copyWith(color:Colors.redAccent)),
+                      ),
+              ],
+                  ),
 
                   SizedBox(
                     height: 4,
@@ -193,8 +215,6 @@ void initiateHelpCall(){
                     Text(
                         getOrderStatus(item.orderStatus),
                         style:Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.bold).copyWith(color:Colors.grey)),
-
-
 
 
 
@@ -244,4 +264,182 @@ void initiateHelpCall(){
     }
 
   }
+
+void openGrievanceBottomSheet(){
+
+
+ // allFrenchisiViewModel.getAddress();
+  showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      enableDrag: true,
+      builder: (BuildContext bc){
+        return StatefulBuilder(
+            builder: (context, setState) {
+
+              return Container(
+
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width,
+                height: MediaQuery
+                    .of(context)
+                    .size
+                    .height*.5,
+                padding: EdgeInsets.all(16),
+
+
+                child: Observer(
+                  builder:(_)=>
+
+                      Column(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+
+                            Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text("Add Grievances",style: Theme.of(context).textTheme.headline6,),
+
+                                    IconButton(icon: Icon(Icons.close,), onPressed:(){
+                                      Navigator.pop(context);
+                                    })
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 4,
+                                ),
+
+                                Container(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  height: 1,
+                                  width: MediaQuery.of(context).size.width,
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+
+                                 Observer(builder: (_) {
+                                   if (typeViewModelStore.typeMain != null) {
+                                     _type = typeViewModelStore.typeMain;
+                                   }
+                                   return Padding(
+                                     padding: const EdgeInsets.all(2.0),
+                                     child: FormField<String>(
+                                       builder: (FormFieldState<String> state) {
+                                         var dropdownValue1;
+                                         return InputDecorator(
+                                           decoration: InputDecoration(
+                                               errorStyle: TextStyle(
+                                                   color: Colors.grey, fontSize: 16.0),
+                                               hintText: 'Please Select Grievances',
+                                              // errorText: addPurposeStore.error.purposError,
+                                               border: OutlineInputBorder(
+                                                   borderRadius: BorderRadius.circular(2.0))),
+                                           isEmpty: dropdownValue1 == '',
+                                           child: DropdownButtonHideUnderline(
+                                             child: DropdownButton<Type>(
+                                               value: dropdownValue1,
+                                               hint: Text("Please Select Grievances"),
+                                               isDense: true,
+                                               onChanged: (Type newValue) {
+                                                 setState(() {
+                                                   dropdownValue1 = newValue;
+                                                   state.didChange(newValue.caption);
+
+                                                 });
+                                               },
+                                               items: _type.map((Type value) {
+                                                 print('Dropdown Values $value');
+                                                 return DropdownMenuItem<Type>(
+                                                   value: value,
+                                                   child: Text(value.caption),
+                                                 );
+
+                                               }).toList(),
+                                             ),
+                                           ),
+                                         );
+                                       },
+                                     ),
+                                   );
+                                 }),
+
+                                SizedBox(height: 10),
+
+                                TextField(
+                                  textAlign: TextAlign.start,
+                                  keyboardType: TextInputType.text,
+                                  controller: remarkController,
+                                  decoration: new InputDecoration(
+                                      hintText: 'Enter Remark',
+                                      // errorText: contactUSViewModel.contactUSErrorState.email,
+                                      prefixIcon: Icon(Icons.question_answer),
+                                      border: new OutlineInputBorder(
+                                        borderRadius: const BorderRadius.all(
+                                          const Radius.circular(2.0),
+                                        ),
+                                        borderSide: new BorderSide(
+                                          color: Colors.black,
+                                          width: 1.0,
+                                        ),
+                                      ),
+                                      isDense: true
+
+                                  ),
+
+                                ),
+                                SizedBox(height: 20),
+
+                                 Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Theme.of(context).primaryColor,
+                                      style: BorderStyle.solid,
+                                      width: 1.0,
+                                    ),
+                                    color: Theme.of(context).primaryColor,
+                                    borderRadius: BorderRadius.circular(2.0),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: Center(
+                                          child: Text(
+                                              "SAVE",
+                                              style:Theme.of(context).textTheme.button.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.white)),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+
+
+                              ],
+
+
+
+                            ),
+
+
+                          ]
+                      ),
+                ),
+              );
+            }
+        );
+      }
+
+  );
+
+}
 }

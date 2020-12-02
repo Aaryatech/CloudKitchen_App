@@ -84,6 +84,21 @@ mixin _$ProfileDetailsViewModel on _ProfileDetailsViewModel, Store {
     });
   }
 
+  final _$custDobAtom = Atom(name: '_ProfileDetailsViewModel.custDob');
+
+  @override
+  String get custDob {
+    _$custDobAtom.reportRead();
+    return super.custDob;
+  }
+
+  @override
+  set custDob(String value) {
+    _$custDobAtom.reportWrite(value, super.custDob, () {
+      super.custDob = value;
+    });
+  }
+
   final _$genderAtom = Atom(name: '_ProfileDetailsViewModel.gender');
 
   @override
@@ -243,6 +258,7 @@ username: ${username},
 email: ${email},
 phoneNumber: ${phoneNumber},
 address: ${address},
+custDob: ${custDob},
 gender: ${gender},
 customerDetails: ${customerDetails},
 loginStatus: ${loginStatus},
@@ -322,6 +338,21 @@ mixin _$ProfileDetailsErrorState on _ProfileDetailsErrorState, Store {
     });
   }
 
+  final _$custDobAtom = Atom(name: '_ProfileDetailsErrorState.custDob');
+
+  @override
+  String get custDob {
+    _$custDobAtom.reportRead();
+    return super.custDob;
+  }
+
+  @override
+  set custDob(String value) {
+    _$custDobAtom.reportWrite(value, super.custDob, () {
+      super.custDob = value;
+    });
+  }
+
   final _$genderAtom = Atom(name: '_ProfileDetailsErrorState.gender');
 
   @override
@@ -344,6 +375,7 @@ username: ${username},
 email: ${email},
 phoneNumber: ${phoneNumber},
 address: ${address},
+custDob: ${custDob},
 gender: ${gender},
 hasErrors: ${hasErrors}
     ''';

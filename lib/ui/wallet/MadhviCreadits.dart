@@ -92,8 +92,6 @@ class _MadhviCreditsState extends State<MadhviCredits> {
                              itemBuilder: (context, index) {
                             bool cr = madhvi[index].transcType == 'CR' ? true : false;
 
-
-
                             return ListTile(
                               title: Text('${madhvi[index].orderDate}'),
                               subtitle:Text( 'Paid for order :' + '${madhvi[index].billNo}') ,

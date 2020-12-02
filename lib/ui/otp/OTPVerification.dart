@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_kitchen/local/prefs.dart';
 import 'package:cloud_kitchen/ui/otp/OTPScreen.dart';
 import 'package:cloud_kitchen/ui/user/personalDetail.dart';
@@ -5,6 +7,7 @@ import 'package:cloud_kitchen/viewmodel/otp/otpviewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pinput/pin_put/pin_put.dart';
+
 
 
 final otpViewModel=OtpViewModel();
@@ -19,6 +22,7 @@ class OTPVerification extends StatefulWidget {
 }
 
 class _OTPVerificationState extends State<OTPVerification> {
+
 
 
   String enterdOtp;
@@ -38,7 +42,10 @@ class _OTPVerificationState extends State<OTPVerification> {
     // TODO: implement initState
     myLocalPrefes=MyLocalPrefes();
     super.initState();
+
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -120,6 +127,9 @@ class _OTPVerificationState extends State<OTPVerification> {
                   ),
                 ),
               ),
+
+
+
 
 
                          SizedBox(height: 16),
@@ -211,4 +221,7 @@ class _OTPVerificationState extends State<OTPVerification> {
           backgroundColor: isPositive?Colors.green:Colors.redAccent,
         ));
   }
+
+
 }
+

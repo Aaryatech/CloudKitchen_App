@@ -23,6 +23,7 @@ CustomerAddressRepo(){
 
  
  Future<HttpResponse> getCustomerAddresss(int custId) async{
+   print('Cust Id : ${custId}');
    HttpResponse httpResponse=HttpResponse();
     
  String params="?custId=$custId";

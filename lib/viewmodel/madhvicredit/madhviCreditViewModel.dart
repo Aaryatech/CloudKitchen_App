@@ -38,8 +38,6 @@ abstract class _MadhviCreditViewModel with Store{
   }
 
 
-
-
   @observable
   UserCredential result;
 

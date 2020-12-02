@@ -48,6 +48,7 @@ try{
 
 
   Future<HttpResponse> getFranchiseDetailsById(String id)async{
+  print('ID $id');
     HttpResponse httpResponse=HttpResponse();
 
     String param='?frId=$id&type=2&applicableFor=2&compId=1';

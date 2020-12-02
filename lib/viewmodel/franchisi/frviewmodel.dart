@@ -282,11 +282,6 @@ abstract class _AllFrenchisiViewModel with Store {
     myLocalPrefes.setDefType(mode);
   }
 
-
-
-
-
-
   setOutletType(int type)async{
     await myLocalPrefes.setSelectedOutletType(type);
     outletType=type;
@@ -462,6 +457,7 @@ abstract class _AllFrenchisiViewModel with Store {
   @action
   Future getAddress()async{
     isAddressLoading=true;
+
     HttpResponse httpResponse= await customerAddressRepo.getCustomerAddresss(myLocalPrefes.getCustId());
     isAddressLoading=false;
     if(httpResponse.status==200){

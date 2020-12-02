@@ -31,11 +31,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
-
-
-
-
-
   int currentPage=0;
 
   PageController _controller = PageController(
@@ -632,8 +627,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       ],
 
-
-
                     ),
 
 
@@ -704,7 +697,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
 
-
   void deliveryDialog(){
     showDialog(context: context,
       child: AlertDialog(
@@ -773,8 +765,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     child:
 
                 new AlertDialog(
-
-
 
                   title: new Text("Categories"),
 
@@ -1024,7 +1014,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         Navigator.push(context, MaterialPageRoute(builder: (context)=> TakeAway(allFrenchisiViewModel: widget.allFrenchisiViewModel,)));
 
                                       }, ),
-                                      Text('Take Away',style: Theme.of(context).textTheme.bodyText2.copyWith(color:widget.allFrenchisiViewModel.selectedDelMode==1?Theme.of(context).primaryColor :Colors.black,fontWeight: FontWeight.bold),),
+                                      Text('Takeaway',style: Theme.of(context).textTheme.bodyText2.copyWith(color:widget.allFrenchisiViewModel.selectedDelMode==1?Theme.of(context).primaryColor :Colors.black,fontWeight: FontWeight.bold),),
                                     ],
                                   ),
                                 ),
@@ -1092,8 +1082,8 @@ class _HomeScreenState extends State<HomeScreen> {
                            ):Container(),
                   ),
 
-                        (!allFrenchisiViewModel.isLoadingForFranchiseData)?
-                        allFrenchisiViewModel.frainchiseHomeData.offerData!=null ?    Container(
+                        (!widget.allFrenchisiViewModel.isLoadingForFranchiseData)?
+                        widget.allFrenchisiViewModel.frainchiseHomeData.offerData!=null ?    Container(
                           padding: EdgeInsets.only(top: 2,bottom: 8),
                           decoration: BoxDecoration(
                             border: Border.symmetric(vertical: BorderSide.none)
@@ -1176,7 +1166,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         (!widget.allFrenchisiViewModel.isLoading&&!widget.allFrenchisiViewModel.isLoadingForFranchiseData)?
                    (!widget.allFrenchisiViewModel.isLoadingForFranchiseData && widget.allFrenchisiViewModel.frainchiseHomeData.subCategoryData.isEmpty )? NoServiceAvailable(widget.allFrenchisiViewModel.custAdrress):
                      Column(
-                    children: allFrenchisiViewModel.isSerching? getSearchedList(): getChildViews(),
+                    children:  widget.allFrenchisiViewModel.isSerching? getSearchedList(): getChildViews(),
                   ):Container(),
 
                         SizedBox(height: 60,),
@@ -1194,7 +1184,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
 
 
-          (allFrenchisiViewModel.isLoading || allFrenchisiViewModel.isLoadingForFranchiseData)?Container(
+          ( widget.allFrenchisiViewModel.isLoading ||  widget.allFrenchisiViewModel.isLoadingForFranchiseData)?Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
             color: Colors.black.withOpacity(.3),
@@ -1658,7 +1648,7 @@ class _HomeItemState extends State<HomeItem> {
                                                                 height: 16,)),
                                                           SizedBox(width: 2,),
                                                           Text("  ${ widget.allFrenchisiViewModel.itemsIds.contains(widget.itemData.itemId)?
-                                                              allFrenchisiViewModel.getQuantityData(selectedQuestity,widget.itemData.itemId)??quantity:quantity} ",
+                                                          widget.allFrenchisiViewModel.getQuantityData(selectedQuestity,widget.itemData.itemId)??quantity:quantity} ",
                                                           ),
                                                           SizedBox(width: 2,),
                                                           InkWell(

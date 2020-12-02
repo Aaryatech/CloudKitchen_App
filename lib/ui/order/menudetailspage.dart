@@ -44,6 +44,8 @@ class _MenuDetailsState extends State<MenuDetails> {
           height: MediaQuery.of(context).size.height,
           child: Stack(
             children: [
+
+
               SingleChildScrollView(
                 child: Observer(
                   builder:(_)=> Container(
@@ -51,6 +53,22 @@ class _MenuDetailsState extends State<MenuDetails> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+
+
+                        new Positioned(
+                          top: 0.0,
+                          left: 0.0,
+                          right: 0.0,
+                          child: AppBar(
+                            title: Text(''),// You can add title here
+                            leading: new IconButton(
+                              icon: new Icon(Icons.arrow_back_outlined, color: Colors.white),
+                              onPressed: () => Navigator.of(context).pop(),
+                            ),
+                            backgroundColor: Colors.redAccent, //You can make this transparent
+                          ),),
+
+
                         widget.itemData.imageList.isNotEmpty?        SizedBox(
                           height: 250,
                           child: PageView(

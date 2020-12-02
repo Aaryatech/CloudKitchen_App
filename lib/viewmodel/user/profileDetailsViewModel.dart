@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:core';
 
 import 'package:cloud_kitchen/local/prefs.dart';
 import 'package:cloud_kitchen/network/model/httpresponce.dart';
@@ -36,8 +37,6 @@ abstract class _ProfileDetailsViewModel with Store{
   }
 
 
-
-
   @observable
   UserCredential result;
 
@@ -56,6 +55,9 @@ abstract class _ProfileDetailsViewModel with Store{
   String address='';
 
   @observable
+  String custDob='';
+
+  @observable
   int gender=0;
 
   @observable
@@ -67,8 +69,6 @@ abstract class _ProfileDetailsViewModel with Store{
 
   @observable
   String errorMessage='';
-
-
 
 
   @observable
@@ -97,9 +97,6 @@ abstract class _ProfileDetailsViewModel with Store{
   int getCustID(){
     return myLocalPrefes.getCustId();
   }
-
-
-
 
 
   @action
@@ -170,6 +167,7 @@ abstract class _ProfileDetailsViewModel with Store{
     email = customerDetails.emailId;
     phoneNumber = customerDetails.phoneNumber;
     address = customerDetails.address;
+    custDob = customerDetails.custDob;
     gender = customerDetails.gender;
 
     }
@@ -205,6 +203,9 @@ abstract class _ProfileDetailsErrorState with Store {
 
   @observable
   String address = null;
+
+  @observable
+  String custDob = null;
 
   @observable
   int gender = null;

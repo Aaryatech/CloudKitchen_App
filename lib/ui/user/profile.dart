@@ -160,7 +160,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         flex: 1,
                         child: InkWell(
                           onTap: (){
-                            index=1;
+                            setState(() {
+                              index=1;
+                            });
+
                             Navigator.push(context, MaterialPageRoute(builder: (context)=> MadhviCredits()));
 
                           },
@@ -180,15 +183,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: InkWell(
                           onTap: (){
                             setState(() {
-                              index=01;
+                              index=2;
                             });
                           },
 
                                               child: Column(
                               children:[
-                                Icon(Icons.settings,color:index==1?Theme.of(context).primaryColor:Colors.black,),
+                                Icon(Icons.settings,color:index==2?Theme.of(context).primaryColor:Colors.black,),
                                 Text(
-                                  'App Info',style:Theme.of(context).textTheme.subtitle1.copyWith(color:index==1?Theme.of(context).primaryColor:Colors.black)),
+                                  'App Info',style:Theme.of(context).textTheme.subtitle1.copyWith(color:index==2?Theme.of(context).primaryColor:Colors.black)),
 
                               ]
                           ),

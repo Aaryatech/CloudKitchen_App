@@ -593,6 +593,22 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
         .run(() => super.postPaymentService(orderId, status, paid, txStatus));
   }
 
+  final _$setCustNameAsyncAction =
+      AsyncAction('_AllFrenchisiViewModel.setCustName');
+
+  @override
+  Future setCustName(String name) {
+    return _$setCustNameAsyncAction.run(() => super.setCustName(name));
+  }
+
+  final _$setCustNumberAsyncAction =
+      AsyncAction('_AllFrenchisiViewModel.setCustNumber');
+
+  @override
+  Future setCustNumber(String name) {
+    return _$setCustNumberAsyncAction.run(() => super.setCustNumber(name));
+  }
+
   final _$getOrderHistoryAsyncAction =
       AsyncAction('_AllFrenchisiViewModel.getOrderHistory');
 
