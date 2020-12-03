@@ -27,6 +27,12 @@ class _LocationPickerUIState extends State<LocationPickerUI> {
   Completer<GoogleMapController> _controller = Completer();
 
 
+ Future<void> _onMapCreated(GoogleMapController controller) async {
+   mapcController=controller;
+   checkLocationPermisionStatus();
+   // getCurrentLocation();
+ }
+
   void animateCamera(GoogleMapController googleMapController) {
     LatLng latLng = LatLng(45.521563, -122.677433);
     googleMapController.animateCamera(CameraUpdate.newCameraPosition(
@@ -125,7 +131,7 @@ class _LocationPickerUIState extends State<LocationPickerUI> {
   bool isCuurentLocation=false;
 
   Future getCurrentLocation() async {
-    // mapcController = await _controller.future;
+    mapcController = await _controller.future;
 
     setState(() {
       isCuurentLocation=true;
@@ -150,12 +156,12 @@ String selected='Home';
   void animateCameraPosition(Position position){
 
 
-    // _controller.animateCamera(
-    //     CameraUpdate.newCameraPosition(CameraPosition(
-    //         bearing: 192.8334901395799,
-    //         target: LatLng(position.latitude, position.longitude),
-    //         tilt: 50.440717697143555,
-    //         zoom: 20.151926040649414)));
+    mapcController.animateCamera(
+        CameraUpdate.newCameraPosition(CameraPosition(
+            bearing: 192.8334901395799,
+            target: LatLng(position.latitude, position.longitude),
+            tilt: 50.440717697143555,
+            zoom: 20.151926040649414)));
 
 
     getAdressbyLatLog(LatLng(position.latitude, position.longitude));
@@ -182,11 +188,13 @@ String selected='Home';
 
   BitmapDescriptor pinLocationIcon;
   void setCustomMapPin() async {
-    // pinLocationIcon = await BitmapDescriptor.fromAssetImage(
-    //     ImageConfiguration(size:Size(100,150)),
-    //     'images/place_pointer.png');
+    pinLocationIcon = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(size:Size(100,150)),
+        'images/place_pointer.png');
   }
 
+
+ GoogleMapController mapcController;
 
   void addMarker(LatLng latlng, String info) {
     final marker = Marker(
@@ -224,9 +232,7 @@ String selected='Home';
               compassEnabled: true,
             mapType: MapType.normal,
             markers:  _markers.values.toSet(),
-              onMapCreated: (GoogleMapController controller) {
-                _controller.complete(controller);
-              },
+              onMapCreated: _onMapCreated,
               initialCameraPosition: CameraPosition(
                 target: currentPosition,
                 zoom: 1,

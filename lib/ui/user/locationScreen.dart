@@ -384,7 +384,7 @@ class _LocationScreenState extends State<LocationScreen> {
 
                       // FirebaseCrashlytics.instance.crash();
                       // Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=> MapSample()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=> LocationPickerUI()));
                       // Navigator.push(context, MaterialPageRoute(builder: (context)=> MapUiPage()));
 
                     },
