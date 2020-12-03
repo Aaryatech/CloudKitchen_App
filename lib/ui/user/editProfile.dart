@@ -2,6 +2,7 @@ import 'package:cloud_kitchen/local/prefs.dart';
 import 'package:cloud_kitchen/network/model/request/SaveCustomer.dart';
 import 'package:cloud_kitchen/viewmodel/franchisi/frviewmodel.dart';
 import 'package:cloud_kitchen/viewmodel/user/profileDetailsViewModel.dart';
+import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
@@ -42,7 +43,6 @@ void dispose() {
   addressController.dispose();
   super.dispose();
 }
-
 
 
 @override
@@ -142,28 +142,49 @@ void dispose() {
               ),
             ),
 
-              SizedBox( height: 10,),
+                            SizedBox( height: 10,),
 
-               TextField(
-                   controller: emailController,
-              textAlign: TextAlign.start,
-              keyboardType: TextInputType.emailAddress,
-              onChanged: ((str)  {profileDetailsViewModel.email=str;}),
-              decoration: new InputDecoration(
-                      hintText: 'Enter Your Email Address',
-                      errorText: profileDetailsViewModel.profileDetailsErrorState.email,
-                      prefixIcon: Icon(Icons.email),
-                      border: new OutlineInputBorder(
-                        borderRadius: const BorderRadius.all(
-                          const Radius.circular(2.0),
-                        ),
-                        borderSide: new BorderSide(
-                          color: Colors.black,
-                          width: 1.0,
-                        ),
-                      ),
-              ),
-            ),
+                            TextField(
+                              controller: emailController,
+                              textAlign: TextAlign.start,
+                              keyboardType: TextInputType.emailAddress,
+                              onChanged: ((str)  {profileDetailsViewModel.email=str;}),
+                              decoration: new InputDecoration(
+                                hintText: 'Enter Your Email Address',
+                                errorText: profileDetailsViewModel.profileDetailsErrorState.email,
+                                prefixIcon: Icon(Icons.email),
+                                border: new OutlineInputBorder(
+                                  borderRadius: const BorderRadius.all(
+                                    const Radius.circular(2.0),
+                                  ),
+                                  borderSide: new BorderSide(
+                                    color: Colors.black,
+                                    width: 1.0,
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            SizedBox( height: 10,),
+
+                            profileDetailsViewModel.isLoading?Container():  DateTimePicker(
+                              type: DateTimePickerType.date,
+                              initialValue: '${DateTime(int.parse(profileDetailsViewModel.customerDetails.custDob.split('-')[0]),int.parse(profileDetailsViewModel.customerDetails.custDob.split('-')[1]),int.parse(profileDetailsViewModel.customerDetails.custDob.split('-')[2]))??""}',
+                              firstDate: DateTime(1940),
+                              lastDate: DateTime.now(),
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                              ),
+                              dateLabelText: 'Date Of Birth',
+                              onChanged: (val) {
+                                selecteddate=val;
+                              },
+                              validator: (val) {
+                                print(val);
+                                return null;
+                              },
+                              onSaved: (val) => print(val),
+                            ),
 
 
 
@@ -366,4 +387,7 @@ SizedBox(height: 8),
       ),
     );
   }
+
+String selecteddate;
+
 }

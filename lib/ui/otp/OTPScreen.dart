@@ -7,6 +7,7 @@ import 'package:cloud_kitchen/viewmodel/otp/otpviewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:regexpattern/regexpattern.dart';
+import 'package:sms_autofill/sms_autofill.dart';
 
 final otpViewModel=OtpViewModel();
 class OTPScreen extends StatefulWidget {
@@ -24,6 +25,7 @@ class _OTPScreenState extends State<OTPScreen> {
 
   MyLocalPrefes myLocalPrefes;
 
+  final mobileController = TextEditingController();
 
 
   @override
@@ -85,51 +87,56 @@ myLocalPrefes=MyLocalPrefes();
 
 
 
-                            TextField(
-                              enableSuggestions: true,
-        textAlign: TextAlign.start,
-        keyboardType: TextInputType.phone,
-        autofillHints: [AutofillHints.telephoneNumber],
-        maxLength: maxLength,
-        onChanged: (str){
+                      PhoneFieldHint(
+                        controller: mobileController,
+                      ),
 
 
-
-                                if(!str.characters.startsWith(Characters('+'))){
-                                  setState(() {
-                                    maxLength=10;
-                                  });
-                                }
-                                mobileno=str;
-                    if(str.length==10){
-                      setState(() {
-                        errortext=null;
-                      });
-                    }else{
-                      setState(() {
-                        errortext="Please enter valid mobile number";
-                      });
-                    }
-        },
-
-                              autofocus: true,
-
-        decoration: new InputDecoration(
-          errorText: errortext,
-          hintText: 'Enter Mobile Number',
-          prefixIcon: Icon(Icons.phone_android),
-          border: new OutlineInputBorder(
-                    borderRadius: const BorderRadius.all(
-                      const Radius.circular(2.0),
-                    ),
-                    borderSide: new BorderSide(
-                      color: Colors.black,
-                      width: 1.0,
-                    ),
-          ),
-        ),
-
-      ),
+      //                       TextField(
+      //                         enableSuggestions: true,
+      //   textAlign: TextAlign.start,
+      //   keyboardType: TextInputType.phone,
+      //   autofillHints: [AutofillHints.telephoneNumber],
+      //   maxLength: maxLength,
+      //   onChanged: (str){
+      //
+      //
+      //
+      //                           if(!str.characters.startsWith(Characters('+'))){
+      //                             setState(() {
+      //                               maxLength=10;
+      //                             });
+      //                           }
+      //                           mobileno=str;
+      //               if(str.length==10){
+      //                 setState(() {
+      //                   errortext=null;
+      //                 });
+      //               }else{
+      //                 setState(() {
+      //                   errortext="Please enter valid mobile number";
+      //                 });
+      //               }
+      //   },
+      //
+      //                         autofocus: true,
+      //
+      //   decoration: new InputDecoration(
+      //     errorText: errortext,
+      //     hintText: 'Enter Mobile Number',
+      //     prefixIcon: Icon(Icons.phone_android),
+      //     border: new OutlineInputBorder(
+      //               borderRadius: const BorderRadius.all(
+      //                 const Radius.circular(2.0),
+      //               ),
+      //               borderSide: new BorderSide(
+      //                 color: Colors.black,
+      //                 width: 1.0,
+      //               ),
+      //     ),
+      //   ),
+      //
+      // ),
 
                              SizedBox(height: 20),
 
@@ -140,7 +147,7 @@ myLocalPrefes=MyLocalPrefes();
                   if(!otpViewModel.isLoading)
           {
 
-
+                  mobileno=mobileController.text;
                   if(mobileno.trim().length==maxLength) {
                     int otp=new Random().nextInt(888888) + 111111;
                     otpViewModel.mobileVerification(mobileno, '$otp').then((

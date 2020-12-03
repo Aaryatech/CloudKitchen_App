@@ -35,6 +35,9 @@ class Auth{
 
   final saveContactUs='saveContactUs';
   final snotificationList='getAllNotificationsForApp';
+  final getGrievancetype='getAllGrievancesInstructns?compId=1';
+
+  final addGrievancetype='saveGrievanceOfOrderForApp';
 
 
 

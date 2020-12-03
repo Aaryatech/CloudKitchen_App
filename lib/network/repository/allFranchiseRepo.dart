@@ -52,7 +52,7 @@ try{
 
     String param='?frId=$id&type=2&applicableFor=2&compId=1';
 
-    Response responce=await httpClient.post('${endPoints.Auth().homeData}$param');
+    Response responce=await httpClient.get('http://107.180.91.43:8080/uploads/appjson/$id.json');
     // print(responce.data);
 
     try{

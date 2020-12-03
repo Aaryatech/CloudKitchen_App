@@ -70,6 +70,22 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
     });
   }
 
+  final _$isUpdateAvailableAtom =
+      Atom(name: '_AllFrenchisiViewModel.isUpdateAvailable');
+
+  @override
+  bool get isUpdateAvailable {
+    _$isUpdateAvailableAtom.reportRead();
+    return super.isUpdateAvailable;
+  }
+
+  @override
+  set isUpdateAvailable(bool value) {
+    _$isUpdateAvailableAtom.reportWrite(value, super.isUpdateAvailable, () {
+      super.isUpdateAvailable = value;
+    });
+  }
+
   final _$isAddressLoadingAtom =
       Atom(name: '_AllFrenchisiViewModel.isAddressLoading');
 
@@ -243,6 +259,22 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
     });
   }
 
+  final _$isLoadingForTypeAtom =
+      Atom(name: '_AllFrenchisiViewModel.isLoadingForType');
+
+  @override
+  bool get isLoadingForType {
+    _$isLoadingForTypeAtom.reportRead();
+    return super.isLoadingForType;
+  }
+
+  @override
+  set isLoadingForType(bool value) {
+    _$isLoadingForTypeAtom.reportWrite(value, super.isLoadingForType, () {
+      super.isLoadingForType = value;
+    });
+  }
+
   final _$isLoadingForHistoryAtom =
       Atom(name: '_AllFrenchisiViewModel.isLoadingForHistory');
 
@@ -337,6 +369,23 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
   set placeOrderModel(PlaceOrderModel value) {
     _$placeOrderModelAtom.reportWrite(value, super.placeOrderModel, () {
       super.placeOrderModel = value;
+    });
+  }
+
+  final _$grievanceTypeListMainAtom =
+      Atom(name: '_AllFrenchisiViewModel.grievanceTypeListMain');
+
+  @override
+  List<GrievanceType> get grievanceTypeListMain {
+    _$grievanceTypeListMainAtom.reportRead();
+    return super.grievanceTypeListMain;
+  }
+
+  @override
+  set grievanceTypeListMain(List<GrievanceType> value) {
+    _$grievanceTypeListMainAtom.reportWrite(value, super.grievanceTypeListMain,
+        () {
+      super.grievanceTypeListMain = value;
     });
   }
 
@@ -596,6 +645,14 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
         .run(() => super.getAllNotifications());
   }
 
+  final _$setOutletTypeAsyncAction =
+      AsyncAction('_AllFrenchisiViewModel.setOutletType');
+
+  @override
+  Future<dynamic> setOutletType(int type) {
+    return _$setOutletTypeAsyncAction.run(() => super.setOutletType(type));
+  }
+
   final _$changeDefAddressAsyncAction =
       AsyncAction('_AllFrenchisiViewModel.changeDefAddress');
 
@@ -655,6 +712,24 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
   @override
   Future<dynamic> getOrderHistory() {
     return _$getOrderHistoryAsyncAction.run(() => super.getOrderHistory());
+  }
+
+  final _$addGrievanceAsyncAction =
+      AsyncAction('_AllFrenchisiViewModel.addGrievance');
+
+  @override
+  Future<HttpResponse> addGrievance(int orderId, int typeId) {
+    return _$addGrievanceAsyncAction
+        .run(() => super.addGrievance(orderId, typeId));
+  }
+
+  final _$getGetGrievanceTypesAsyncAction =
+      AsyncAction('_AllFrenchisiViewModel.getGetGrievanceTypes');
+
+  @override
+  Future<dynamic> getGetGrievanceTypes() {
+    return _$getGetGrievanceTypesAsyncAction
+        .run(() => super.getGetGrievanceTypes());
   }
 
   final _$getAllFranchiseAsyncAction =
@@ -770,6 +845,17 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
         name: '_AllFrenchisiViewModel.setDelMode');
     try {
       return super.setDelMode(mode);
+    } finally {
+      _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic inAppReview() {
+    final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
+        name: '_AllFrenchisiViewModel.inAppReview');
+    try {
+      return super.inAppReview();
     } finally {
       _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
     }
@@ -1002,6 +1088,7 @@ items: ${items},
 selectedAddress: ${selectedAddress},
 filterList: ${filterList},
 isSerching: ${isSerching},
+isUpdateAvailable: ${isUpdateAvailable},
 isAddressLoading: ${isAddressLoading},
 deliveryInstruction: ${deliveryInstruction},
 isPlaceingOrder: ${isPlaceingOrder},
@@ -1013,12 +1100,14 @@ selectedDelMode: ${selectedDelMode},
 currentIndex: ${currentIndex},
 itemsIds: ${itemsIds},
 isLoading: ${isLoading},
+isLoadingForType: ${isLoadingForType},
 isLoadingForHistory: ${isLoadingForHistory},
 isNoDataAvailable: ${isNoDataAvailable},
 isLoadingForFranchiseData: ${isLoadingForFranchiseData},
 isLoadingForOffers: ${isLoadingForOffers},
 initiatePayment: ${initiatePayment},
 placeOrderModel: ${placeOrderModel},
+grievanceTypeListMain: ${grievanceTypeListMain},
 orderHistory: ${orderHistory},
 selectedFranchise: ${selectedFranchise},
 loadingMessage: ${loadingMessage},

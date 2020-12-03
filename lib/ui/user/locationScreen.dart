@@ -384,7 +384,7 @@ class _LocationScreenState extends State<LocationScreen> {
 
                       // FirebaseCrashlytics.instance.crash();
                       // Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=> LocationPickerUI()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=> MapSample()));
                       // Navigator.push(context, MaterialPageRoute(builder: (context)=> MapUiPage()));
 
                     },
@@ -506,7 +506,7 @@ class _LocationScreenState extends State<LocationScreen> {
                                   )):
 
                                   SizedBox(
-                                    height: MediaQuery.of(context).size.height*.3,
+                                    height: MediaQuery.of(context).size.height*.35,
                                     child: ListView.separated(
                                         itemCount:  allFrenchisiViewModel.adressesMain.addressList.length,
                                         separatorBuilder: (context, index) => Divider(

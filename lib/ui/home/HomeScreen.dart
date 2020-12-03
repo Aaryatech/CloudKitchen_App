@@ -1117,7 +1117,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                     InkWell(
                                       onTap: (){
                                         widget.allFrenchisiViewModel.setDelMode(2);
+                                        widget.allFrenchisiViewModel.myLocalPrefes.setDefFranchiseRest(0);
+                                        widget.allFrenchisiViewModel.myLocalPrefes.setdefFranchiseDairy(0);
+                                        widget.allFrenchisiViewModel.getAllFranchise();
                                         // deliveryDialog();
+
+
                                       },
                                       child: Row(
 
@@ -1126,6 +1131,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
                                             value: widget.allFrenchisiViewModel.selectedDelMode, groupValue: 2, onChanged: (flag){
                                             widget.allFrenchisiViewModel.setDelMode(2);
+                                            widget.allFrenchisiViewModel.myLocalPrefes.setDefFranchiseRest(0);
+                                            widget.allFrenchisiViewModel.myLocalPrefes.setdefFranchiseDairy(0);
+                                            widget.allFrenchisiViewModel.getAllFranchise();
+
                                             // deliveryDialog();
 
                                           }, ),
@@ -1496,9 +1505,10 @@ class _HomeItemState extends State<HomeItem> {
                         int quantity=1;
                         String selected='250g';
                         double selectedQuestity=0.25;
-
-                        Scaffold.of(context). showBottomSheet((context) =>
-                            StatefulBuilder(
+                        showModalBottomSheet(
+                            context: context,
+                            builder:(_)=>
+                                StatefulBuilder(
                                 builder: (BuildContext context, StateSetter setState /*You can rename this!*/) {
                                   return Container(
                                     height: 200,
@@ -1975,8 +1985,10 @@ class _HomeItemState extends State<HomeItem> {
                         double selectedQuestity=0.25;
 
 
-                        Scaffold.of(context). showBottomSheet((context) =>
-                            StatefulBuilder(
+                        showModalBottomSheet(
+                            context: context,
+                            builder:(_)=>
+                                StatefulBuilder(
                                 builder: (BuildContext context, StateSetter setState /*You can rename this!*/) {
                                   return Container(
                                     height: 200,
@@ -2214,9 +2226,10 @@ class _HomeItemState extends State<HomeItem> {
                                   String selected = '250g';
                                   double selectedQuestity = 0.25;
 
-                                  Scaffold.of(context)
-                                      .showBottomSheet((context) =>
-                                      StatefulBuilder(
+                                  showModalBottomSheet(
+                                      context: context,
+                                      builder:(_)=>
+                                          StatefulBuilder(
                                           builder: (
                                               BuildContext context,
                                               StateSetter setState
@@ -2695,8 +2708,9 @@ class _HomeItemState extends State<HomeItem> {
                                     String selected='250g';
                                     double selectedQuestity=0.25;
 
-                                    Scaffold.of(context). showBottomSheet((context) =>
-                                        StatefulBuilder(
+                                    showModalBottomSheet(
+                                      context: context,
+                                     builder:(_)=>   StatefulBuilder(
                                             builder: (BuildContext context, StateSetter setState /*You can rename this!*/) {
                                               return Container(
                                                 height: 200,

@@ -22,6 +22,11 @@
         android:icon="@mipmap/ic_launcher"
         tools:node="merge">
 
+        <meta-data android:name="com.google.android.gms.maps.API_OPTIONS"
+            android:value="B3H9HE845CFHYG"/>
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBa6Uh5fdUu0AsPWoJcPrpxrvoLVMiaNw0"/>
+
         <receiver android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
@@ -77,9 +82,6 @@
 
 
         <!-- Update this value to your google maps api key. -->
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDoZNitFuu1-UUwze_LpezI-qnd1g2r_CU" />
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"

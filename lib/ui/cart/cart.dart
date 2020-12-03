@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cashfree_pg/cashfree_pg.dart';
 import 'package:cloud_kitchen/network/model/httpresponce.dart';
 import 'package:cloud_kitchen/network/model/response/OfferList.dart';
@@ -9,6 +11,7 @@ import 'package:cloud_kitchen/viewmodel/franchisi/frviewmodel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 
@@ -28,13 +31,26 @@ class _CartState extends State<Cart> {
   void initState() {
     // TODO: implement initState
    widget.allFrenchisiViewModel.getOffersandAdditionalCharge();
+   inAppReview = InAppReview.instance;
+
+   WidgetsBinding.instance.addPostFrameCallback((_) {
+     inAppReview
+         .isAvailable()
+         .then(
+           (bool isAvailable) => setState(
+             () =>    widget.allFrenchisiViewModel.isUpdateAvailable = isAvailable && Platform.isAndroid,
+       ),
+     )
+         .catchError((error) => setState((){   widget.allFrenchisiViewModel.isUpdateAvailable = false;}));
+   });
+
     super.initState();
   }
 
 
   bool OffersOpen=false;
 
-
+   InAppReview inAppReview ;
   double appliedDescunt=0;
   String offerApplied='';
   String appliedCoupen="";
@@ -185,9 +201,9 @@ class _CartState extends State<Cart> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('${widget.allFrenchisiViewModel.frainchiseHomeData.franchise.frName}',style: Theme.of(context).textTheme.subtitle1,),
+                      Text('${widget.allFrenchisiViewModel.frainchiseHomeData.franchise?.frName??""}',style: Theme.of(context).textTheme.subtitle1,),
                       SizedBox(height: 4,),
-                      Text('${widget.allFrenchisiViewModel.frainchiseHomeData.franchise.frAddress}',style: Theme.of(context).textTheme.bodyText2,),
+                      Text('${widget.allFrenchisiViewModel.frainchiseHomeData.franchise?.frAddress??""}',style: Theme.of(context).textTheme.bodyText2,),
 
                       SizedBox(height: 8,),
                     ],
@@ -248,8 +264,6 @@ class _CartState extends State<Cart> {
                                       return Observer(
                                         builder:(_)=> InkWell(
                                           onTap: (){
-
-
                                             applyDiscount(widget.allFrenchisiViewModel.offersMain.offerList[index]);
                                           },
                                           child: Container(
@@ -499,22 +513,21 @@ class _CartState extends State<Cart> {
                         widget.allFrenchisiViewModel.placeOrder
                           (getItemTotal(), selectedPayMode, 0,
                             getDeliverCharges(), appliedDescunt, selecteddateTime).then((
-                            value) =>
-                        {
+                            value){
 
                           if(value.status == 200){
                             Scaffold.of(context).showSnackBar(
-                                SnackBar(content: Text("Order Placed Successfully"))),
+                                SnackBar(content: Text("Order Placed Successfully")));
 
-                            print('${widget.allFrenchisiViewModel.placeOrderModel.payMode}'),
+                            print('${widget.allFrenchisiViewModel.placeOrderModel.payMode}');
                             if( widget.allFrenchisiViewModel.placeOrderModel
                                 .payMode == 2){
-                              _doPayment(),
+                              _doPayment();
                             } else
                               {
                                 // Scaffold.of(context).showSnackBar(SnackBar(content: Text("Oredr Successfull"))),
-                                widget.allFrenchisiViewModel.emtyCart(),
-                                widget.allFrenchisiViewModel.setPage(0),
+                                widget.allFrenchisiViewModel.emtyCart();
+                                widget.allFrenchisiViewModel.setPage(0);
 
                               // Navigator.pushReplacementNamed(context,'/home'),}
                               }
@@ -587,10 +600,14 @@ class _CartState extends State<Cart> {
 
              widget.allFrenchisiViewModel.postPaymentService(
              widget.allFrenchisiViewModel.placeOrderModel.uuidNo, "1",
-    "0", '').then((value) {
+    "0", '').then((value){
                widget.allFrenchisiViewModel.emtyCart();
                widget.allFrenchisiViewModel.setPage(0);
-               Navigator.pop(context);
+
+
+               widget.allFrenchisiViewModel.emtyCart();
+                 widget.allFrenchisiViewModel.setPage(0);
+
 
              }).catchError((onError){
                Navigator.pop(context);
@@ -778,19 +795,27 @@ class _CartState extends State<Cart> {
             //Do something with the result
             if (key == "txStatus") {
               if (value == 'SUCCESS') {
+
+
                 Scaffold.of(context).showSnackBar(
                     SnackBar(content: Text("Oredr Successfull")));
                 widget.allFrenchisiViewModel.postPaymentService(
                     widget.allFrenchisiViewModel.placeOrderModel.uuidNo, "1",
-                    "1", value).then((value) {
-                  widget.allFrenchisiViewModel.emtyCart();
-                  widget.allFrenchisiViewModel.setPage(0);
+                    "1", value).then((value){
+                  // widget.allFrenchisiViewModel.emtyCart();
+                  // widget.allFrenchisiViewModel.setPage(0);
+
+                    widget.allFrenchisiViewModel.emtyCart();
+                    widget.allFrenchisiViewModel.setPage(0);
+
 
                 }
+
+
                 );
               } else {
-                Scaffold.of(context).showSnackBar(
-                    SnackBar(content: Text("Payment faild")));
+                  Scaffold.of(context).showSnackBar(
+                      SnackBar(content: Text("Payment faild")));
                 // widget.allFrenchisiViewModel.postPaymentService(widget.allFrenchisiViewModel.placeOrderModel.uuidNo, "1", "2", value).then((value) {
                 // widget.allFrenchisiViewModel.emtyCart();
 
@@ -829,9 +854,11 @@ return prise;
   //   );
   // }
 
+ void applyDiscount(OfferList offerList) {
 
-  void applyDiscount(OfferList offerList) {
     double calculateDiscount=0.0;
+
+    if(getItemTotal()!=0.0){
     calculateDiscount=(getItemTotal()/offerList.offerDetailList[0].discPer);
 
     if(calculateDiscount <= offerList.offerDetailList[0].offerLimit){
@@ -840,22 +867,26 @@ return prise;
         appliedDescunt=calculateDiscount;
         appliedCoupen=offerList.offerDetailList[0].couponCode;
       });
-    }else{
+    }else {
       setState(() {
-        appliedCoupen=offerList.offerDetailList[0].couponCode;
-        appliedDescunt=offerList.offerDetailList[0].offerLimit;
-
+        appliedCoupen = offerList.offerDetailList[0].couponCode;
+        appliedDescunt = offerList.offerDetailList[0].offerLimit;
       });
-
     }
-
-
-
+    }else{
+      appliedDescunt=0.0;
+    }
 
   }
 
 
+
+
   double getGrandTotal(){
+    if(getItemTotal()+getDeliverCharges()==0){
+      appliedDescunt=0;
+      return 0;
+    }
     return getItemTotal()+getDeliverCharges()-appliedDescunt;
   }
 

@@ -21,19 +21,14 @@ class LocationPickerUI extends StatefulWidget {
 class _LocationPickerUIState extends State<LocationPickerUI> {
 
  loc.Location location = new loc.Location();
-  LatLng currentPosition = LatLng(0, 0);
+  LatLng currentPosition = LatLng(23.6163503,72.3496002);
+
+
   Completer<GoogleMapController> _controller = Completer();
 
-  Future<void> _onMapCreated(GoogleMapController controller) async {
 
-    checkLocationPermisionStatus();
-    mapcController=controller;
-    // getCurrentLocation();
-  }
   void animateCamera(GoogleMapController googleMapController) {
-    LatLng latLng = LatLng(
-        0.000000 ,
-         0.000000 );
+    LatLng latLng = LatLng(45.521563, -122.677433);
     googleMapController.animateCamera(CameraUpdate.newCameraPosition(
         CameraPosition(target: latLng, zoom: 45)));
   }
@@ -125,7 +120,6 @@ class _LocationPickerUIState extends State<LocationPickerUI> {
 
 
 
-   GoogleMapController mapcController;
   bool isAddressAvailable=false;
 
   bool isCuurentLocation=false;
@@ -154,12 +148,14 @@ String selected='Home';
 
 
   void animateCameraPosition(Position position){
-    mapcController.animateCamera(
-        CameraUpdate.newCameraPosition(CameraPosition(
-            bearing: 192.8334901395799,
-            target: LatLng(position.latitude, position.longitude),
-            tilt: 50.440717697143555,
-            zoom: 20.151926040649414)));
+
+
+    // _controller.animateCamera(
+    //     CameraUpdate.newCameraPosition(CameraPosition(
+    //         bearing: 192.8334901395799,
+    //         target: LatLng(position.latitude, position.longitude),
+    //         tilt: 50.440717697143555,
+    //         zoom: 20.151926040649414)));
 
 
     getAdressbyLatLog(LatLng(position.latitude, position.longitude));
@@ -186,9 +182,9 @@ String selected='Home';
 
   BitmapDescriptor pinLocationIcon;
   void setCustomMapPin() async {
-    pinLocationIcon = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(size:Size(100,150)),
-        'images/place_pointer.png');
+    // pinLocationIcon = await BitmapDescriptor.fromAssetImage(
+    //     ImageConfiguration(size:Size(100,150)),
+    //     'images/place_pointer.png');
   }
 
 
@@ -220,9 +216,6 @@ String selected='Home';
         key: scaffoldState,
         body: Stack(
           children: [
-
-
-
             GoogleMap(
               zoomControlsEnabled: true,
               zoomGesturesEnabled: true,
@@ -231,7 +224,9 @@ String selected='Home';
               compassEnabled: true,
             mapType: MapType.normal,
             markers:  _markers.values.toSet(),
-              onMapCreated: _onMapCreated,
+              onMapCreated: (GoogleMapController controller) {
+                _controller.complete(controller);
+              },
               initialCameraPosition: CameraPosition(
                 target: currentPosition,
                 zoom: 1,
@@ -581,5 +576,6 @@ String selected='Home';
       ),
 
     );
-  }
-}
+   }
+ }
+

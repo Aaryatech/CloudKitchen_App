@@ -1,5 +1,6 @@
 import 'package:cloud_kitchen/network/model/response/DetailList.dart';
 import 'package:cloud_kitchen/network/model/response/OrderHistory.dart';
+import 'package:cloud_kitchen/network/repository/grievanceListRepo.dart';
 import 'package:cloud_kitchen/ui/supportui/nodataavailable.dart';
 import 'package:cloud_kitchen/ui/wallet/MadhviCreadits.dart';
 import 'package:cloud_kitchen/ui/order/OrderSummary.dart';
@@ -7,6 +8,7 @@ import 'package:cloud_kitchen/viewmodel/franchisi/frviewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 
 class OrderHistory extends StatefulWidget {
 
@@ -42,13 +44,14 @@ void initiateHelpCall(){
   void initState() {
     // TODO: implement initState
     widget.allFrenchisiViewModel.getOrderHistory();
+    widget.allFrenchisiViewModel.getGetGrievanceTypes();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
+  key: _scaffoldKey,
       appBar: AppBar(
           title: Text('Your Order History'),
         actions: [
@@ -64,7 +67,7 @@ void initiateHelpCall(){
         ),
       body:Observer(
         builder:(_)=>
-        widget.allFrenchisiViewModel.isLoadingForHistory?
+        (widget.allFrenchisiViewModel.isLoadingForHistory)?
               LinearProgressIndicator(
                 valueColor:AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor) ,
 
@@ -195,18 +198,89 @@ void initiateHelpCall(){
                         style:Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.bold).copyWith(color:Colors.grey)),
 
 
-
-
-
-                  ],),
+                    InkWell(
+                      onTap: (){
+                        showGrievanceAlert(item.orderId);
+                      },
+                      child:  Text(
+                         "Add Grievance",
+                          style:Theme.of(context).textTheme.button.copyWith(fontWeight: FontWeight.bold).copyWith(color:Colors.red)),
+                    )
+                  ],
+                  ),
                 ],
               ),
             ),
           );
-    },
+         },
         ),
       ),
     //  ),
+    );
+  }
+
+GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
+void  _showSnackbar(String msg,bool isPositive) {
+  _scaffoldKey.currentState .showSnackBar(
+      SnackBar(
+        content: Text(msg,style: TextStyle(color: Colors.white),),
+        duration: Duration(seconds: 3),
+        backgroundColor: isPositive?Colors.green:Colors.redAccent,
+      ));
+}
+
+ List<Widget>  getChildren(int orederId){
+  List<Widget> list=[];
+  widget.allFrenchisiViewModel.grievanceTypeListMain.forEach((element) {
+    list.add(InkWell(
+        onTap: (){
+
+
+
+          widget.allFrenchisiViewModel.addGrievance(orederId, element.grievanceId).then((value) {
+          if(value.status==200){
+            _showSnackbar("Grievance Raise", true);
+          }else{
+            _showSnackbar("Something Went Wrong", false);
+
+          }
+
+
+          }
+
+
+          );
+
+          Navigator.pop(context);
+        },
+        child: Text(element.caption)));
+  });
+
+return list;
+ }
+
+  void showGrievanceAlert(int orderId)async{
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Select Grievance Reason'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: getChildren(orderId),
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 

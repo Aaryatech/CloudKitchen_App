@@ -14,16 +14,19 @@ import 'package:cloud_kitchen/network/model/response/OrderHistory.dart';
 import 'package:cloud_kitchen/network/model/response/distancematrics/distancematricsone.dart';
 import 'package:cloud_kitchen/network/model/response/franchiseMain.dart';
 import 'package:cloud_kitchen/network/model/response/franchiseoffers/offersmain.dart';
+import 'package:cloud_kitchen/network/model/response/greviance/greviencetypemain.dart';
 import 'package:cloud_kitchen/network/model/response/notifications/notificationsmain.dart';
 import 'package:cloud_kitchen/network/model/response/placeorder/placeordermain.dart';
 import 'package:cloud_kitchen/network/repository/additionalcharges/additionalchargesRepo.dart';
 import 'package:cloud_kitchen/network/repository/allFranchiseRepo.dart';
 import 'package:cloud_kitchen/network/repository/customerAddressRepo.dart';
 import 'package:cloud_kitchen/network/repository/distancematrixrepo.dart';
+import 'package:cloud_kitchen/network/repository/grievanceListRepo.dart';
 import 'package:cloud_kitchen/network/repository/notification/notificationrepo.dart';
 import 'package:cloud_kitchen/network/repository/order/orderrepo.dart';
 import 'package:cloud_kitchen/network/repository/orderHistoryRepo.dart';
 import 'package:flutter/material.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
 part 'frviewmodel.g.dart';
@@ -36,6 +39,7 @@ abstract class _AllFrenchisiViewModel with Store {
 
 
   OrderHistoryRepo orderHistoryRepo;
+  GrievanceListRepo grievanceListRepo;
   AllFranchiseRepo allFranchiseRepo;
   MyLocalPrefes myLocalPrefes;
   DistancematrixRepo distancematrixRepo;
@@ -57,6 +61,9 @@ abstract class _AllFrenchisiViewModel with Store {
 
   @observable
   bool isSerching = false;
+
+ @observable
+  bool isUpdateAvailable = false;
 
 
   @observable
@@ -103,6 +110,10 @@ abstract class _AllFrenchisiViewModel with Store {
   @observable
   bool isLoading = false;
 
+
+   @observable
+  bool isLoadingForType = false;
+
   @observable
   bool isLoadingForHistory = true;
 
@@ -123,6 +134,10 @@ abstract class _AllFrenchisiViewModel with Store {
 
   @observable
   PlaceOrderModel placeOrderModel;
+
+
+  @observable
+  List<GrievanceType> grievanceTypeListMain;
 
 
   @observable
@@ -222,6 +237,7 @@ abstract class _AllFrenchisiViewModel with Store {
     customerAddressRepo = CustomerAddressRepo();
     additionalChargesAndOffersRepo = AdditionalChargesAndOffersRepo();
     notificaionRepo=NotificaionRepo();
+    grievanceListRepo=GrievanceListRepo();
   }
 
 
@@ -304,10 +320,26 @@ abstract class _AllFrenchisiViewModel with Store {
 
 
 
+  @action inAppReview(){
+    if(isUpdateAvailable)
+      {
+
+        Future.delayed(Duration(seconds: 3)).then((value) {
+          InAppReview.instance.requestReview();
+        });
+
+      }
+
+
+  }
 
 
 
-  setOutletType(int type)async{
+
+
+
+  @action
+ Future setOutletType(int type)async{
     await myLocalPrefes.setSelectedOutletType(type);
     outletType=type;
   }
@@ -392,6 +424,9 @@ abstract class _AllFrenchisiViewModel with Store {
     if(httpResponse.status==200){
       placeOrderModel = httpResponse.data;
       initiatePayment=true;
+      if(payMode!=2){
+        inAppReview();
+      }
 
     }
     return httpResponse;
@@ -530,6 +565,7 @@ abstract class _AllFrenchisiViewModel with Store {
 
   @action
   Future getAddress()async{
+    await fetchUserOrder();
     isAddressLoading=true;
     HttpResponse httpResponse= await customerAddressRepo.getCustomerAddresss(myLocalPrefes.getCustId());
     isAddressLoading=false;
@@ -625,6 +661,39 @@ abstract class _AllFrenchisiViewModel with Store {
 
   }
 
+
+  @action
+  Future<HttpResponse> addGrievance(int orderId,int typeId)async{
+    await fetchUserOrder();
+
+      isLoadingForHistory = true;
+      HttpResponse httpResponse = await grievanceListRepo.addGreivance(orderId,typeId,"",myLocalPrefes.getCustId());
+      if (httpResponse.status == 200) {
+        isLoadingForHistory = false;
+      } else {
+        error = httpResponse.message;
+        isLoadingForHistory = false;
+      }
+      return httpResponse;
+
+  }
+
+
+  @action
+  Future getGetGrievanceTypes()async{
+    // await fetchUserOrder();
+    isLoadingForType=true;
+      HttpResponse httpResponse = await grievanceListRepo.getGreivanceTypes();
+      if (httpResponse.status == 200) {
+
+    grievanceTypeListMain = httpResponse.data;
+        isLoadingForType=false;
+      } else {
+        error = httpResponse.message;
+        isLoadingForType=false;
+      }
+      return httpResponse;
+    }
 
   @action
   Future getAllFranchise()async{
