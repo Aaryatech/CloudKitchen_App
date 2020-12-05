@@ -287,7 +287,7 @@ void generateTocken()async{
                                         color: Theme
                                             .of(context)
                                             .primaryColor,
-                                        borderRadius: BorderRadius.circular(2.0),
+                                        borderRadius: BorderRadius.circular(8.0),
                                       ),
                                       child: Padding(
                                         padding: const EdgeInsets.all(10.0),
@@ -296,7 +296,7 @@ void generateTocken()async{
                                           children: <Widget>[
                                             Center(
                                               child: Text(
-                                                  "CONTINUE",
+                                                  "Continue",
                                                   style: Theme
                                                       .of(context)
                                                       .textTheme

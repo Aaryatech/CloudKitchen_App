@@ -7,12 +7,13 @@ ThemeData _buildLightTheme() {
   return base.copyWith(
 
     primaryColor: Color(0xffe23744),
-    primaryColorDark: Color(0xffE23D22),
+    primaryColorDark: Color(0xffe23744),
     accentColor:  Color(0xFFfafafa),
     canvasColor: const Color(0xFFfafafa),
     cardColor: Colors.white,
     buttonColor: Color(0xff212121),
     cardTheme: CardTheme(
+      elevation: 4,
       shape: RoundedRectangleBorder(
         side: BorderSide(color: Colors.white70, width: 1),
         borderRadius: BorderRadius.all(
@@ -29,12 +30,12 @@ ThemeData _buildLightTheme() {
       ),
 
       subtitle2: TextStyle(
-          fontFamily: "Open Sans regular",
+          fontFamily: "Metropolis",
           color: Colors.black
 
       ),
       subtitle1: TextStyle(
-          fontFamily: "Open Sans regular",
+          fontFamily: "Metropolis",
           color: Colors.black
 
       ),
@@ -76,7 +77,7 @@ ThemeData _buildLightTheme() {
 
 
     appBarTheme: AppBarTheme(
-      color: Color(0xffee5b5a),
+      color:Color(0xffe23744),
       iconTheme: IconThemeData(
         color: Colors.white, //change your color here
       ),

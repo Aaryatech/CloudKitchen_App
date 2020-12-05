@@ -57,8 +57,6 @@ abstract class _AddLocationViewModel with Store {
     }else if(httpResponse.status==500) {
       return false;
     }
-    isLoading=false;
-
 
   }
 

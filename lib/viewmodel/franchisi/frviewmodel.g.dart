@@ -680,6 +680,14 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
     return _$getAddressAsyncAction.run(() => super.getAddress());
   }
 
+  final _$deleteAddressIdAsyncAction =
+      AsyncAction('_AllFrenchisiViewModel.deleteAddressId');
+
+  @override
+  Future<dynamic> deleteAddressId(int id) {
+    return _$deleteAddressIdAsyncAction.run(() => super.deleteAddressId(id));
+  }
+
   final _$postPaymentServiceAsyncAction =
       AsyncAction('_AllFrenchisiViewModel.postPaymentService');
 

@@ -37,23 +37,11 @@ class _SplashScreenState extends State<SplashScreen> {
       // ),
 
         body: Container(
-            color: Theme.of(context).primaryColor,
+       color: Theme.of(context).primaryColor,
           child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(30.0),
-              child: SingleChildScrollView(
-                child: Column(
-
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text('Madhvi',style: Theme.of(context).textTheme.headline3.copyWith(color: Colors.white,fontWeight: FontWeight.bold),),
-                    Text(' Dairy and Restaurant food delivery app',style: Theme.of(context).textTheme.caption.copyWith(color: Colors.white,fontWeight: FontWeight.bold),),
-                  ],
-                ),
-              ),
+            child: Image.asset('images/splash.png',height: 250,width: 250,),
             ),
           ),
-        )
     );
 
   }

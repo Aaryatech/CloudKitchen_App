@@ -1,3 +1,4 @@
+import 'package:cloud_kitchen/local/staticUrls.dart';
 import 'package:cloud_kitchen/network/model/response/notifications/notifications.dart';
 import 'package:cloud_kitchen/viewmodel/franchisi/frviewmodel.dart';
 import 'package:flutter/cupertino.dart';
@@ -32,18 +33,33 @@ class _NotificationsUiState extends State<NotificationsUi> {
       title: Text("Notifications",style: Theme.of(context).textTheme.headline6.copyWith(color: Colors.white,)),
       ),
       body:widget.allFrenchisiViewModel.isLoading?LinearProgressIndicator():
-      ListView.builder(
-          itemCount: widget.allFrenchisiViewModel.notifications.notification.length,
-          itemBuilder:(context,index){
-          Notifications noti=widget.allFrenchisiViewModel.notifications.notification[index];
-          return ListTile(
-            title: Text(noti.title,style: Theme.of(context).textTheme.subtitle2,),
-            dense: true,
-            leading: Icon(Icons.notifications),
-            subtitle: Text(noti.description,style: Theme.of(context).textTheme.caption,),
-          ); })
+      Container(
+        padding: EdgeInsets.only(left: 16,right: 16),
+        child: ListView.separated(
+            separatorBuilder: (context, index) => Divider(
+              color: Colors.black54,
+            ),
+            itemCount: widget.allFrenchisiViewModel.notifications.notification.length,
+            itemBuilder:(context,index){
+            Notifications noti=widget.allFrenchisiViewModel.notifications.notification[index];
+            return ListTile(
+              title: Text(noti.title,style: Theme.of(context).textTheme.subtitle2,),
+              dense: true,
+              leading:noti.image.isNotEmpty?Container(
+                width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+              image: DecorationImage(image: NetworkImage('${imageUrl}${noti.image}'),
+              fit: BoxFit.cover))): Image.asset('images/ic_launcher.png'),
+              subtitle: Text(noti.description,style: Theme.of(context).textTheme.caption.copyWith(color: Colors.grey),),
+            ); }),
+      )
 
       ),
     ));
   }
 }
+
+
+

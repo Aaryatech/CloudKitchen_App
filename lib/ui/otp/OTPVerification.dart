@@ -74,7 +74,7 @@ class _OTPVerificationState extends State<OTPVerification> {
                     height: 35,
                   ),
 
-                  Text( 'OTP Verification', style:Theme.of(context).textTheme.headline5.copyWith(fontWeight: FontWeight.bold,color:Colors.black)),
+                  Text( 'OTP Verification', style:Theme.of(context).textTheme.headline5.copyWith(fontWeight: FontWeight.w700,color:Colors.black.withOpacity(0.8))),
                   SizedBox(
                    height: 10,
                 ),
@@ -83,7 +83,7 @@ class _OTPVerificationState extends State<OTPVerification> {
                     mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                    Text( 'Enter the OTP send to ', style:Theme.of(context).textTheme.subtitle2.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.grey)),
-                   Text( '+91- ${widget.mobileNumber}', style:Theme.of(context).textTheme.subtitle2.copyWith(fontWeight: FontWeight.w500).copyWith(color:Colors.black)),
+                   Text(widget.mobileNumber.length==10?'+91${widget.mobileNumber}':'${widget.mobileNumber}', style:Theme.of(context).textTheme.subtitle2.copyWith(fontWeight: FontWeight.w500).copyWith(color:Colors.black)),
                   ],
                   ),
 
@@ -115,7 +115,7 @@ class _OTPVerificationState extends State<OTPVerification> {
 
                 selectedFieldDecoration: _pinPutDecoration,
                 followingFieldDecoration: _pinPutDecoration.copyWith(
-                  borderRadius: BorderRadius.circular(5.0),
+                  borderRadius: BorderRadius.circular(8.0),
                   border: Border.all(
                     color: Theme.of(context).primaryColor.withOpacity(.5),
                   ),
@@ -128,14 +128,15 @@ class _OTPVerificationState extends State<OTPVerification> {
                            Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                   Text( 'Didnt receive the code? ', style:Theme.of(context).textTheme.subtitle2.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.grey)),
+                   Text( 'Didnt receive the code?', style:Theme.of(context).textTheme.subtitle2.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.grey)),
                    // Padding(
                    //    padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
                    //   child: Text( 'Resend now', style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold,),),
                    //  // child: Text( 'RESEND NOW', style:Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.grey).copyWith((decoration: TextDecoration.underline)),
                    // )
 
-                    FlatButton(onPressed: (){
+                    SizedBox(width: 4,),
+                    InkWell(onTap: (){
                       otpViewModel.mobileVerification(widget.mobileNumber, widget.otp).then((value) => {
 
                          if(value){
@@ -151,7 +152,7 @@ class _OTPVerificationState extends State<OTPVerification> {
                       });
 
 
-                    }, child:Text('RESEND NOW',style:Theme.of(context).textTheme.caption.copyWith(fontWeight: FontWeight.normal,color:Colors.red,decoration: TextDecoration.underline))),
+                    }, child:Text('Resend Now',style:Theme.of(context).textTheme.caption.copyWith(fontWeight: FontWeight.normal,color:Colors.red,decoration: TextDecoration.underline))),
                   ],
                   ),
 
@@ -173,7 +174,7 @@ class _OTPVerificationState extends State<OTPVerification> {
                 width: 1.0,
                         ),
                        color: Theme.of(context).primaryColor,
-                        borderRadius: BorderRadius.circular(2.0),
+                        borderRadius: BorderRadius.circular(8.0),
                     ),
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -182,7 +183,7 @@ class _OTPVerificationState extends State<OTPVerification> {
                   padding: const EdgeInsets.all(10.0),
                   child: Center(
                       child: Text(
-                         "VERIFY & PROCEED",
+                         "Verify & Proceed",
                           style:Theme.of(context).textTheme.button.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.white)),
                   ),
                 )

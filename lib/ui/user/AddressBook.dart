@@ -286,21 +286,11 @@ class _AddressBookState extends State<AddressBook> {
 
                 FocusScope.of(context).unfocus();
                 addLocationViewModel.saveUserDetails(saveUserDetails).then((value) => {
+                  print(value),
+                  Navigator.pop(context),
 
-                if(value){
-                    setState((){
-                  isLoading=false;
-                }),
-
-                              Navigator.pop(context),
-
-                }else{
-
-                }
                 }).catchError((onError){
-                  setState((){
-                    isLoading=false;
-                  });
+
 
                 });
                 }},

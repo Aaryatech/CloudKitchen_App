@@ -35,7 +35,7 @@ class _TermsState extends State<Terms> {
   Widget build(BuildContext context) {
     return SafeArea(child: Scaffold(
       appBar: AppBar(
-        title:Text(widget.data?"Terms & Condition":"About Us"),
+        title:Text(widget.data?"Terms & Condition":"About Us",style: Theme.of(context).textTheme.headline6.copyWith(color: Colors.white),),
       ),
 
       body: Observer(

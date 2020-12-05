@@ -10,6 +10,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:google_maps_webservice/geocoding.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:location_permissions/location_permissions.dart';
+import 'package:location/location.dart' as loc;
 
 AddLocationViewModel addLocationViewModel=AddLocationViewModel();
 class LocationScreen extends StatefulWidget {
@@ -20,11 +21,11 @@ class LocationScreen extends StatefulWidget {
 class _LocationScreenState extends State<LocationScreen> {
   final scaffoldState = GlobalKey<ScaffoldState>();
 
-
+  loc.Location location = new loc.Location();
   final places = new GoogleMapsPlaces(apiKey: "AIzaSyBahlnISPYhetj3q50ADqVE6SECypRGe4A");
 
 
-  String completeaddress='',floor='',howtoreach='',selected="HOME";
+  String completeaddress='',floor='',howtoreach='',selected="Home";
 
   void showImagePickerBottomSheet(BuildContext context){
 
@@ -76,11 +77,10 @@ class _LocationScreenState extends State<LocationScreen> {
 
                         TextFormField(
                           enabled: true,
+                          autofillHints: [AutofillHints.addressCity],
+                          enableSuggestions: true,
                           onChanged:(str) async{
-
-
                             PlacesSearchResponse response = await places.searchByText(str);
-
                             setState((){
                               selectedResult=null;
                               result=response.results;
@@ -106,7 +106,7 @@ class _LocationScreenState extends State<LocationScreen> {
                             children: [
                               Container(
                                 color:Colors.white,
-                                height: MediaQuery.of(context).size.height*.70,
+                                height: MediaQuery.of(context).size.height*.56,
                                 child: selectedResult==null?ListView.builder(
                                     itemCount: result.length,
                                     scrollDirection: Axis.vertical,
@@ -173,34 +173,34 @@ class _LocationScreenState extends State<LocationScreen> {
                                           children: [
                                             FilterChip(
                                               shape: StadiumBorder(side: BorderSide(color: Colors.grey)),
-                                              label: Text("HOME",style: Theme.of(context).textTheme.caption,),
+                                              label: Text("Home",style: Theme.of(context).textTheme.caption,),
                                               padding: EdgeInsets.only(left: 12,right: 12),
                                               labelStyle: TextStyle(letterSpacing: 2, color: Colors.black),
 
-                                              selected: selected=="HOME",
+                                              selected: selected=="Home",
                                               selectedColor: Colors.transparent,
                                               // backgroundColor: Theme.of(context).primaryColor,
                                               onSelected: (flag) {
                                                 if(flag){
                                                   setState(() {
-                                                    selected="HOME";
+                                                    selected="Home";
                                                   });}
                                               },
                                             ),
 
                                             FilterChip(
                                               shape: StadiumBorder(side: BorderSide(color: Colors.grey)),
-                                              label: Text("WORK",style: Theme.of(context).textTheme.caption),
+                                              label: Text("Work",style: Theme.of(context).textTheme.caption),
                                               labelStyle: TextStyle(letterSpacing: 2, color: Colors.black),
                                               padding: EdgeInsets.only(left: 12,right: 12),
-                                              selected: selected=="WORK",
+                                              selected: selected=="Work",
                                               selectedColor: Colors.transparent,
                                               // backgroundColor: Theme.of(context).primaryColor,
                                               onSelected: (flag) {
                                                 setState(() {
                                                   if(flag)
                                                   {
-                                                    selected="WORK";
+                                                    selected="Work";
                                                   }
                                                 });
                                               },
@@ -209,15 +209,15 @@ class _LocationScreenState extends State<LocationScreen> {
                                             FilterChip(
                                               // avatar: Icon(Icons.close,color: Colors.black),
                                               shape: StadiumBorder(side: BorderSide(color: Colors.grey)),
-                                              label: Text("OTHER",style: Theme.of(context).textTheme.caption),
+                                              label: Text("Other",style: Theme.of(context).textTheme.caption),
                                               labelStyle: TextStyle(letterSpacing: 2, color: Colors.black),
                                               padding: EdgeInsets.only(left: 12,right: 12),
-                                              selected: selected=="OTHER",
+                                              selected: selected=="Other",
                                               selectedColor: Colors.transparent,
                                               // backgroundColor: Theme.of(context).primaryColor,
                                               onSelected: (flag) {
                                                 setState(() {
-                                                  selected="OTHER";
+                                                  selected="Other";
                                                 });
                                               },
                                             ),
@@ -330,6 +330,63 @@ class _LocationScreenState extends State<LocationScreen> {
     super.initState();
   }
 
+  bool _serviceEnabled=false;
+  Future<void> _requestService() async {
+    if (_serviceEnabled == null || !_serviceEnabled) {
+      final bool serviceRequestedResult = await location.requestService();
+      setState(() {
+        _serviceEnabled = serviceRequestedResult;
+      });
+      if (!serviceRequestedResult) {
+        return;
+      }
+    }else{
+
+    }
+  }
+
+  PermissionStatus permissionStatus;
+  Future<PermissionStatus> checkLocationPermisionStatus()async{
+    permissionStatus= await LocationPermissions().checkPermissionStatus();
+
+    if(permissionStatus==PermissionStatus.denied){
+      _showSnackbar('permission has been denied, Please set location manually or grant permission to proceed', false);
+
+      askForPermission();
+
+    }else if(permissionStatus==PermissionStatus.granted)
+    {
+      ServiceStatus serviceStatus=   await  checkifGpsActive();
+      {
+        _requestService();
+        _showSnackbar('Please start gps', false);
+
+      }
+
+
+    }else{
+      _showSnackbar('We need location to serve you better please grant location from setting', false);
+
+    }
+
+  }
+
+  Future<ServiceStatus> checkifGpsActive()async{
+    return  await LocationPermissions().checkServiceStatus();
+  }
+
+  void askForPermission()async{
+    PermissionStatus status= await LocationPermissions().requestPermissions();
+
+    if(status==loc.PermissionStatus.denied || status==loc.PermissionStatus.denied){
+
+    }else{
+      Navigator.push(context, MaterialPageRoute(builder: (context)=> LocationPickerUI()));
+
+    }
+    checkLocationPermisionStatus();
+  }
+
   void  _showSnackbar(String msg,bool isPositive) {
     scaffoldState.currentState.showSnackBar(
         SnackBar(
@@ -343,95 +400,149 @@ class _LocationScreenState extends State<LocationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: scaffoldState,
-      body: Center(
-        child: SingleChildScrollView(
-          child: Container(
-            margin: EdgeInsets.all(20.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+    return SafeArea(
+      child: Scaffold(
+        key: scaffoldState,
+        body: Center(
+          child: SingleChildScrollView(
+            child: Container(
+              margin: EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
 
-              children: [
-                Image.asset(
-                  "images/location.png",
-                  height: MediaQuery.of(context).size.height*0.30,
-                  // height: 400,
-                  // width: 300,
-                ),
+                children: [
+                  Image.asset(
+                    "images/location.png",
+                    height: MediaQuery.of(context).size.height*0.35,
+                    // height: 400,
+                    // width: 300,
+                  ),
 
-                SizedBox(height: 20),
-
-
-                Text( 'Hi, nice to meet you!', style:Theme.of(context).textTheme.headline5.copyWith(fontWeight: FontWeight.w700,color:Colors.black)),
-                SizedBox(
-                  height: 10,
-                ),
-                Text( 'Set your location to start exploring', style:Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.grey)),
-                Text( 'restaurants around you', style:Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.grey)),
-
-                SizedBox(
-                  height: 20,
-                ),
+                  SizedBox(height: 20),
 
 
-                SizedBox(height: 20),
+                  Text( 'Hi, nice to meet you!', style:Theme.of(context).textTheme.headline5.copyWith(fontWeight: FontWeight.w600,color:Colors.black)),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text( 'Set your location to start exploring', style:Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.grey)),
+                  Text( 'restaurants around you', style:Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.grey)),
 
-                Container(
-                  // height: 50.0,
-                  child: InkWell(
-                    onTap: () {
 
-                      // FirebaseCrashlytics.instance.crash();
-                      // Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=> LocationPickerUI()));
-                      // Navigator.push(context, MaterialPageRoute(builder: (context)=> MapUiPage()));
+                  SizedBox(height: 20),
 
-                    },
-                    child: Container(
-                      padding: EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        border: Border.all(
+                  Container(
+                    // height: 50.0,
+                    child: InkWell(
+                      onTap: () {
+
+                        // FirebaseCrashlytics.instance.crash();
+                        // Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
+                        askForPermission();
+
+
+                        // Navigator.push(context, MaterialPageRoute(builder: (context)=> MapUiPage()));
+
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Theme.of(context).primaryColor,
+                            style: BorderStyle.solid,
+                            width: 1.0,
+                          ),
                           color: Theme.of(context).primaryColor,
-                          style: BorderStyle.solid,
-                          width: 1.0,
-                        ),
-                        color: Theme.of(context).primaryColor,
-                        borderRadius: BorderRadius.circular(2.0),
+                          borderRadius: BorderRadius.circular(8.0),
 
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Icon(Icons.gps_fixed_outlined, color: Colors.white,),
-                          SizedBox(width: 8,),
-                          Text( "USE CURRENT LOCATION",
-                              style:Theme.of(context).textTheme.button.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.white))
-                        ],
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Icon(Icons.gps_fixed_outlined, color: Colors.white,),
+                            SizedBox(width: 8,),
+                            Text( "Use Current Location",
+                                style:Theme.of(context).textTheme.button.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.white))
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-                SizedBox(height: 20),
+                  SizedBox(height: 20),
 
-                InkWell(
-                    onTap:(){ showImagePickerBottomSheet(context);},
-                    child: Text( 'SET YOUR LOCATION', style:Theme.of(context).textTheme.button.copyWith(fontWeight: FontWeight.bold).copyWith(color:Theme.of(context).primaryColor))),
+                  InkWell(
+                      onTap:(){ showImagePickerBottomSheet(context);},
+                      child: Text( 'Set your location manually', style:Theme.of(context).textTheme.button.copyWith(fontWeight: FontWeight.bold).copyWith(color:Theme.of(context).primaryColor))),
+                  SizedBox(height: 16),
+                  Row(
+                      children: <Widget>[
+                        Expanded(
+                            child: Divider(
+                              color: Colors.grey,
+                            )
+                        ),
 
+                        Padding(
+                          padding: const EdgeInsets.only(left:8.0,right: 8.0),
+                          child: Text('OR', style: Theme
+                              .of(context)
+                              .textTheme
+                              .caption),
+                        ),
 
-                SizedBox(height: 20),
+                        Expanded(
+                            child: Divider(
+                              color: Colors.grey,
+                            )
+                        ),
+                      ]
+                  ),
 
-                InkWell(
-                    onTap:(){ openAddressedBottomSheet();},
-                    child: Text( 'Address History', style:Theme.of(context).textTheme.button.copyWith(fontWeight: FontWeight.bold).copyWith(color:Theme.of(context).primaryColor))),
+                  SizedBox(height: 24),
+                  //
+                  // InkWell(
+                  //     onTap:(){ openAddressedBottomSheet();},
+                  //     child: Text( 'Address history', style:Theme.of(context).textTheme.button.copyWith(fontWeight: FontWeight.bold).copyWith(color:Theme.of(context).primaryColor))),
 
+                  Container(
+                    // height: 50.0,
+                    child: InkWell(
+                      onTap: () {
 
+                        openAddressedBottomSheet();
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Theme.of(context).primaryColor,
+                            style: BorderStyle.solid,
+                            width: 1.0,
+                          ),
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.circular(8.0),
 
-                SizedBox(height: 40),
-                Text( 'We only access your location while you are using the app to improve your experience',style:Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.grey)),
-                // Text( '', style:Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.grey)),
-              ],
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            SizedBox(height: 28,width: 4,),
+                            Expanded(
+                              child: Text( "If your existing customer, Please select saved address",textAlign: TextAlign.center,
+                                  style:Theme.of(context).textTheme.caption.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.white)),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
 
+                  SizedBox(height: 45),
+                  Text( 'We only access your location while you are using the app to improve your experience',textAlign: TextAlign.center,style:Theme.of(context).textTheme.caption.copyWith(fontWeight: FontWeight.normal,).copyWith(color:Colors.grey.withOpacity(0.9))),
+                  // Text( '', style:Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.grey)),
+                ],
+
+              ),
             ),
           ),
         ),
@@ -480,24 +591,16 @@ class _LocationScreenState extends State<LocationScreen> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text("Search Location",style: Theme.of(context).textTheme.headline6,),
+                                      Text("Saved Addresses",style: Theme.of(context).textTheme.headline6,),
 
                                       IconButton(icon: Icon(Icons.close,), onPressed:(){
                                         Navigator.pop(context);
                                       })
                                     ],
                                   ),
+
                                   SizedBox(
                                     height: 4,
-                                  ),
-
-                                  Container(
-                                    color: Colors.grey.withOpacity(0.5),
-                                    height: 1,
-                                    width: MediaQuery.of(context).size.width,
-                                  ),
-                                  SizedBox(
-                                    height: 20,
                                   ),
 
                                   allFrenchisiViewModel.isAddressLoading?Container( height: 2, child: LinearProgressIndicator(
@@ -506,35 +609,38 @@ class _LocationScreenState extends State<LocationScreen> {
                                   )):
 
                                   SizedBox(
-                                    height: MediaQuery.of(context).size.height*.35,
+                                    height: MediaQuery.of(context).size.height*.39,
                                     child: ListView.separated(
                                         itemCount:  allFrenchisiViewModel.adressesMain.addressList.length,
                                         separatorBuilder: (context, index) => Divider(
-                                          color: Colors.black,
+                                          color: Colors.black54,
+                                          height: 1,
                                         ),
                                         itemBuilder: (context, index) {
                                           return ListTile(
+                                            minVerticalPadding: 16,
                                             onTap: (){
-
                                               allFrenchisiViewModel.changeDefAddress(allFrenchisiViewModel.adressesMain.addressList[index]);
 
                                               Navigator.pushAndRemoveUntil(context,
                                                   MaterialPageRoute(
                                                       builder: (context) =>
                                                           Dashboard()),(r) => false);
-
                                             },
+
                                             title: Text(allFrenchisiViewModel
                                                 .adressesMain
                                                 .addressList[index]
-                                                .addressCaption),
+                                                .addressCaption,style: Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.w500),softWrap: true,overflow: TextOverflow.fade,),
 
                                             subtitle: Text(allFrenchisiViewModel
                                                 .adressesMain
                                                 .addressList[index]
-                                                .landmark),
+                                                .landmark,style: Theme.of(context).textTheme.bodyText2.copyWith(color: Colors.grey)),
 
-                                            leading: Image.asset('images/location_icn.png',width: 24,height: 24,color: Theme.of(context).primaryColor,),
+                                            leading: getLogo(allFrenchisiViewModel
+                                                .adressesMain
+                                                .addressList[index].addressCaption),
                                           );
                                         }
 
@@ -556,6 +662,32 @@ class _LocationScreenState extends State<LocationScreen> {
         }
 
     );
+
+  }
+
+
+  Widget getLogo(String caption){
+    switch(caption.toLowerCase()){
+      case 'home':{
+        return Icon(Icons.home,color: Theme.of(context).primaryColor,);
+      }
+      break;
+
+
+      case 'work':{
+        return Icon(Icons.work,color: Theme.of(context).primaryColor);
+      }
+      break;
+
+
+      case 'other':{
+        return Icon(Icons.assistant_navigation,color: Theme.of(context).primaryColor);
+      }
+      break;
+
+
+    }
+
 
   }
 }

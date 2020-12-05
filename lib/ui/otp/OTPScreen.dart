@@ -67,7 +67,7 @@ myLocalPrefes=MyLocalPrefes();
                       ),
 
                                // Text( 'OTP Verification', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 30,),),
-                     Text( 'OTP Verification', style:Theme.of(context).textTheme.headline5.copyWith(fontWeight: FontWeight.w700,color:Colors.black)),
+                     Text( 'OTP verification', style:Theme.of(context).textTheme.headline5.copyWith(fontWeight: FontWeight.w700,color:Colors.black.withOpacity(0.8))),
                     SizedBox(
                        height: 10,
                     ),
@@ -75,11 +75,11 @@ myLocalPrefes=MyLocalPrefes();
                         mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                       // Text( 'We will send you an ', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.normal, fontSize: 15,),),
-                       Text( 'We will send you an ', style:Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.grey)),
-                       Text( 'One Time Password',  style:Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.bold).copyWith(color:Colors.grey)),
+                       Text( 'We will send you an ', style:Theme.of(context).textTheme.subtitle2.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.grey.withOpacity(.9))),
+                       Text( 'One Time Password',  style:Theme.of(context).textTheme.subtitle2.copyWith(fontWeight: FontWeight.bold).copyWith(color:Colors.grey)),
                       ],
                       ),
-                    Text( 'on this mobile number',  style:Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.grey)),
+                    Text( 'on this mobile number',  style:Theme.of(context).textTheme.subtitle2.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.grey)),
 
                               SizedBox(
                        height: 20,
@@ -89,54 +89,54 @@ myLocalPrefes=MyLocalPrefes();
 
                       PhoneFieldHint(
                         controller: mobileController,
+                        // child:  TextField(
+                        //
+                        //   enableSuggestions: true,
+                        //     textAlign: TextAlign.start,
+                        //     keyboardType: TextInputType.phone,
+                        //     autofillHints: [AutofillHints.telephoneNumber],
+                        //     maxLength: maxLength,
+                        //     onChanged: (str){
+                        //
+                        //     if(!str.characters.startsWith(Characters('+'))){
+                        //                               setState(() {
+                        //                                 maxLength=10;
+                        //                               });
+                        //                             }
+                        //                             mobileno=str;
+                        //                 if(str.length==10){
+                        //                   setState(() {
+                        //                     errortext=null;
+                        //                   });
+                        //                 }else{
+                        //                   setState(() {
+                        //                     errortext="Please enter valid mobile number";
+                        //                   });
+                        //                 }
+                        //     },
+                        //
+                        //                           autofocus: false,
+                        //
+                        //     decoration: new InputDecoration(
+                        //       errorText: errortext,
+                        //       hintText: 'Enter Mobile Number',
+                        //       prefixIcon: Icon(Icons.phone_android),
+                        //       border: new OutlineInputBorder(
+                        //                 borderRadius: const BorderRadius.all(
+                        //                   const Radius.circular(2.0),
+                        //                 ),
+                        //                 borderSide: new BorderSide(
+                        //                   color: Colors.black,
+                        //                   width: 1.0,
+                        //                 ),
+                        //       ),
+                        //     ),
+                        //
+                        //   ),
                       ),
 
 
-      //                       TextField(
-      //                         enableSuggestions: true,
-      //   textAlign: TextAlign.start,
-      //   keyboardType: TextInputType.phone,
-      //   autofillHints: [AutofillHints.telephoneNumber],
-      //   maxLength: maxLength,
-      //   onChanged: (str){
       //
-      //
-      //
-      //                           if(!str.characters.startsWith(Characters('+'))){
-      //                             setState(() {
-      //                               maxLength=10;
-      //                             });
-      //                           }
-      //                           mobileno=str;
-      //               if(str.length==10){
-      //                 setState(() {
-      //                   errortext=null;
-      //                 });
-      //               }else{
-      //                 setState(() {
-      //                   errortext="Please enter valid mobile number";
-      //                 });
-      //               }
-      //   },
-      //
-      //                         autofocus: true,
-      //
-      //   decoration: new InputDecoration(
-      //     errorText: errortext,
-      //     hintText: 'Enter Mobile Number',
-      //     prefixIcon: Icon(Icons.phone_android),
-      //     border: new OutlineInputBorder(
-      //               borderRadius: const BorderRadius.all(
-      //                 const Radius.circular(2.0),
-      //               ),
-      //               borderSide: new BorderSide(
-      //                 color: Colors.black,
-      //                 width: 1.0,
-      //               ),
-      //     ),
-      //   ),
-      //
-      // ),
 
                              SizedBox(height: 20),
 
@@ -148,7 +148,7 @@ myLocalPrefes=MyLocalPrefes();
           {
 
                   mobileno=mobileController.text;
-                  if(mobileno.trim().length==maxLength) {
+                  if(mobileController.text.length==10 ||mobileController.text.length==13  ||mobileController.text.length==11) {
                     int otp=new Random().nextInt(888888) + 111111;
                     otpViewModel.mobileVerification(mobileno, '$otp').then((
                         value) async =>
@@ -180,7 +180,7 @@ myLocalPrefes=MyLocalPrefes();
                     width: 1.0,
                             ),
                            color: Theme.of(context).primaryColor,
-                            borderRadius: BorderRadius.circular(2.0),
+                            borderRadius: BorderRadius.circular(8.0),
                         ),
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -189,7 +189,7 @@ myLocalPrefes=MyLocalPrefes();
                       padding: const EdgeInsets.all(10.0),
                       child: Center(
                           child: Text(
-                             "GET OTP",
+                             "Send OTP",
                               style:Theme.of(context).textTheme.button.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.white)),
 
                       ),

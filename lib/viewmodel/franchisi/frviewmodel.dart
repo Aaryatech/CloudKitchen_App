@@ -97,7 +97,7 @@ abstract class _AllFrenchisiViewModel with Store {
 
 
   @observable
-  int selectedDelMode = 2;
+  int selectedDelMode = 1;
 
 
   @observable

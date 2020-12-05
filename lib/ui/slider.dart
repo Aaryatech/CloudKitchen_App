@@ -184,7 +184,7 @@ int currentPage=0;
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                  Text( 'Order Your Food', style:Theme.of(context).textTheme.headline5.copyWith(color:Colors.black,fontWeight: FontWeight.w700)),
+                  Text( 'Order your food', style:Theme.of(context).textTheme.headline5.copyWith(color:Colors.black,fontWeight: FontWeight.w700)),
                   SizedBox(
                     height: 10,
                   ),
@@ -236,11 +236,11 @@ class MyPage2Widget extends StatelessWidget {
                   ),
 
           
-                  Text( 'Cooking Safe Food',  style:Theme.of(context).textTheme.headline5.copyWith(color:Colors.black,fontWeight: FontWeight.w700)),
+                  Text( 'Cooking safe food',  style:Theme.of(context).textTheme.headline5.copyWith(color:Colors.black,fontWeight: FontWeight.w700)),
                   SizedBox(
                     height: 10,
                   ),
-                  Text( 'We are maintain safty and we keep',style:Theme.of(context).textTheme.subtitle1.copyWith(color:Colors.grey)),
+                  Text( 'We are maintain safety and we keep',style:Theme.of(context).textTheme.subtitle1.copyWith(color:Colors.grey)),
                   Text( 'clean while making food', style:Theme.of(context).textTheme.subtitle1.copyWith(color:Colors.grey)),
                 
                   
@@ -299,12 +299,12 @@ class MyPage3Widget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                  Text( 'Quick Delivery', style:Theme.of(context).textTheme.headline5.copyWith(color:Colors.black,fontWeight: FontWeight.w700)),
+                  Text( 'Quick delivery', style:Theme.of(context).textTheme.headline5.copyWith(color:Colors.black,fontWeight: FontWeight.w700)),
                   SizedBox(
                     height: 10,
                   ),
-                  Text( 'Order your favorite meals will', style:Theme.of(context).textTheme.subtitle1.copyWith(color:Colors.grey)),
-                  Text( 'be immediately deliver',style:Theme.of(context).textTheme.subtitle1.copyWith(color:Colors.grey)),
+                  Text( 'Your favourite food order will', style:Theme.of(context).textTheme.subtitle1.copyWith(color:Colors.grey)),
+                  Text( 'be deliver immediately',style:Theme.of(context).textTheme.subtitle1.copyWith(color:Colors.grey)),
 
                    Image.asset(
               "images/intro-3.png", 

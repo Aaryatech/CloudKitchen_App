@@ -108,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Flexible(child: Row(
+                              Expanded(child: Row(
                                 children: [
                                   Container(
                                     child: Column(
@@ -159,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       mainAxisSize: MainAxisSize.max,
                                       children: [
                                         RadioListTile(
-                                          title: Text("Rating: High to low"),
+                                          title: Text("Rating: High to low",style: Theme.of(context).textTheme.bodyText2,),
                                           dense: true,
                                           toggleable: true,
                                           value: selectedSort,
@@ -177,7 +177,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
 
                                         RadioListTile(
-                                          title: Text("Cost: High to low"),
+                                          title: Text("Cost: High to low",style: Theme.of(context).textTheme.bodyText2),
                                           dense: true,
                                           groupValue: 2,
                                           toggleable: true,
@@ -195,7 +195,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
 
                                         RadioListTile(
-                                          title: Text("Cost: Low to high"),
+                                          title: Text("Cost: Low to high",style: Theme.of(context).textTheme.bodyText2),
                                           dense: true,
                                           groupValue: 1,
                                           toggleable: true,
@@ -652,7 +652,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       Navigator.push(context, MaterialPageRoute(builder: (context)=> LocationScreen()));
 
                                     },
-                                      child: Text('Add New Address',style: Theme.of(context).textTheme.headline6.copyWith(color: Theme.of(context).primaryColor),),
+                                      child: Text('Add New Address',style: Theme.of(context).textTheme.button.copyWith(color: Theme.of(context).primaryColor),),
                                     ),
                                   ],
                                 ),
@@ -675,8 +675,12 @@ class _HomeScreenState extends State<HomeScreen> {
     List<Widget> widgets=[];
     widget.allFrenchisiViewModel.frainchiseHomeData.offerData.forEach((element) {
       widgets.add(
-          Card(child: Image.network('${imageUrl}${element.imageList[0].imageName}',fit: BoxFit.contain,))
-      );
+          Container(
+              decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8.0),
+              image: DecorationImage(image: NetworkImage('${imageUrl}${element.imageList[0].imageName}'),
+                    fit: BoxFit.cover)
+      ),));
     });
 
     return widgets;
@@ -790,8 +794,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               itemBuilder: (context, index) {
                                 return ListTile(
                                   dense: true,
+
                                   onTap: (){
-                                    widget.allFrenchisiViewModel.changeDefAddress(widget.allFrenchisiViewModel.adressesMain.addressList[index]);
+                                    _animateToIndex(14.0);
                                     Navigator.pop(context);
                                   },
                                   title: Text( widget.allFrenchisiViewModel.frainchiseHomeData.subCategoryData[index].subCatName),
@@ -811,6 +816,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               appBar: AppBar(
 
+                elevation: 0,
                 title: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -818,21 +824,29 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: <Widget>[
                         Image.asset('images/place_icon.png',width: 28,height: 28,color: Colors.white,),
                         SizedBox(width: 4,),
-                        Observer(
-                          builder:(_)=> Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("${widget.allFrenchisiViewModel.isLoading?"":widget.allFrenchisiViewModel.custAdrressCaption}",style:Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.normal,color:Colors.white,),textAlign: TextAlign.center,overflow: TextOverflow.clip,),
-                              Text("${widget.allFrenchisiViewModel.isLoading?"":widget.allFrenchisiViewModel.custAdrress}",style:Theme.of(context).textTheme.caption.copyWith(fontWeight: FontWeight.normal,color:Colors.white,),textAlign: TextAlign.center,overflow: TextOverflow.clip,),
+                        Expanded(
+                          child: Observer(
+                            builder:(_)=> InkWell(
+                              onTap: (){
+                                openAddressedBottomSheet();
+                              },
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("${widget.allFrenchisiViewModel.isLoading?"":widget.allFrenchisiViewModel.custAdrressCaption}",style:Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.normal,color:Colors.white,),textAlign: TextAlign.center,overflow: TextOverflow.clip,),
+                                  Text("${widget.allFrenchisiViewModel.isLoading?"":widget.allFrenchisiViewModel.custAdrress}",style:Theme.of(context).textTheme.caption.copyWith( fontFamily: "Metropolis",fontWeight: FontWeight.normal,color:Colors.white,),textAlign: TextAlign.start,
+                                    overflow: TextOverflow.ellipsis,),
 
-                            ],
+                                ],
+                              ),
+                            ),
                           ),
                         ),
                       ],
 
                     ),
                     SizedBox(height: 4,),
-                    Container(height: 1,width: MediaQuery.of(context).size.width*0.8,
+                    Container(height: 1,width: MediaQuery.of(context).size.width*0.65,
                       color: Colors.white60,
                     )
                   ],
@@ -861,7 +875,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       shape: RoundedRectangleBorder(
                         side: BorderSide(color: Colors.white70, width: 1),
                         borderRadius: BorderRadius.all(
-                          Radius.circular(4),
+                          Radius.circular(8),
                         ),
                       ),
                       child:  Padding(
@@ -905,7 +919,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   builder: (_) =>
                       SingleChildScrollView(
                         child:  Container(
-                          margin: const EdgeInsets.only(left:8.0,right: 8,top:8,bottom: 4),
+                          margin: const EdgeInsets.only(top:8,bottom: 4),
                           child:
 
 
@@ -1022,8 +1036,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   Icon(Icons.fiber_manual_record, color: widget.allFrenchisiViewModel.outletType==1?Colors.white:Colors.grey,size: 10,),
                                                   SizedBox(width: 4,),
                                                   Text(
-                                                      "DAIRY PRODUCTS",
-                                                      style:Theme.of(context).textTheme.caption.copyWith(fontWeight: FontWeight.bold).copyWith(color:widget.allFrenchisiViewModel.outletType==1?Colors.white:Colors.black))
+                                                      "Dairy Products",
+                                                      style:Theme.of(context).textTheme.caption.copyWith(fontFamily: "Metropolis",fontWeight: FontWeight.bold).copyWith(color:widget.allFrenchisiViewModel.outletType==1?Colors.white:Colors.black))
                                                 ],
                                               ),
                                             ),
@@ -1071,8 +1085,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   Icon(Icons.fiber_manual_record, color: widget.allFrenchisiViewModel.outletType==2?Colors.white:Colors.grey,size: 10,),
                                                   SizedBox(width: 4,),
                                                   Text(
-                                                      "RESTURANT",
-                                                      style:Theme.of(context).textTheme.caption.copyWith(fontWeight: FontWeight.bold).copyWith(color:widget.allFrenchisiViewModel.outletType==2?Colors.white:Colors.black))
+                                                      "Restaurant",
+                                                      style:Theme.of(context).textTheme.caption.copyWith(fontFamily: "Metropolis",fontWeight: FontWeight.bold).copyWith(color:widget.allFrenchisiViewModel.outletType==2?Colors.white:Colors.black))
                                                 ],
                                               ),
                                             ),
@@ -1092,7 +1106,34 @@ class _HomeScreenState extends State<HomeScreen> {
                                 builder:(_)=> Row(
                                   children: [
 
+                                    InkWell(
+                                      onTap: (){
+                                        widget.allFrenchisiViewModel.setDelMode(2);
+                                        widget.allFrenchisiViewModel.myLocalPrefes.setDefFranchiseRest(0);
+                                        widget.allFrenchisiViewModel.myLocalPrefes.setdefFranchiseDairy(0);
+                                        widget.allFrenchisiViewModel.getAllFranchise();
+                                        // deliveryDialog();
 
+
+                                      },
+                                      child: Row(
+
+                                        children: [
+                                          Radio(
+                                            activeColor: Theme.of(context).primaryColor,
+                                            value: widget.allFrenchisiViewModel.selectedDelMode, groupValue: 2, onChanged: (flag){
+                                            widget.allFrenchisiViewModel.setDelMode(2);
+                                            widget.allFrenchisiViewModel.myLocalPrefes.setDefFranchiseRest(0);
+                                            widget.allFrenchisiViewModel.myLocalPrefes.setdefFranchiseDairy(0);
+                                            widget.allFrenchisiViewModel.getAllFranchise();
+
+                                            // deliveryDialog();
+
+                                          }, ),
+                                          Text('Delivery',style: Theme.of(context).textTheme.bodyText2.copyWith(fontFamily: "Metropolis",color:widget.allFrenchisiViewModel.selectedDelMode==2?Theme.of(context).primaryColor :Colors.black,fontWeight: FontWeight.bold),),
+                                        ],
+                                      ),
+                                    ),
                                     InkWell(
                                       onTap: (){
                                         widget.allFrenchisiViewModel.setDelMode(1);
@@ -1108,40 +1149,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                             Navigator.push(context, MaterialPageRoute(builder: (context)=> TakeAway(allFrenchisiViewModel: widget.allFrenchisiViewModel,)));
 
                                           }, ),
-                                          Text('Takeaway',style: Theme.of(context).textTheme.bodyText2.copyWith(color:widget.allFrenchisiViewModel.selectedDelMode==1?Theme.of(context).primaryColor :Colors.black,fontWeight: FontWeight.bold),),
+                                          Text('Takeaway',style: Theme.of(context).textTheme.bodyText2.copyWith(fontFamily: "Metropolis",color:widget.allFrenchisiViewModel.selectedDelMode==1?Theme.of(context).primaryColor :Colors.black,fontWeight: FontWeight.bold),),
                                         ],
                                       ),
                                     ),
 
 
-                                    InkWell(
-                                      onTap: (){
-                                        widget.allFrenchisiViewModel.setDelMode(2);
-                                        widget.allFrenchisiViewModel.myLocalPrefes.setDefFranchiseRest(0);
-                                        widget.allFrenchisiViewModel.myLocalPrefes.setdefFranchiseDairy(0);
-                                        widget.allFrenchisiViewModel.getAllFranchise();
-                                        // deliveryDialog();
 
-
-                                      },
-                                      child: Row(
-
-                                        children: [
-                                          Radio(
-
-                                            value: widget.allFrenchisiViewModel.selectedDelMode, groupValue: 2, onChanged: (flag){
-                                            widget.allFrenchisiViewModel.setDelMode(2);
-                                            widget.allFrenchisiViewModel.myLocalPrefes.setDefFranchiseRest(0);
-                                            widget.allFrenchisiViewModel.myLocalPrefes.setdefFranchiseDairy(0);
-                                            widget.allFrenchisiViewModel.getAllFranchise();
-
-                                            // deliveryDialog();
-
-                                          }, ),
-                                          Text('Delivery',style: Theme.of(context).textTheme.bodyText2.copyWith(color:widget.allFrenchisiViewModel.selectedDelMode==2?Theme.of(context).primaryColor :Colors.black,fontWeight: FontWeight.bold),),
-                                        ],
-                                      ),
-                                    ),
 
                                   ],
                                 ),
@@ -1162,7 +1176,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                               (!allFrenchisiViewModel.isLoadingForFranchiseData)?
                               (allFrenchisiViewModel.frainchiseHomeData.offerData !=null && allFrenchisiViewModel.frainchiseHomeData.offerData.isNotEmpty)?    Container(
-                                padding: EdgeInsets.only(top: 2,bottom: 8),
+                                padding: EdgeInsets.only(bottom: 16),
                                 decoration: BoxDecoration(
                                     border: Border.symmetric(vertical: BorderSide.none)
                                 ),
@@ -1172,7 +1186,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     widget.allFrenchisiViewModel.searchString==''?  SizedBox(
                                       height: 200,
                                       child: Padding(
-                                        padding: const EdgeInsets.only(top:2.0),
+                                        padding: const EdgeInsets.only(top:2.0,left: 12,right: 12),
                                         child: PageView(
                                           scrollDirection: Axis.horizontal,
                                           controller: _controller,
@@ -1196,6 +1210,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               (!widget.allFrenchisiViewModel.isLoading&&!widget.allFrenchisiViewModel.isLoadingForFranchiseData)?
                               (!widget.allFrenchisiViewModel.isLoadingForFranchiseData && widget.allFrenchisiViewModel.frainchiseHomeData.subCategoryData.isEmpty )? NoServiceAvailable(widget.allFrenchisiViewModel.custAdrress):
                               Column(
+
                                 children: allFrenchisiViewModel.isSerching? getSearchedList(): getChildViews(),
                               ):Container(),
 
@@ -1236,6 +1251,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
 
+
+  _animateToIndex(index) {
+    scrollController.animateTo(100*3.0,
+        duration: Duration(seconds: 1), curve: Curves.fastOutSlowIn);
+  }
+
   List<Widget> getSearchedList(){
 
 
@@ -1245,6 +1266,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Observer(
           builder: (_) => ListView.separated(
             shrinkWrap: true,
+            // controller: controller,
             separatorBuilder: (context, index) => Divider(
               color: Colors.black,
             ),
@@ -1265,6 +1287,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
 }
 
+final scrollController=ScrollController();
 
 
 class StickyHeaderList extends StatefulWidget {
@@ -1283,7 +1306,7 @@ class _StickyHeaderListState extends State<StickyHeaderList> {
     return StickyHeader(
       header: Container(
           width: MediaQuery.of(context).size.width,
-          padding: EdgeInsets.all(8),
+          padding: EdgeInsets.only(top:8,left: 16,bottom: 8,right: 8),
           color: Theme.of(context).primaryColor,
           child: Text('${widget.Data.subCatName}',style: Theme.of(context).textTheme.headline6.copyWith(color: Colors.white),)),
       content:  Container(
@@ -1291,7 +1314,7 @@ class _StickyHeaderListState extends State<StickyHeaderList> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             widget.Data.itemList.isNotEmpty? ListView.separated(
-              controller: ScrollController(),
+              controller: scrollController,
               shrinkWrap: true,
               separatorBuilder: (context, index) => Divider(
                 color: Colors.grey[400],
