@@ -234,7 +234,7 @@ class _LocationScreenState extends State<LocationScreen> {
                                               saveUserDetails.custAddressId= 0;
 
                                               saveUserDetails.addressCaption= selected;
-                                              saveUserDetails.address= "${completeaddress} - ${floor} - ${howtoreach}";
+                                              saveUserDetails.address= "${completeaddress} ~ ${floor} ~ ${howtoreach}";
                                               saveUserDetails.areaId= 0;
                                               saveUserDetails.area= null;
                                               saveUserDetails.landmark= "${selectedResult.formattedAddress}";

@@ -1161,7 +1161,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               // ),
 
                               (!allFrenchisiViewModel.isLoadingForFranchiseData)?
-                              allFrenchisiViewModel.frainchiseHomeData.offerData.isNotEmpty?    Container(
+                              (allFrenchisiViewModel.frainchiseHomeData.offerData !=null && allFrenchisiViewModel.frainchiseHomeData.offerData.isNotEmpty)?    Container(
                                 padding: EdgeInsets.only(top: 2,bottom: 8),
                                 decoration: BoxDecoration(
                                     border: Border.symmetric(vertical: BorderSide.none)

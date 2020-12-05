@@ -6,6 +6,8 @@ import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
+import 'AddressBook.dart';
+
 final profileDetailsViewModel = ProfileDetailsViewModel();
 class EditProfile extends StatefulWidget {
 
@@ -169,7 +171,7 @@ void dispose() {
 
                             profileDetailsViewModel.isLoading?Container():  DateTimePicker(
                               type: DateTimePickerType.date,
-                              initialValue: '${DateTime(int.parse(profileDetailsViewModel.customerDetails.custDob.split('-')[0]),int.parse(profileDetailsViewModel.customerDetails.custDob.split('-')[1]),int.parse(profileDetailsViewModel.customerDetails.custDob.split('-')[2]))??""}',
+                              initialValue: '${DateTime(int.parse(profileDetailsViewModel.customerDetails.custDob?.split('-')[0]),int.parse(profileDetailsViewModel.customerDetails.custDob?.split('-')[1]),int.parse(profileDetailsViewModel.customerDetails.custDob?.split('-')[2]))??'${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}'}',
                               firstDate: DateTime(1940),
                               lastDate: DateTime.now(),
                               decoration: InputDecoration(
@@ -246,16 +248,14 @@ void dispose() {
  TextField(
    controller: addressController,
               textAlign: TextAlign.start,
-              keyboardType: TextInputType.emailAddress,
-              onChanged: ((str) => profileDetailsViewModel.address),
+              keyboardType: TextInputType.number,
+              onChanged: ((str) => profileDetailsViewModel.address=str),
+              maxLength: 15,
               decoration: new InputDecoration(
-                      hintText: 'Address',
                       errorText: profileDetailsViewModel.profileDetailsErrorState.address,
                       //prefixIcon: Icon(Icons.message),
-                      prefixIcon: Padding(
-                      padding: const EdgeInsetsDirectional.only(start: 0.0),
-                      child: Icon(Icons.question_answer), // Change this icon as per your requirement
-                    ),
+                      prefixText: "GST No-",
+                      prefixStyle: Theme.of(context).textTheme.subtitle2.copyWith(color: Theme.of(context).primaryColor,),
                       border: new OutlineInputBorder(
                         borderRadius: const BorderRadius.all(
                           const Radius.circular(2.0),
@@ -272,6 +272,24 @@ void dispose() {
 
 SizedBox(height: 8),
 
+
+
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: TextButton(
+                                child: Text('Addresses',style: Theme.of(context).textTheme.button.copyWith(color: Theme.of(context).primaryColor),),
+                                onPressed: (){
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> AddressBook(widget.allFrenchisiViewModel)));
+
+                                },
+                              ),
+                            ),
+
+                            SizedBox(height: 8),
+
+
+
+
                       Container(
             //height: 50.0,
             child: GestureDetector(
@@ -281,7 +299,7 @@ SizedBox(height: 8),
                         saveCustomer.custName = usernameController.text;
                         saveCustomer.emailId = emailController.text;
                         saveCustomer.phoneNumber = phoneNumberController.text;
-                        saveCustomer.address = addressController.text;
+                        saveCustomer.address = "";
                         saveCustomer.gender = id;
                         saveCustomer.custId = profileDetailsViewModel.getCustID();
                         saveCustomer.whatsappNo="";
@@ -295,7 +313,7 @@ SizedBox(height: 8),
                         saveCustomer.frId=0;
                         saveCustomer.isBuissHead=0;
                         saveCustomer.companyName="";
-                        saveCustomer.gstNo="";
+                        saveCustomer.gstNo=addressController.text;
 
                         saveCustomer.isActive=0;
                         saveCustomer.delStatus=0;

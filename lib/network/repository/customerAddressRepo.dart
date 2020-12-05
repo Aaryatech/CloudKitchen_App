@@ -21,34 +21,58 @@ CustomerAddressRepo(){
   myLocalPrefes=MyLocalPrefes();
 }
 
- 
- Future<HttpResponse> getCustomerAddresss(int custId) async{
-   HttpResponse httpResponse=HttpResponse();
-    
- String params="?custId=$custId";
-    
+
+Future<HttpResponse> getCustomerAddresss(int custId) async{
+  HttpResponse httpResponse=HttpResponse();
+
+  String params="?custId=$custId";
+
+  await httpClient.post(endPoints.Auth().custAddress+params).then((responce){
+    if(responce.statusCode==200){
+      httpResponse.status=responce.statusCode;
+      httpResponse.message='Successful';
+      httpResponse.data=CustomerAddressMain.fromJson(responce.data);
+      httpResponse.info=Info.fromJson(responce.data['info']);
+    }else{
+      httpResponse.status= 500;
+      httpResponse.message='Something went wrong';
+      httpResponse.data=null;
+
+    }
+  }).catchError((onError) {
+    print(onError);
+    httpResponse.status = 404;
+    httpResponse.data = null;
+    httpResponse.message = 'Network not available';
+  });
+  return httpResponse;
+}
 
 
-   await httpClient.post(endPoints.Auth().custAddress+params).then((responce){
-     if(responce.statusCode==200){
-       httpResponse.status=responce.statusCode;
-       httpResponse.message='Successful';
-       httpResponse.data=CustomerAddressMain.fromJson(responce.data);
-       httpResponse.info=Info.fromJson(responce.data['info']);
-     }else{
-       httpResponse.status= 500;
-       httpResponse.message='Something went wrong';
-       httpResponse.data=null;
-     
-     }
-   }).catchError((onError) {
-      print(onError);
-      httpResponse.status = 404;
-      httpResponse.data = null;
-      httpResponse.message = 'Network not available';
-    });
-    return httpResponse;
-  }
+Future<HttpResponse> deleteCustomerAddresss(int custId) async{
+  HttpResponse httpResponse=HttpResponse();
+
+  String params="?custAddressId=$custId&status=1";
+
+  await httpClient.post(endPoints.Auth().deleteAddress+params).then((responce){
+    if(responce.statusCode==200){
+      httpResponse.status=responce.statusCode;
+      httpResponse.message='Successful';
+      httpResponse.info=Info.fromJson(responce.data['info']);
+    }else{
+      httpResponse.status= 500;
+      httpResponse.message='Something went wrong';
+      httpResponse.data=null;
+
+    }
+  }).catchError((onError) {
+    print(onError);
+    httpResponse.status = 404;
+    httpResponse.data = null;
+    httpResponse.message = 'Network not available';
+  });
+  return httpResponse;
+}
 
 Future<HttpResponse> gsaveCustomerAddresss(SaveAddress saveAddress) async{
   HttpResponse httpResponse=HttpResponse();

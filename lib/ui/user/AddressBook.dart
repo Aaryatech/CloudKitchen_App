@@ -1,15 +1,32 @@
+import 'package:cloud_kitchen/network/model/request/SaveAddress.dart';
+import 'package:cloud_kitchen/network/model/response/CustomerAddress.dart';
 import 'package:cloud_kitchen/ui/home/HomeScreen.dart';
 import 'package:cloud_kitchen/ui/model/AddressBookModel.dart';
+import 'package:cloud_kitchen/viewmodel/franchisi/frviewmodel.dart';
+import 'package:cloud_kitchen/viewmodel/location/locationviewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
 
 
-
+AddLocationViewModel addLocationViewModel=AddLocationViewModel();
 class AddressBook extends StatefulWidget {
+  AllFrenchisiViewModel allFrenchisiViewModel;
+  AddressBook(this.allFrenchisiViewModel);
   @override
   _AddressBookState createState() => _AddressBookState();
 }
 
 class _AddressBookState extends State<AddressBook> {
+
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    widget.allFrenchisiViewModel.getAddress();
+    super.initState();
+  }
 
   final List<AddressBookModel> address = [
     AddressBookModel(heading: 'HOME',desc: 'NCC Seventh Avenue,Model Colony Road,Pritum Nagar,Model Colony Town,Ludhiana Punjab 141002,India',icon: Icons.home),
@@ -17,127 +34,406 @@ class _AddressBookState extends State<AddressBook> {
     AddressBookModel(heading: 'OTHER',desc: 'NCC Seventh Avenue,Model Colony Road,Pritum Nagar,Model Colony Town,Ludhiana Punjab 141002,India',icon: Icons.send)
 
   ];
+
+
+ Widget getLogo(String caption){
+   switch(caption.toLowerCase()){
+     case 'home':{
+       return Icon(Icons.home);
+     }
+     break;
+
+
+     case 'work':{
+       return Icon(Icons.work);
+     }
+     break;
+
+
+     case 'other':{
+       return Icon(Icons.assistant_navigation);
+     }
+     break;
+
+
+   }
+
+
+ }
+
+
+ final colpeteadrres=TextEditingController();
+ final floor=TextEditingController();
+ final howtoreach=TextEditingController();
+
+  void showImagePickerBottomSheet(BuildContext context,CustomerAddress addressMain){
+
+    colpeteadrres.text=addressMain.address.trim().split('-')[0]??"";
+    floor.text=addressMain.address.trim().split('-')[1]??"";
+    howtoreach.text=addressMain.address.trim().split('-')[2]??"";
+
+
+
+    bool isLoading =false;
+
+    showModalBottomSheet(
+        context: context,
+        backgroundColor:Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        enableDrag: true,
+        isScrollControlled: true,
+
+        builder: (BuildContext bc){
+          return StatefulBuilder(
+              builder: (context, setState) {
+                return SafeArea(
+                  child: SingleChildScrollView(
+                    child: Container(
+                      height: MediaQuery.of(context).size.height,
+
+                      padding: EdgeInsets.only(left: 16,right: 16,bottom: 16,top: 8),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("Edit Address",style: Theme.of(context).textTheme.headline6,),
+
+                              IconButton(icon: Icon(Icons.close,), onPressed:(){
+                                Navigator.pop(context);
+                              })
+                            ],
+                          ),
+                          SizedBox(
+                            height: 4,
+                          ),
+
+                          Container(
+                            color: Colors.grey.withOpacity(0.5),
+                            height: 1,
+                            width: MediaQuery.of(context).size.width,
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+
+                          Text('TAG THIS LOCATION FOR LATER',style: Theme.of(context).textTheme.subtitle2.copyWith(color: Colors.grey),),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              FilterChip(
+                                shape: StadiumBorder(side: BorderSide(color: Colors.grey)),
+                                label: Text("HOME",style: Theme.of(context).textTheme.caption,),
+                                padding: EdgeInsets.only(left: 12,right: 12),
+                                labelStyle: TextStyle(letterSpacing: 2, color: Colors.black),
+
+                                selected: addressMain.addressCaption.toLowerCase()=="home",
+                                selectedColor: Colors.transparent,
+                                // backgroundColor: Theme.of(context).primaryColor,
+                                onSelected: (flag) {
+                                  if(flag){
+                                    setState(() {
+                            addressMain.addressCaption="HOME";
+                                    });}
+                                },
+                              ),
+
+                              FilterChip(
+                                shape: StadiumBorder(side: BorderSide(color: Colors.grey)),
+                                label: Text("WORK",style: Theme.of(context).textTheme.caption),
+                                labelStyle: TextStyle(letterSpacing: 2, color: Colors.black),
+                                padding: EdgeInsets.only(left: 12,right: 12),
+                                selected: addressMain.addressCaption.toLowerCase()=="work",
+                                selectedColor: Colors.transparent,
+                                // backgroundColor: Theme.of(context).primaryColor,
+                                onSelected: (flag) {
+                                  setState(() {
+                                    if(flag)
+                                    {
+                                      addressMain.addressCaption="WORK";
+                                    }
+                                  });
+                                },
+                              ),
+
+                              FilterChip(
+                                // avatar: Icon(Icons.close,color: Colors.black),
+                                shape: StadiumBorder(side: BorderSide(color: Colors.grey)),
+                                label: Text("OTHER",style: Theme.of(context).textTheme.caption),
+                                labelStyle: TextStyle(letterSpacing: 2, color: Colors.black),
+                                padding: EdgeInsets.only(left: 12,right: 12),
+                                selected:  addressMain.addressCaption=="OTHER",
+                                selectedColor: Colors.transparent,
+                                // backgroundColor: Theme.of(context).primaryColor,
+                                onSelected: (flag) {
+                                  setState(() {
+                                    addressMain.addressCaption="OTHER";
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+
+                          SizedBox(height:
+                          8,),
+
+
+                          Text(
+                            'landmark -${addressMain.landmark}'
+                          ),
+
+                          SizedBox(height:
+                          8,),
+
+                          TextFormField(
+                            controller:colpeteadrres,
+                            enabled: true,
+                            onChanged:(str) async{
+
+                            },
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+
+                              labelText: 'Complete Address',
+                              hintText: 'complete Address',
+                              filled: true,
+                              fillColor: Colors.white,
+
+                              isDense: true,
+                            ),
+                          ),
+
+                          SizedBox(height:
+                          8,),
+
+                          TextFormField(
+                            enabled: true,
+                            controller: floor,
+                            onChanged:(str) async{
+                            },
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Floor',
+                              hintText: 'Floor',
+                              filled: true,
+                              fillColor: Colors.white,
+
+                              isDense: true,
+                            ),
+                          ),
+
+                          SizedBox(height:
+                          8,),
+
+
+                          TextFormField(
+                            enabled: true,
+                            controller: howtoreach,
+                            onChanged:(str) async{
+
+                            },
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'How To Reach',
+                              labelText: 'How To Reach',
+                              filled: true,
+                              fillColor: Colors.white,
+
+                              isDense: true,
+                            ),
+                          ),
+
+                          SizedBox(height:
+                          8,),
+
+                          InkWell(
+
+                            onTap: (){
+
+                              setState((){
+                                isLoading=true;
+                              });
+
+
+                if(!addLocationViewModel.isLoading){
+                SaveAddress saveUserDetails=SaveAddress();
+
+                saveUserDetails.custAddressId= 0;
+
+                saveUserDetails.addressCaption= addressMain.addressCaption;
+                saveUserDetails.address= "${colpeteadrres.text} ~ ${floor.text} ~ ${howtoreach.text}";
+                saveUserDetails.areaId= 0;
+                saveUserDetails.area= null;
+                saveUserDetails.landmark= "${addressMain.landmark}";
+                saveUserDetails.pincode= "";
+                saveUserDetails.cityId= 1;
+                saveUserDetails.langId=1;
+                saveUserDetails.delStatus= 0;
+                saveUserDetails.latitude= '${addressMain.latitude}';
+                saveUserDetails.longitude= '${addressMain.longitude}';
+                saveUserDetails.exInt1= 0;
+                saveUserDetails.exInt2= 0;
+                saveUserDetails.exInt3= 0;
+                saveUserDetails.exVar1= "";
+                saveUserDetails.exVar2= "";
+                saveUserDetails.exVar3="";
+                saveUserDetails.exFloat1=0;
+                saveUserDetails.exFloat2= 0;
+                saveUserDetails.exFloat3= 0;
+
+                FocusScope.of(context).unfocus();
+                addLocationViewModel.saveUserDetails(saveUserDetails).then((value) => {
+
+                if(value){
+                    setState((){
+                  isLoading=false;
+                }),
+
+                              Navigator.pop(context),
+
+                }else{
+
+                }
+                }).catchError((onError){
+                  setState((){
+                    isLoading=false;
+                  });
+
+                });
+                }},
+
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Theme.of(context).primaryColor,
+                                  style: BorderStyle.solid,
+                                  width: 1.0,
+                                ),
+                                color: Theme.of(context).primaryColor,
+                                borderRadius: BorderRadius.circular(2.0),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Center(
+                                      child: Text(
+                                          "SAVE",
+                                          style:Theme.of(context).textTheme.headline6.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.white)),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          SizedBox(height: 8,),
+                          isLoading?Container(
+                            child: Center(
+                              child: LinearProgressIndicator(
+                                valueColor:AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor) ,
+                              ),
+                            ),
+                          ):Container(),
+
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              }
+          );
+        }
+
+    );
+
+
+
+
+  }
+
+
+  Future<void> _showMyDialog(int id) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Delete Address'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Would you like to permanently delete this address?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Yes'),
+              onPressed: () {
+                widget.allFrenchisiViewModel.deleteAddressId(id).then((value) =>
+                widget.allFrenchisiViewModel.getAddress(),
+                );
+                Navigator.of(context).pop();
+              },
+            ),
+
+            TextButton(
+              child: Text('No'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Address Book'),
-        ),
-        body: ListView.builder(
-        itemCount: address.length,
-    itemBuilder: (context, index) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Container(
-            margin: const EdgeInsets.all(8.0),
-            child: InkWell(
-              onTap: (){
-                // Navigator.push(context, MaterialPageRoute(builder: (context)=> HomeScreen()));
-              },
-              child: Card(
-
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-
-                      Expanded(
-                        flex: 1,
-
-                        child: Container(
-                          color: Colors.white,
-                          child: new Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              new Container(
-                                child: Icon(
-                                 address[index].icon, size: 32.0, color: Theme.of(context).primaryColor,),
-                         ),
-
-
-                              // new Text("John Doe",
-                              //     textScaleFactor: 1.5)
-                            ],
-                          ),
-                        ),
-
-                        //  );
-
-                      ),
-                      Expanded(
-                          flex: 3,
-
-                          child: Container(
-                            color: Colors.white,
-
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
-                            '${address[index].heading}',
-                                    style: Theme
-                                        .of(context)
-                                        .textTheme
-                                        .subtitle1
-                                        .copyWith(fontWeight: FontWeight.bold)
-                                        .copyWith(color: Colors.black)),
-                                SizedBox(height: 4,),
-                                Text(
-                                    '${address[index].desc}',
-                                    style: Theme
-                                        .of(context)
-                                        .textTheme
-                                        .bodyText2
-                                        .copyWith(fontWeight: FontWeight.normal)
-                                        .copyWith(color: Colors.grey)),
-                                SizedBox(height: 8,),
-                                Row(
-                                  children: [
-                                  Icon(Icons.edit, color: Colors.black,size: 15,),
-                                  SizedBox(width: 4,),
-                                  Text(
-                                      'EDIT', style: Theme
-                                      .of(context)
-                                      .textTheme
-                                      .button
-                                      .copyWith(fontWeight: FontWeight.bold)
-                                      .copyWith(color: Colors.black)),
-
-                                    SizedBox(width: 15,),
-                                    Icon(Icons.delete, color: Theme.of(context).primaryColor,size: 15,),
-                                    SizedBox(width: 4,),
-                                    Text(
-                                        'DELETE', style: Theme
-                                        .of(context)
-                                        .textTheme
-                                        .button
-                                        .copyWith(fontWeight: FontWeight.bold)
-                                        .copyWith(color: Theme.of(context).primaryColor)),
-
-                                ],),
-
-                              ],
-                            ),
-
-                          )
-
-                      ),
-
-
-                    ],
-                  ),
-                ),
-              ),
-            ),
+      child: Observer(
+        builder:(_)=> Scaffold(
+          appBar: AppBar(
+            title: Text('Address Book'),
           ),
-        ],
-      );
+          body:
+
+        widget.allFrenchisiViewModel.isAddressLoading?LinearProgressIndicator(): ListView.builder(
+          itemCount: widget.allFrenchisiViewModel.adressesMain.addressList.length,
+    itemBuilder: (context, index) {
+    return  ListTile(
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: Icon(Icons.edit),
+                onPressed: (){
+                  showImagePickerBottomSheet(context,widget.allFrenchisiViewModel.adressesMain.addressList[index]);
+                },
+              ),
+
+              IconButton(
+                icon: Icon(Icons.delete),
+                onPressed: (){
+                  _showMyDialog(widget.allFrenchisiViewModel.adressesMain.addressList[index].custAddressId);
+                },
+              ),
+            ],
+          ),
+          isThreeLine: true,
+          contentPadding: EdgeInsets.all(4),
+          leading: getLogo(widget.allFrenchisiViewModel.adressesMain.addressList[index].addressCaption),
+          title: Text(widget.allFrenchisiViewModel.adressesMain.addressList[index].addressCaption),
+          subtitle: Text(widget.allFrenchisiViewModel.adressesMain.addressList[index].landmark),
+        );
     },
+          ),
         ),
       ),
     );

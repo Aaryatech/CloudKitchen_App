@@ -577,6 +577,20 @@ abstract class _AllFrenchisiViewModel with Store {
     }
   }
 
+  @action
+  Future deleteAddressId(int id)async{
+    await fetchUserOrder();
+    isAddressLoading=true;
+    HttpResponse httpResponse= await customerAddressRepo.deleteCustomerAddresss(id);
+    isAddressLoading=false;
+    if(httpResponse.status==200){
+      // adressesMain=httpResponse.data;
+    }else {
+      error = httpResponse.message;
+      // isAddressLoading = false;
+    }
+  }
+
 
   @action
   Future<HttpResponse> postPaymentService(String orderId,String status,String paid,dynamic txStatus)async{

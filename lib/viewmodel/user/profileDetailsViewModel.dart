@@ -169,7 +169,7 @@ abstract class _ProfileDetailsViewModel with Store{
     username = customerDetails.custName;
     email = customerDetails.emailId;
     phoneNumber = customerDetails.phoneNumber;
-    address = customerDetails.address;
+    address = customerDetails.gstNo;
     gender = customerDetails.gender;
 
     }

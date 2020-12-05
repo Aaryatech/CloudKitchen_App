@@ -40,6 +40,9 @@ class Auth{
   final addGrievancetype='saveGrievanceOfOrderForApp';
 
 
+  final deleteAddress='deleteCustAddress';
+
+
 
 
 

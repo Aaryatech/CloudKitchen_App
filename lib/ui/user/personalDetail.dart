@@ -13,6 +13,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 PersonalDetailsViewModel personalDetailsViewModel=PersonalDetailsViewModel();
 
+
 class PersonalDetail extends StatefulWidget {
   PersonalDetail(this.userMobile);
 
