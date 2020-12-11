@@ -150,6 +150,7 @@ myLocalPrefes=MyLocalPrefes();
                   mobileno=mobileController.text;
                   if(mobileController.text.length==10 ||mobileController.text.length==13  ||mobileController.text.length==11) {
                     int otp=new Random().nextInt(888888) + 111111;
+                    print('*********$otp**********');
                     otpViewModel.mobileVerification(mobileno, '$otp').then((
                         value) async =>
                     {

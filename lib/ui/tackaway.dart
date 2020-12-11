@@ -3,6 +3,7 @@ import 'package:cloud_kitchen/ui/home/HomeScreen.dart';
 import 'package:cloud_kitchen/viewmodel/franchisi/frviewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class TakeAway extends StatefulWidget {
@@ -73,8 +74,7 @@ class _TakeAwayState extends State<TakeAway> {
             Navigator.pop(context);
           },
           child:  Observer(
-            builder:(_)=>(!widget.allFrenchisiViewModel.isLoading)?
-            isLoading?Container():  SingleChildScrollView(
+            builder:(_)=> SingleChildScrollView(
               child:Container(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,7 +86,7 @@ class _TakeAwayState extends State<TakeAway> {
                       children: [
                         Container(
 
-                          color: Colors.red,
+                          color: Theme.of(context).primaryColor,
                           height: 80,
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -101,7 +101,7 @@ class _TakeAwayState extends State<TakeAway> {
                                           Navigator.pop(context);
                                         },
                                         child: Icon(Icons.arrow_back,color: Colors.white,)),
-                                    SizedBox(width: 8,),
+                                    SizedBox(width: 24,),
                                     Text('Takeaway',style: Theme.of(context).textTheme.headline6.copyWith(color: Colors.white),)
                                   ],
                                 ),
@@ -121,28 +121,21 @@ class _TakeAwayState extends State<TakeAway> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(12.0),
                                   child: Column(
+                                    mainAxisSize: MainAxisSize.min,
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text("Your Location",style: Theme.of(context).textTheme.subtitle2.copyWith(color: Colors.grey),),
 
                                       SizedBox(height: 8,),
-
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        mainAxisSize: MainAxisSize.min,
                                         children: [
-
-                                          Row(
-                                            children: [
-                                              Icon(Icons.check_circle,color: Colors.red,size: 16,),
-                                              SizedBox(width: 8,),
-                                              Text(widget.allFrenchisiViewModel.getCustAddress(),style: Theme.of(context).textTheme.bodyText2.copyWith(fontWeight: FontWeight.w600),)
-                                            ],
-
-                                          ),
-                                          // Text("CHANGE",style: Theme.of(context).textTheme.caption.copyWith(color: Colors.red,),)
-
+                                          Icon(Icons.check_circle, color: Theme.of(context).primaryColor,size: 16,),
+                                          SizedBox(width: 8,),
+                                          Flexible(child: Text(widget.allFrenchisiViewModel.getCustAddress(),style: Theme.of(context).textTheme.bodyText2.copyWith(fontFamily: 'Metropolis Semi Bold'),overflow: TextOverflow.ellipsis,textAlign: TextAlign.start))
                                         ],
+
                                       )
                                     ],
                                   ),
@@ -157,229 +150,312 @@ class _TakeAwayState extends State<TakeAway> {
                     ),
 
 
-                    SizedBox(height: 40,),
+                    SizedBox(height: 56,),
 
 
                     Padding(
                       padding: const EdgeInsets.all(16.0),
-                      child: Text('Your Nearest Restaurent',style: Theme.of(context).textTheme.subtitle2,),
+                      child: Text('Your Nearest Outlets',style: Theme.of(context).textTheme.subtitle2,),
                     ),
 
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 1,color: Colors.grey)
-                      ),
+                    (!widget.allFrenchisiViewModel.isLoading)?
+                    isLoading?Shimmer.fromColors(
+                        baseColor: Colors.grey[200],
+                        highlightColor: Colors.grey[50],
+                        enabled: true,
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 250,
+                        color: Colors.white,
+                        child: Column(
+                          children: [
+                            Container(height: 40,width: MediaQuery.of(context).size.width-100,),
+                            Container(height: 40,width: MediaQuery.of(context).size.width-100,),
+                            Container(height: 40,width: MediaQuery.of(context).size.width-100,),
+
+                          ],
+                        ),
+
+                      ),):
+
+                    Card(
+                      elevation: 2,
                       margin: EdgeInsets.all(16),
-                      padding: EdgeInsets.all(8),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          width:70,
-                            height: 70,
-                            child: Image.asset('images/dish.png')),
+                      child: Container(
+                        padding: EdgeInsets.all(8),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            width:70,
+                              height: 70,
+                              child: Image.asset('images/dish.png')),
 
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text( filterList[0].frName,style: Theme.of(context).textTheme.subtitle2,),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text( filterList[0].frName,style: Theme.of(context).textTheme.subtitle2.copyWith(fontWeight: FontWeight.w600),),
 
-                              SizedBox(height: 4,),
-                              SizedBox(
+                                SizedBox(height: 4,),
+                                SizedBox(
+                                    width: MediaQuery.of(context).size.width-145,
+                                    child: Text(filterList[0].frAddress,style: Theme.of(context).textTheme.caption.copyWith(color: Colors.grey),)),
+                                SizedBox(height: 16,),
+
+                                SizedBox(
                                   width: MediaQuery.of(context).size.width-145,
-                                  child: Text(filterList[0].frAddress,style: Theme.of(context).textTheme.caption.copyWith(color: Colors.grey),)),
-                              SizedBox(height: 16,),
-
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width-145,
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
 
 
 
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text('Distance:',style: Theme.of(context).textTheme.subtitle2.copyWith(fontWeight: FontWeight.w600),),
-                                        Text('${filterList[0].distance.toStringAsFixed(2)} Km (${filterList[0].duration} ride)',style: Theme.of(context).textTheme.caption.copyWith(color: Colors.grey),)
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-
-
-
-                              SizedBox(height: 16,),
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width-145,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    InkWell(
-                                        onTap:(){
-                                          openMap();
-                                        },
-                                        child: Text('VIEW ON MAP',style: Theme.of(context).textTheme.caption.copyWith(color: Colors.red),)),
-
-
-                                    InkWell(
-                                      onTap: (){
-                                        widget.allFrenchisiViewModel.changeOutlet(filterList[0]);
-                                        Navigator.pop(context);
-                                      },
-                                      child: Container(
-                                        padding: EdgeInsets.all(8),
-                                        color: Colors.red,
-                                        child: Text('SELECT',style: Theme.of(context).textTheme.caption.copyWith(color: Colors.white),),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text('Distance:',style: Theme.of(context).textTheme.subtitle2.copyWith(fontWeight: FontWeight.w600),),
+                                          Text('${filterList[0].distance.toStringAsFixed(2)} km (${filterList[0].duration} ride)',style: Theme.of(context).textTheme.caption.copyWith(color: Colors.grey),)
+                                        ],
                                       ),
-                                    )
-
-                                  ]
-                                  ,
+                                    ],
+                                  ),
                                 ),
-                              ),
 
 
 
-                            ],
-                          ),
-                        )
+                                SizedBox(height: 16,),
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width-145,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      InkWell(
+                                          onTap:(){
+                                            openMap();
+                                          },
+                                          child: Text('View On Map',style: Theme.of(context).textTheme.caption.copyWith(color: Colors.red),)),
 
-                      ],
+
+                                      InkWell(
+                                        onTap: (){
+                                          widget.allFrenchisiViewModel.changeOutlet(filterList[0]);
+                                          Navigator.pop(context);
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.all(8),
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                              color: Theme.of(context).primaryColor,
+                                              style: BorderStyle.solid,
+                                              width: 1.0,
+                                            ),
+                                            color: Theme.of(context).primaryColor,
+                                            borderRadius: BorderRadius.circular(8.0),
+
+                                          ),
+                                          child: Text('Select',style: Theme.of(context).textTheme.caption.copyWith(color: Colors.white),),
+                                        ),
+                                      )
+
+                                    ]
+                                    ,
+                                  ),
+                                ),
 
 
+
+                              ],
+                            ),
+                          )
+
+                        ],
+
+
+                        ),
                       ),
-                    ),
+                    ):Shimmer.fromColors(
+                      baseColor: Colors.grey[200],
+                      highlightColor: Colors.grey[50],
+                      enabled: true,
+                      child: Container(
+                        margin: EdgeInsets.all(16),
+                        padding: EdgeInsets.all(8),
+                        width: MediaQuery.of(context).size.width,
+                        height: 220,
+                       child: Row(
+                         crossAxisAlignment: CrossAxisAlignment.start,
+                         children: [
+                           Container(
+                             height: 100,
+                             width: 100,
+
+                             decoration: BoxDecoration(
+                               shape: BoxShape.circle,
+                               color: Colors.black,
+                             ),
+                           ),
+
+                           Column(
+                             crossAxisAlignment: CrossAxisAlignment.start,
+                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(height: 120,width: MediaQuery.of(context).size.width,color: Colors.black,),
+                                Container(height: 40,width: MediaQuery.of(context).size.width-20,color: Colors.black,),
+                                Container(height: 40,width: MediaQuery.of(context).size.width-50,color: Colors.black,),
+
+                              ],
+                            ),
+                         ],
+                       ),
+                      ),),
 
 
-                   showlist?Container(): Center(
-                      child: RaisedButton(
-                          onPressed: (){
-
+                    (!widget.allFrenchisiViewModel.isLoading && showlist)?Container(): Center(
+                      child: InkWell(
+                        onTap: (){
                             setState(() {
                               showlist=true;
                             });
-                          },
-                        child: Text("VIEW MORE RESTAURENTS",style: Theme.of(context).textTheme.caption.copyWith(color: Theme.of(context).primaryColor),),
 
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Theme.of(context).primaryColor,
+                              style: BorderStyle.solid,
+                              width: 1.0,
+                            ),
+                            borderRadius: BorderRadius.circular(8.0),
+
+                          ),
+
+                          child: Text("View More Outlets",style: Theme.of(context).textTheme.caption.copyWith(color: Theme.of(context).primaryColor),),
+
+                        ),
                       ),
                     ),
 
 
+
+
                     ( !isLoading && showlist)? Container(
-                      child: ListView.separated(
+                      child: ListView.builder(
                         shrinkWrap: true,
-                        separatorBuilder: (context, index) => Divider(
-                          color: Colors.black,
-                        ),
                         physics: ScrollPhysics(),
                         scrollDirection: Axis.vertical,
                         itemCount: filterList.length-1,
                         itemBuilder: (_, int index) {
                           Frainchise franchise=filterList[index+1];
-                          return  Container(
-                            decoration: BoxDecoration(
-                                border: Border.all(width: 1,color: Colors.grey)
-                            ),
+                          return  Card(
+                            elevation: 2,
                             margin: EdgeInsets.all(16),
-                            padding: EdgeInsets.all(8),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                SizedBox(
-                                    width:70,
-                                    height: 70,
-                                    child: Image.asset('images/dish.png')),
+                            child: Container(
+                              padding: EdgeInsets.all(8),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                      width:70,
+                                      height: 70,
+                                      child: Image.asset('images/dish.png')),
 
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text( franchise.frName,style: Theme.of(context).textTheme.subtitle2,),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text( franchise.frName,style: Theme.of(context).textTheme.subtitle2.copyWith(fontWeight: FontWeight.w600),),
 
-                                      SizedBox(height: 4,),
-                                      SizedBox(
+                                        SizedBox(height: 4,),
+                                        SizedBox(
+                                            width: MediaQuery.of(context).size.width-145,
+                                            child: Text(franchise.frAddress,style: Theme.of(context).textTheme.caption.copyWith(color: Colors.grey),)),
+                                        SizedBox(height: 16,),
+
+                                        SizedBox(
                                           width: MediaQuery.of(context).size.width-145,
-                                          child: Text(franchise.frAddress,style: Theme.of(context).textTheme.caption.copyWith(color: Colors.grey),)),
-                                      SizedBox(height: 16,),
-
-                                      SizedBox(
-                                        width: MediaQuery.of(context).size.width-145,
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          children: [
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            children: [
 
 
-                                            Column(
+                                              Column(
 
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text('Distance:',style: Theme.of(context).textTheme.subtitle2.copyWith(fontWeight: FontWeight.w600),),
-                                                Text('${franchise.distance} km (${franchise.duration} ride)',style: Theme.of(context).textTheme.caption.copyWith(color: Colors.grey),),
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text('Distance:',style: Theme.of(context).textTheme.subtitle2.copyWith(fontWeight: FontWeight.w600),),
+                                                  Text('${franchise.distance} km (${franchise.duration} ride)',style: Theme.of(context).textTheme.caption.copyWith(color: Colors.grey),),
 
-                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-
-
-
-                                      SizedBox(height: 16,),
-                                      SizedBox(
-                                        width: MediaQuery.of(context).size.width-145,
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            InkWell(
-                                                onTap:()async{
-                                                  // openMap();
-                                                  String googleUrl = 'https://www.google.com/maps/search/?api=1&query=${franchise.fromLatitude},${franchise.fromLongitude}';
-                                                  if (await canLaunch(googleUrl)) {
-                                                    await launch(googleUrl);
-                                                  } else {
-                                                    throw 'Could not open the map.';
-                                                  }
-                                                },
-                                                child: Text('VIEW ON MAP',style: Theme.of(context).textTheme.caption.copyWith(color: Colors.red),)),
-
-
-                                            InkWell(
-                                              onTap: (){
-
-                                                widget.allFrenchisiViewModel.changeOutlet(franchise);
-                                                Navigator.pop(context);
-                                              },
-                                              child: Container(
-                                                padding: EdgeInsets.all(8),
-                                                color: Colors.red,
-                                                child: Text('SELECT',style: Theme.of(context).textTheme.caption.copyWith(color: Colors.white),),
+                                ],
                                               ),
-                                            )
-
-                                          ]
-                                          ,
+                                            ],
+                                          ),
                                         ),
-                                      ),
 
 
 
-                                    ],
-                                  ),
-                                )
+                                        SizedBox(height: 16,),
+                                        SizedBox(
+                                          width: MediaQuery.of(context).size.width-145,
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              InkWell(
+                                                  onTap:()async{
+                                                    // openMap();
+                                                    String googleUrl = 'https://www.google.com/maps/search/?api=1&query=${franchise.fromLatitude},${franchise.fromLongitude}';
+                                                    if (await canLaunch(googleUrl)) {
+                                                      await launch(googleUrl);
+                                                    } else {
+                                                      throw 'Could not open the map.';
+                                                    }
+                                                  },
+                                                  child: Text('View On Map',style: Theme.of(context).textTheme.caption.copyWith(color:Theme.of(context).primaryColor),)),
 
-                              ],
+
+                                              InkWell(
+                                                onTap: (){
+
+                                                  widget.allFrenchisiViewModel.changeOutlet(franchise);
+                                                  Navigator.pop(context);
+                                                },
+                                                child:Container(
+                                                  padding: EdgeInsets.all(8),
+                                                  decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                      color: Theme.of(context).primaryColor,
+                                                      style: BorderStyle.solid,
+                                                      width: 1.0,
+                                                    ),
+                                                    color: Theme.of(context).primaryColor,
+                                                    borderRadius: BorderRadius.circular(8.0),
+
+                                                  ),  child: Text('Select',style: Theme.of(context).textTheme.caption.copyWith(color: Colors.white),),
+                                                ),
+                                              )
+
+                                            ]
+                                            ,
+                                          ),
+                                        ),
 
 
+
+                                      ],
+                                    ),
+                                  )
+
+                                ],
+
+
+                              ),
                             ),
                           );
                         },
@@ -389,9 +465,7 @@ class _TakeAwayState extends State<TakeAway> {
                   ],
                 ),
               ),
-            ):Center(child:LinearProgressIndicator(
-              valueColor:AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor) ,
-            )),
+            )
           ),
         ),
       ),

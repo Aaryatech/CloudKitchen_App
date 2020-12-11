@@ -32,7 +32,7 @@ class MyLocalPrefes{
 
 
   int getDefType(){
-    return prefs.getInt(delType)??1;
+    return prefs.getInt(delType)??2;
   }
 
   Future setDefType(int  type) async{

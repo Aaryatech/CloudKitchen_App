@@ -726,9 +726,9 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
       AsyncAction('_AllFrenchisiViewModel.addGrievance');
 
   @override
-  Future<HttpResponse> addGrievance(int orderId, int typeId) {
+  Future<HttpResponse> addGrievance(int orderId, int typeId, int id) {
     return _$addGrievanceAsyncAction
-        .run(() => super.addGrievance(orderId, typeId));
+        .run(() => super.addGrievance(orderId, typeId, id));
   }
 
   final _$getGetGrievanceTypesAsyncAction =
@@ -809,6 +809,17 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
         name: '_AllFrenchisiViewModel.searchList');
     try {
       return super.searchList(seacrh);
+    } finally {
+      _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  Future<dynamic> searchListByCategory(int index) {
+    final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
+        name: '_AllFrenchisiViewModel.searchListByCategory');
+    try {
+      return super.searchListByCategory(index);
     } finally {
       _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
     }

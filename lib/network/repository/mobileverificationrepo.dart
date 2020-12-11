@@ -15,7 +15,7 @@ MobileVerificationRepo(){
 
   Future<bool> mobileVerification(String mobile,String otp) async {
     try {
-      Response response = await Dio().get("https://smsapi.24x7sms.com/api_2.0/SendSMS.aspx?APIKEY=pJMAaVPuGbh&MobileNo=$mobile&SenderID=MDVDRY&Message=Use $otp as a one-time password (OTP) to login to your MADHVI account. Do not share this OTP with anyone for security reasons. Valid for 5 minutes.&ServiceName=TEMPLATE_BASED");
+      Response response = await Dio().get("https://smsapi.24x7sms.com/api_2.0/SendSMS.aspx?APIKEY=pJMAaVPuGbh&MobileNo=$mobile&SenderID=MDVDRY&Message=<#> <#> ${otp} is your Madhvi verification code. Enjoy :-)&ServiceName=TEMPLATE_BASED");
       print(response);
 
       if(response.statusCode==200){

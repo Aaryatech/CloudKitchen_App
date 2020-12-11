@@ -51,6 +51,8 @@ abstract class _AllFrenchisiViewModel with Store {
   @observable
   List<CartItem> items = [];
 
+
+
   @observable
   String selectedAddress = '';
 
@@ -97,7 +99,7 @@ abstract class _AllFrenchisiViewModel with Store {
 
 
   @observable
-  int selectedDelMode = 1;
+  int selectedDelMode = 2;
 
 
   @observable
@@ -222,6 +224,21 @@ abstract class _AllFrenchisiViewModel with Store {
 
 
   @action
+  Future searchListByCategory(int index) {
+    List<ItemData> tempItems = [];
+    if (index==0) {
+      isSerching = false;
+    } else {
+      if (!(isLoading && isLoadingForFranchiseData)) {
+        tempItems = frainchiseHomeData.subCategoryData[index-1].itemList;
+      }
+        filterList = tempItems;
+        isSerching = true;
+    }
+  }
+
+
+  @action
   setDeliveryInstruction(DeliveryInstruction deliveryInstructiona){
     deliveryInstruction=deliveryInstructiona;
   }
@@ -242,6 +259,7 @@ abstract class _AllFrenchisiViewModel with Store {
 
 
 
+  @action
   void setPage(int){
     currentIndex=int;
   }
@@ -359,6 +377,7 @@ abstract class _AllFrenchisiViewModel with Store {
   changeDefAddress(CustomerAddress customerAddress) async{
     custAdrress=customerAddress.landmark;
     custAdrressCaption=customerAddress.addressCaption;
+    frainchiseMain=null;
     await myLocalPrefes.setdefFranchiseDairy(0);
     await myLocalPrefes.setSelectedAddress(custAdrress);
     await myLocalPrefes.setSelectedAddressCaption(custAdrressCaption);
@@ -366,7 +385,7 @@ abstract class _AllFrenchisiViewModel with Store {
     await myLocalPrefes.setUserLatitude(customerAddress.latitude);
     await myLocalPrefes.setUserLongitude(customerAddress.longitude);
     await myLocalPrefes.setDefFranchiseRest(0);
-
+    myLocalPrefes.setCustLocationCapture(true);
 
     getAllFranchise();
   }
@@ -542,8 +561,11 @@ abstract class _AllFrenchisiViewModel with Store {
 
     items.forEach((element) {
       if(element.itemId==itemIdcurrent && element.selectedQty==decimal){
-        element.qty--;
-
+        if(element.qty>1) {
+          element.qty--;
+        }else{
+          removeItem(element);
+        }
       }
     });
   }
@@ -677,11 +699,11 @@ abstract class _AllFrenchisiViewModel with Store {
 
 
   @action
-  Future<HttpResponse> addGrievance(int orderId,int typeId)async{
+  Future<HttpResponse> addGrievance(int orderId,int typeId,int id)async{
     await fetchUserOrder();
 
       isLoadingForHistory = true;
-      HttpResponse httpResponse = await grievanceListRepo.addGreivance(orderId,typeId,"",myLocalPrefes.getCustId());
+      HttpResponse httpResponse = await grievanceListRepo.addGreivance(orderId,typeId,"",myLocalPrefes.getCustId(),id);
       if (httpResponse.status == 200) {
         isLoadingForHistory = false;
       } else {
@@ -901,7 +923,10 @@ abstract class _AllFrenchisiViewModel with Store {
 
   getNearestFranchiseById() async{
     await fetchUserOrder();
+    isSerching=false;
     isLoadingForFranchiseData=true;
+    itemsIds=[];
+    items=[];
 
     loadingMessage="Getting frinchise data";
     int id=0;

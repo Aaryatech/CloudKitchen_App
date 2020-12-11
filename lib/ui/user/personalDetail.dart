@@ -90,17 +90,17 @@ void generateTocken()async{
 
 
                     usernameController.value = TextEditingValue(
-                      text: personalDetailsViewModel.username,
+                      text: personalDetailsViewModel.username??"",
                       selection: TextSelection.fromPosition(
-                        TextPosition(offset: personalDetailsViewModel.username.length),
+                        TextPosition(offset: personalDetailsViewModel.username.length??1),
                       ),
                     );
 
 
                     emailController.value = TextEditingValue(
-                      text: personalDetailsViewModel.email,
+                      text: personalDetailsViewModel.email??"",
                       selection: TextSelection.fromPosition(
-                        TextPosition(offset: personalDetailsViewModel.email.length),
+                        TextPosition(offset: personalDetailsViewModel.email?.length??1),
                       ),
                     );
 

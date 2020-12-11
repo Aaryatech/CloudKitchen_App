@@ -151,8 +151,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Icon(Icons.description,color: index==0?Theme.of(context).primaryColor:Colors.black,),
                               Text(
                                 'Food Order',style:Theme.of(context).textTheme.subtitle2.copyWith(color:index==0?Theme.of(context).primaryColor:Colors.black)),
-
-
                           ],
                           ),
                         ),
@@ -323,7 +321,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           InkWell(
                             onTap: (){
 
-                                launch('tel:8260060046');
+                              launch('tel:8260060046');
 
 
                             },
@@ -339,7 +337,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     child: Icon(Icons.info_outline,color: Colors.grey,)),
                                 SizedBox(width: 8,),
                                 Text(
-                                  'Help',style:Theme.of(context).textTheme.subtitle1.copyWith(color:Colors.black)),
+                                    'Help',style:Theme.of(context).textTheme.subtitle1.copyWith(color:Colors.black)),
+
+                              ],),
+                            ),
+                          ),
+
+                          InkWell(
+                            onTap: (){
+
+                              // launch('tel:8260060046');
+
+
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(children: [
+                                Container(
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.grey.withOpacity(0.2)
+                                    ),
+                                    padding: EdgeInsets.all(6),
+                                    child: Icon(Icons.logout,color: Colors.grey,)),
+                                SizedBox(width: 8,),
+                                Text(
+                                    'Logout',style:Theme.of(context).textTheme.subtitle1.copyWith(color:Colors.black)),
 
                               ],),
                             ),

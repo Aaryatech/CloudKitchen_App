@@ -79,14 +79,14 @@ Future<HttpResponse> getGreivanceTypes() async{
 }
 
 
-Future<HttpResponse> addGreivance(int orderId,int typeId,String dateTime,int userId) async{
+Future<HttpResponse> addGreivance(int orderId,int typeId,String dateTime,int userId,int id) async{
   HttpResponse httpResponse=HttpResponse();
 
   await httpClient.post('${endPoints.Auth().addGrievancetype}',body: {
     "grieveId": 0,
     "orderId": orderId,
     "grievenceTypeId":typeId,
-    "grievenceSubtypeId":0,
+    "grievenceSubtypeId":id,
     "remark":"",
     "currentStatus":1,
     "insertDateTime":'${DateTime.now()}',

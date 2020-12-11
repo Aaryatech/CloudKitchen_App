@@ -258,6 +258,9 @@ class _LocationScreenState extends State<LocationScreen> {
                                               addLocationViewModel.saveUserDetails(saveUserDetails).then((value) => {
 
                                                 if(value){
+
+
+
                                                   Navigator.pushAndRemoveUntil(context,
                                                       MaterialPageRoute(
                                                           builder: (context) =>
@@ -550,7 +553,7 @@ class _LocationScreenState extends State<LocationScreen> {
     );
   }
 
-  void openAddressedBottomSheet(){
+  void  openAddressedBottomSheet(){
 
 
     allFrenchisiViewModel.getAddress();
@@ -620,6 +623,8 @@ class _LocationScreenState extends State<LocationScreen> {
                                           return ListTile(
                                             minVerticalPadding: 16,
                                             onTap: (){
+
+
                                               allFrenchisiViewModel.changeDefAddress(allFrenchisiViewModel.adressesMain.addressList[index]);
 
                                               Navigator.pushAndRemoveUntil(context,

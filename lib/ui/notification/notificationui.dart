@@ -34,15 +34,16 @@ class _NotificationsUiState extends State<NotificationsUi> {
       ),
       body:widget.allFrenchisiViewModel.isLoading?LinearProgressIndicator():
       Container(
-        padding: EdgeInsets.only(left: 16,right: 16),
+        padding: EdgeInsets.only(top: 8),
         child: ListView.separated(
             separatorBuilder: (context, index) => Divider(
-              color: Colors.black54,
+              color: Colors.grey.withOpacity(0.9),
             ),
             itemCount: widget.allFrenchisiViewModel.notifications.notification.length,
             itemBuilder:(context,index){
             Notifications noti=widget.allFrenchisiViewModel.notifications.notification[index];
             return ListTile(
+              contentPadding:EdgeInsets.only(left: 16,right: 8) ,
               title: Text(noti.title,style: Theme.of(context).textTheme.subtitle2,),
               dense: true,
               leading:noti.image.isNotEmpty?Container(
@@ -52,7 +53,7 @@ class _NotificationsUiState extends State<NotificationsUi> {
                 shape: BoxShape.circle,
               image: DecorationImage(image: NetworkImage('${imageUrl}${noti.image}'),
               fit: BoxFit.cover))): Image.asset('images/ic_launcher.png'),
-              subtitle: Text(noti.description,style: Theme.of(context).textTheme.caption.copyWith(color: Colors.grey),),
+              subtitle: Text('${noti.description}\n${noti.datetime}' ,style: Theme.of(context).textTheme.caption.copyWith(color: Colors.grey),),
             ); }),
       )
 

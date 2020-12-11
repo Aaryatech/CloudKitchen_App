@@ -21,10 +21,10 @@ class GrievanceTypeListMain {
 
 @JsonSerializable(nullable: true)
 class GrievanceType{
- final  int grievanceId,delStatus,isActive,exInt1,exInt2;
+ final  int grievanceId,delStatus,isActive,exInt1,exInt2,grievenceTypeId;
  final String caption,description,exVar1,exVar2,exVar3;
 
-  GrievanceType(this.grievanceId, this.delStatus, this.isActive, this.exInt1, this.exInt2, this.caption, this.description, this.exVar1, this.exVar2, this.exVar3);
+  GrievanceType(this.grievanceId, this.grievenceTypeId,this.delStatus, this.isActive, this.exInt1, this.exInt2, this.caption, this.description, this.exVar1, this.exVar2, this.exVar3);
 
  factory GrievanceType.fromJson(Map<String, dynamic> json) => _$GrievanceTypeFromJson(json);
 

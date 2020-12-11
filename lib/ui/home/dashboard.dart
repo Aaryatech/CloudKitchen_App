@@ -6,6 +6,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+// import 'package:in_app_update/in_app_update.dart';
 // import 'package:native_updater/native_updater.dart';
 
 AllFrenchisiViewModel allFrenchisiViewModel=AllFrenchisiViewModel();
@@ -20,10 +21,6 @@ class _DashboardState extends State<Dashboard> {
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
   FirebaseMessaging messaging = FirebaseMessaging.instance;
 
-  void _showError(dynamic exception) {
-    _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(exception.toString())));
-
-  }
 
 
 
@@ -48,8 +45,7 @@ class _DashboardState extends State<Dashboard> {
   void initState() {
     // TODO: implement initState
     allFrenchisiViewModel.getAllFranchise();
-    // checkVersion();
-
+    checkForUpdate();
     FirebaseMessaging.instance
         .getInitialMessage()
         .then((RemoteMessage message) {
@@ -92,39 +88,20 @@ class _DashboardState extends State<Dashboard> {
   }
 
 
+  // AppUpdateInfo _updateInfo;
+  bool _flexibleUpdateAvailable = false;
 
-  // Future<void> checkVersion() async {
-  //   /// For example: You got status code of 412 from the
-  //   /// response of HTTP request.
-  //   /// Let's say the statusCode 412 requires you to force update
-  //   int statusCode = 412;
-  //
-  //   /// This could be kept in our local
-  //   int localVersion = 9;
-  //
-  //   /// This could get from the API
-  //   int serverLatestVersion = 10;
-  //
-  //   Future.delayed(Duration.zero, () {
-  //     if (statusCode == 412) {
-  //       NativeUpdater.displayUpdateAlert(
-  //         context,
-  //         forceUpdate: true,
-  //         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.madhvi.cloudkitchen',
-  //
-  //         iOSUpdateButtonLabel: 'Upgrade',
-  //         iOSCloseButtonLabel: 'Exit',
-  //       );
-  //     } else if (serverLatestVersion > localVersion) {
-  //       NativeUpdater.displayUpdateAlert(
-  //         context,
-  //         forceUpdate: false,
-  //         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.madhvi.cloudkitchen',
-  //
-  //       );
-  //     }
-  //   });
-  // }
+  Future<void> checkForUpdate() async {
+    // InAppUpdate.checkForUpdate().then((info) {
+    //   if(_updateInfo?.updateAvailable) {
+    //     InAppUpdate.performImmediateUpdate().then((_) {
+    //       setState(() {
+    //         _flexibleUpdateAvailable = true;
+    //       });
+    //     });
+    //   }
+    // });
+  }
 
 
 

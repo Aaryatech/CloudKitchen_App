@@ -46,7 +46,7 @@ dependencies:
   location_permissions: ^3.0.0
   regexpattern: ^1.0.0
   shared_preferences: ^0.5.12+2
-  cashfree_pg: 0.0.4+9
+  cashfree_pg: ^1.1.0+13
   intl: ^0.16.1
   google_maps_webservice: ^0.0.18
   flutter_html: ^1.0.2
@@ -63,7 +63,10 @@ dependencies:
   sticky_headers: ^0.1.8
   shimmer: ^1.1.2
   in_app_review: ^1.0.3
+#  in_app_update: ^1.1.14
   sms_autofill: ^1.2.6
+  cached_network_image: ^2.4.1
+  connectivity: ^2.0.2
 #  native_updater:
 #    git: https://github.com/loadsmileau/native_updater
 
@@ -113,6 +116,11 @@ flutter:
     - family: Metropolis
       fonts:
         - asset: assets/Metropolis-Regular.otf
+          style: normal
+
+    - family: Metropolis Semi Bold
+      fonts:
+        - asset: assets/Metropolis-SemiBold.otf
           style: normal
 
     - family: Open Sans regular

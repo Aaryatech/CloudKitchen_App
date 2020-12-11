@@ -36,7 +36,8 @@ ThemeData _buildLightTheme() {
       ),
       subtitle1: TextStyle(
           fontFamily: "Metropolis",
-          color: Colors.black
+          color: Colors.black,
+
 
       ),
       headline4: TextStyle(
@@ -55,8 +56,8 @@ ThemeData _buildLightTheme() {
 
       ),
       bodyText1: TextStyle(
-          fontFamily: "Open Sans regular",
-          color: Colors.black
+          fontFamily: "Metropolis Semi Bold",
+          color: Colors.black,
 
       ),
       //
