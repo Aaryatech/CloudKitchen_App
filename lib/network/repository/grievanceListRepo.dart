@@ -22,6 +22,7 @@ GrievanceListRepo(){
    HttpResponse httpResponse=HttpResponse();
    String params='?custId=$custId';
    await httpClient.post('${endPoints.Auth().grievanceList}$params').then((responce){
+     print(responce);
      if(responce.statusCode==200){
        httpResponse.status=responce.statusCode;
        httpResponse.message='Successful';
@@ -88,7 +89,7 @@ Future<HttpResponse> addGreivance(int orderId,int typeId,String dateTime,int use
     "grievenceTypeId":typeId,
     "grievenceSubtypeId":id,
     "remark":"",
-    "currentStatus":1,
+    "currentStatus":0,
     "insertDateTime":'${DateTime.now()}',
     "insertById":userId,
     "grievenceTypeName":"",

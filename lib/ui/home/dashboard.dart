@@ -1,3 +1,4 @@
+import 'package:cloud_kitchen/ui/dairymart/dairymart.dart';
 import 'package:cloud_kitchen/ui/home/HomeScreen.dart';
 import 'package:cloud_kitchen/ui/cart/cart.dart';
 import 'package:cloud_kitchen/ui/user/profile.dart';
@@ -108,88 +109,96 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        key: scaffoldState,
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex:allFrenchisiViewModel.currentIndex,
-          onTap:onTabTapped,
-          selectedLabelStyle: TextStyle(fontSize: 10),
-          backgroundColor: Colors.white,
-          type: BottomNavigationBarType.fixed,
-          showUnselectedLabels: true,
-          unselectedLabelStyle: TextStyle(color: Colors.black),
-          selectedItemColor: Theme.of(context).primaryColor,
-          unselectedItemColor: Colors.black,
-          // this will be set when a new tab is tapped
-          items: [
-            BottomNavigationBarItem(
-                icon: new Icon(Icons.home,color: Colors.black),
-                label: 'HOME',
-                activeIcon: Icon(Icons.home, color: Theme.of(context).primaryColor,)
-            ),
-            BottomNavigationBarItem(
-                icon:Observer(
-                  builder:(_)=> new Stack(
-                    children: <Widget>[
-                      new Icon(Icons.local_grocery_store,color: Colors.black,),
-                      new Positioned(
-                        right: 0,
-                        child: new Container(
-                          padding: EdgeInsets.all(1),
-                          decoration: new BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          constraints: BoxConstraints(
-                            minWidth: 12,
-                            minHeight: 12,
-                          ),
-                          child: Observer(
-                            builder: (_) =>  Text(
-                              '${allFrenchisiViewModel.items.length??0}',
-                              style: new TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 8,
-                                  fontWeight: FontWeight.w700
+      child: Observer(
+        builder:(_)=> Scaffold(
+          key: scaffoldState,
+          bottomNavigationBar: BottomNavigationBar(
+            currentIndex:allFrenchisiViewModel.currentIndex,
+            onTap:onTabTapped,
+            selectedLabelStyle: TextStyle(fontSize: 10),
+            backgroundColor: Colors.white,
+            type: BottomNavigationBarType.fixed,
+            showUnselectedLabels: true,
+            unselectedLabelStyle: TextStyle(color: Colors.black),
+            selectedItemColor: Theme.of(context).primaryColor,
+            unselectedItemColor: Colors.black,
+            // this will be set when a new tab is tapped
+            items: [
+              BottomNavigationBarItem(
+                  icon: new Icon(Icons.home,color: Colors.black),
+                  label: 'HOME',
+                  activeIcon: Icon(Icons.home, color: Theme.of(context).primaryColor,)
+              ),
+              BottomNavigationBarItem(
+                  icon:Observer(
+                    builder:(_)=> new Stack(
+                      children: <Widget>[
+                        new Icon(Icons.local_grocery_store,color: Colors.black,),
+                        new Positioned(
+                          right: 0,
+                          child: new Container(
+                            padding: EdgeInsets.all(1),
+                            decoration: new BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            constraints: BoxConstraints(
+                              minWidth: 12,
+                              minHeight: 12,
+                            ),
+                            child: Observer(
+                              builder: (_) =>  Text(
+                                '${allFrenchisiViewModel.items.length??0}',
+                                style: new TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 8,
+                                    fontWeight: FontWeight.w700
+                                ),
+                                textAlign: TextAlign.center,
                               ),
-                              textAlign: TextAlign.center,
                             ),
                           ),
-                        ),
-                      )
-                    ],
+                        )
+                      ],
+                    ),
                   ),
-                ),
-                // new Icon(Icons.local_grocery_store,color: Colors.black,),
-                label: 'CART',
-                activeIcon: Icon(Icons.local_grocery_store, color: Theme.of(context).primaryColor,)
-            ),
+                  // new Icon(Icons.local_grocery_store,color: Colors.black,),
+                  label: 'CART',
+                  activeIcon: Icon(Icons.local_grocery_store, color: Theme.of(context).primaryColor,)
+              ),
 
-            BottomNavigationBarItem(
-                icon: new Icon(Icons.person,color: Colors.black),
-                label: 'PROFILE',
-                activeIcon: Icon(Icons.person, color: Theme.of(context).primaryColor,)
-            ),
+              BottomNavigationBarItem(
+                  icon: new Icon(Icons.corporate_fare,color: Colors.black),
+                  label: 'BULK ORDER',
+                  activeIcon: Icon(Icons.corporate_fare, color: Theme.of(context).primaryColor,)
+              ),
 
-            //  BottomNavigationBarItem(
-            //    icon: Icon(Icons.send),
-            //    title: Text('SETTING')
-            //  ),
-          ],
-        ),
-        body: Observer(
-          builder:(_)=> WillPopScope(
-              onWillPop: (){
-                if(allFrenchisiViewModel.currentIndex!=0){
-                  setState(() {
-                    allFrenchisiViewModel.currentIndex=0;
-                  });
-                }
-                return;
-              },
+              BottomNavigationBarItem(
+                  icon: new Icon(Icons.person,color: Colors.black),
+                  label: 'PROFILE',
+                  activeIcon: Icon(Icons.person, color: Theme.of(context).primaryColor,)
+              ),
 
-              child: Observer(
-                  builder:(_)=> _children(allFrenchisiViewModel.currentIndex))),
+              //  BottomNavigationBarItem(
+              //    icon: Icon(Icons.send),
+              //    title: Text('SETTING')
+              //  ),
+            ],
+          ),
+          body: Observer(
+            builder:(_)=> WillPopScope(
+                onWillPop: (){
+                  if(allFrenchisiViewModel.currentIndex!=0){
+                    setState(() {
+                      allFrenchisiViewModel.currentIndex=0;
+                    });
+                  }
+                  return;
+                },
+
+                child: Observer(
+                    builder:(_)=> _children(allFrenchisiViewModel.currentIndex))),
+          ),
         ),
       ),
 
@@ -200,10 +209,12 @@ class _DashboardState extends State<Dashboard> {
   Widget _children(int index) {
     if (index == 0 ) {
       return HomeScreen(allFrenchisiViewModel);
-    }  else if (index == 2) {
-      return ProfileScreen(allFrenchisiViewModel);
-    } else if (index == 1) {
+    }  else if ( allFrenchisiViewModel.currentIndex == 2) {
+      return  DairyMart();
+    } else if ( allFrenchisiViewModel.currentIndex == 1) {
       return Cart(allFrenchisiViewModel);
+    }else if( allFrenchisiViewModel.currentIndex ==3){
+      return  ProfileScreen(allFrenchisiViewModel);
     }
   }
 

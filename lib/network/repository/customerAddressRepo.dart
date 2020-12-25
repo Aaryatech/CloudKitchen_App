@@ -100,18 +100,12 @@ Future<HttpResponse> gsaveCustomerAddresss(SaveAddress saveAddress) async{
     "exFloat2": saveAddress.exFloat2,
     "exFloat3": saveAddress.exFloat3
   }).then((responce){
+    print(responce);
     if(responce.statusCode==200){
       print(responce.data);
       httpResponse.status=responce.statusCode;
-      httpResponse.message='Successful';
-      httpResponse.info=Info.fromJson(responce.data);
-      if(httpResponse.info.error){
-        myLocalPrefes.setAddressId(responce.data['message']);
-        myLocalPrefes.setCustLocationCapture(true);
-      }else{
-        httpResponse.message=responce.data['message'];
-
-      }
+      httpResponse.message=responce.data['message'];
+      // httpResponse.info=Info.fromJson(responce.data);
     }else{
       httpResponse.status= 500;
       httpResponse.message='Something went wrong';

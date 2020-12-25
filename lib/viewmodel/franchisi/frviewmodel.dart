@@ -211,9 +211,18 @@ abstract class _AllFrenchisiViewModel with Store {
     } else {
       if (!(isLoading && isLoadingForFranchiseData)) {
         frainchiseHomeData.itemData.forEach((element) {
-          if (element.itemName.toLowerCase().contains(seacrh.toLowerCase())) {
-            tempItems.add(element);
+          if (element.itemName.toLowerCase().contains(seacrh.toLowerCase()) || element.subCatName.toLowerCase().contains(seacrh.toLowerCase()) || element.catName.toLowerCase().contains(seacrh.toLowerCase())) {
+            if(!tempItems.contains(element))
+              tempItems.add(element);
           }
+
+            element.tagList.forEach((ele) {
+              if(ele.tagName.toLowerCase().contains(seacrh.toLowerCase())) {
+               if(!tempItems.contains(element))
+                tempItems.add(element);
+              }
+            });
+
         }
         );
         filterList = tempItems;
@@ -277,6 +286,27 @@ abstract class _AllFrenchisiViewModel with Store {
       error = httpResponse.message;
       isLoading = false;
     }
+  }
+
+
+  @action
+  Future setGstNo(String gst){
+    return myLocalPrefes.setGSTNo(gst);
+  }
+
+  @action
+  String gstNo(){
+    return myLocalPrefes.getGSTNo();
+  }
+
+  @action
+  String getProUrl(){
+    return myLocalPrefes.getProUrl();
+  }
+
+  @action
+  Future setProUrl(String url){
+    return myLocalPrefes.setProfUrl(url);
   }
 
   Future<bool> addAllItemsInCart(OrderHistoryItem orderHistoryItem){
@@ -386,7 +416,6 @@ abstract class _AllFrenchisiViewModel with Store {
     await myLocalPrefes.setUserLongitude(customerAddress.longitude);
     await myLocalPrefes.setDefFranchiseRest(0);
     myLocalPrefes.setCustLocationCapture(true);
-
     getAllFranchise();
   }
 
@@ -395,7 +424,7 @@ abstract class _AllFrenchisiViewModel with Store {
   DateTime currentDateTime = DateTime.now();
 
   @action
-  Future<HttpResponse> placeOrder(double itemTotal,int payMode,int offerId,double deliveryCharges,double descAmt,String dateTime)async{
+  Future<HttpResponse> placeOrder(double itemTotal,int payMode,int offerId,double deliveryCharges,double descAmt,String dateTime,String gst)async{
     int id=0;
     if(myLocalPrefes.getSelectedOutletType()==1){
       id=myLocalPrefes.getdefFranchiseDairy();
@@ -424,6 +453,7 @@ abstract class _AllFrenchisiViewModel with Store {
       custId: myLocalPrefes.getCustId(),
       deliveryCharges: deliveryCharges,
       discAmt: descAmt??0,
+      gst: gst,
       itemTotal: itemTotal,
       deliveryDate: '${dateTime.trim().split(' ')[0]}',
       deliveryTime: '${dateTime.trim().split(' ')[1].substring(0,7)}',
@@ -1102,7 +1132,7 @@ abstract class _AllFrenchisiViewModel with Store {
 
 
   @action
-  List<Frainchise> getDairys(int outletType){
+  List<Frainchise> getDairys(int outletType) {
     List<Frainchise> list=[];
     list.clear();
     getAllFranchiseForTackAway();

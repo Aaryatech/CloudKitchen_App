@@ -8,12 +8,13 @@ part 'PlaceOrder.g.dart';
 class PlaceOrder{
   final int frId,custId,applicableFor,orderStatus,payMode,addressId,
       orderPlatform,offerId,wallet,deliveryType,deliveryInstructionId;
-  final String deliveryDate,deliveryTime,deliveryInstructionText;
+  final String deliveryDate,deliveryTime,deliveryInstructionText,gst;
   final double km,deliveryCharges,itemTotal,discAmt;
  final List<OrderDetailList> orderDetailParamList;
 
   PlaceOrder(
       {this.frId,
+        this.gst,
       this.custId,
       this.applicableFor,
       this.orderStatus,

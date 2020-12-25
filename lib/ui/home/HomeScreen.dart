@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_kitchen/local/staticUrls.dart';
@@ -9,19 +10,25 @@ import 'package:cloud_kitchen/network/model/response/SubCategoryData.dart';
 import 'package:cloud_kitchen/ui/home/dashboard.dart';
 import 'package:cloud_kitchen/ui/home/homeItem.dart';
 import 'package:cloud_kitchen/ui/notification/notificationui.dart';
+import 'package:cloud_kitchen/ui/supportui/nonetwork.dart';
 import 'package:cloud_kitchen/ui/user/locationScreen.dart';
 import 'package:cloud_kitchen/ui/order/menudetailspage.dart';
 import 'package:cloud_kitchen/ui/supportui/nodataavailable.dart';
 import 'package:cloud_kitchen/ui/tackaway.dart';
+import 'package:cloud_kitchen/viewmodel/con/internet.dart';
 import 'package:cloud_kitchen/viewmodel/franchisi/frviewmodel.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 
+ConnectivityStore connectivityStore=ConnectivityStore();
 
 class HomeScreen extends StatefulWidget {
 
@@ -30,11 +37,14 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen(this.allFrenchisiViewModel);
 
 
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+
 
 
 
@@ -62,18 +72,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
   int currentPage=0;
 
-  PageController _controller = PageController(
-    initialPage: 0,
 
-  );
 
+
+  ReactionDisposer _disposer;
 
   bool isSortSelected=true;
   int selectedSort=1;
-
-  double ratefive=5.0,ratefore=4.0,rateforeh=4.5,rateth=3.5,rateAny=1;
+  PageController _pageController= PageController();
+  double ratefive=5.0,ratefore=4.0,rateforeh=4.5,rateth=3.5,rateAny=1,value=5;
   bool five=false,four=false,hfour=false,hthree=false,any=false;
   List<String> ratings=[];
+  double selectedRating=5;
   void openFilterBottomSheet(){
 
     showModalBottomSheet(
@@ -96,8 +106,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: MediaQuery
                       .of(context)
                       .size
-                      .height*.55,
-                  padding: EdgeInsets.all(16),
+                      .height*.65,
+                  padding: EdgeInsets.fromLTRB(4,16,16,16),
 
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
@@ -111,7 +121,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('Sort and Filter',style: Theme.of(context).textTheme.subtitle2,),
+                              Padding(
+                                padding: const EdgeInsets.only(left:16.0),
+                                child: Text('Sort and Filter',style: Theme.of(context).textTheme.headline6,),
+                              ),
                               InkWell(
 
                                   onTap: (){
@@ -123,17 +136,20 @@ class _HomeScreenState extends State<HomeScreen> {
                           SizedBox(height: 16,),
                           Container(
                             width: MediaQuery.of(context).size.width,
-                            color: Colors.black.withOpacity(.3),
+                            color: Colors.grey[300],
                             height: 1,
                           ),
 
 
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Expanded(child: Row(
+                              Flexible(flex:4,child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Container(
+
                                     child: Column(
                                       mainAxisSize: MainAxisSize.max,
                                       mainAxisAlignment: MainAxisAlignment.start,
@@ -142,7 +158,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                         InkWell(
                                           onTap: (){
                                             setState((){
+
+                                              if(!isSortSelected){
+                                                _pageController.previousPage(duration: Duration(milliseconds: 500), curve: Curves.fastLinearToSlowEaseIn);
+                                              }
                                               isSortSelected=true;
+
+
+                                              // _pageController.jumpToPage(0);
                                             });
                                           },
                                           child: AnimatedContainer(
@@ -151,11 +174,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               mainAxisAlignment: MainAxisAlignment.start,
                                               children: [
-                                                Text('Sort by'),
-                                                Text(getTag(selectedSort),style: Theme.of(context).textTheme.caption.copyWith(fontSize:12),)
+                                                Text('Sort by',style: Theme.of(context).textTheme.subtitle2,),
+                                                Text(getTag(selectedSort),style: Theme.of(context).textTheme.caption.copyWith(fontSize:10,color: Theme.of(context).primaryColor),)
                                               ],
                                             ),
-                                            padding: EdgeInsets.all(24),
+                                            padding: EdgeInsets.fromLTRB(4,24,24,24),
                                             color: isSortSelected?Colors.grey[300]:Colors.white,
 
                                           ),
@@ -164,343 +187,206 @@ class _HomeScreenState extends State<HomeScreen> {
                                         InkWell(
                                           onTap: (){
                                             setState((){
+                                              if(isSortSelected){
+                                                _pageController..nextPage(duration: Duration(milliseconds: 500), curve: Curves.fastOutSlowIn);
+                                              }
                                               isSortSelected=false;
+
                                             });
                                           },
                                           child: AnimatedContainer(
                                             duration: Duration(milliseconds: 300),
-                                            padding: EdgeInsets.all(24),
-                                            child: Text('Rating '),
+                                            padding: EdgeInsets.fromLTRB(4,24,24,24),
+                                            child: Text('Rating         ',style: Theme.of(context).textTheme.subtitle2),
                                             color: isSortSelected?Colors.white:Colors.grey[300],
                                           ),
                                         )
                                       ],
 
                                     ),
+                                  ),
+                                  Container(height: MediaQuery
+                                      .of(context)
+                                      .size
+                                      .height*.39,
+                                  width: 1,
+                                  color: Colors.grey[300],
                                   )
                                 ],
 
                               )),
-                              Row(
-                                children: [
-                                  SizedBox(
-                                    width: MediaQuery.of(context).size.width*.65,
-
-                                    child: isSortSelected?Column(
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: [
-                                        RadioListTile(
-                                          title: Text("Rating: High to low",style: Theme.of(context).textTheme.bodyText2,),
-                                          dense: true,
-                                          toggleable: true,
-                                          value: selectedSort,
-                                          groupValue: 3,
-                                          activeColor: Theme.of(context).primaryColor,
-                                          selected: selectedSort==3,
-                                          onChanged: (flag){
-
-                                            setState((){
-                                              selectedSort=3;
-
-                                            });
-
-                                          },
-                                        ),
-
-                                        RadioListTile(
-                                          title: Text("Cost: High to low",style: Theme.of(context).textTheme.bodyText2),
-                                          dense: true,
-                                          groupValue: 2,
-                                          toggleable: true,
-                                          activeColor: Theme.of(context).primaryColor,
-                                          selected: selectedSort==2,
-                                          value: selectedSort,
-                                          onChanged: (flag){
-
-                                            setState((){
-                                              selectedSort=2;
-
-                                            });
-
-                                          },
-                                        ),
-
-                                        RadioListTile(
-                                          title: Text("Cost: Low to high",style: Theme.of(context).textTheme.bodyText2),
-                                          dense: true,
-                                          groupValue: 1,
-                                          toggleable: true,
-                                          activeColor: Theme.of(context).primaryColor,
-                                          selected: selectedSort==1,
-                                          value: selectedSort,
-                                          onChanged: (flag){
-
-                                            setState((){
-                                              selectedSort=1;
-
-                                            });
-
-                                          },
-                                        ),
-                                      ],
-                                    ):Column(
-                                      mainAxisSize: MainAxisSize.max,
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-
-                                        InkWell(
-                                          onTap: (){
-                                            setState((){
-                                              five=!five;
-                                              if(five){
-                                                if(!ratings.contains('5')){
-                                                  ratings.add('5');
-                                                }
-                                              }else{
-                                                if(ratings.contains('5')){
-                                                  ratings.remove('5');
-                                                }
-                                              }
-                                            });
-                                          },
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                              Flexible(
+                                  flex:6,
+                                child: Row(
+                                  children: [
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width*.55,
+                                      height: MediaQuery.of(context).size.width*.75,
+                                      child: PageView(
+                                            controller: _pageController,
+                                            scrollDirection: Axis.vertical,
                                             children: [
-                                              Text("5.0 "),
-                                              SizedBox(width: 16,),
                                               Column(
+                                                mainAxisSize: MainAxisSize.max,
                                                 children: [
+                                                  RadioListTile(
+                                                    title: Text("Rating: High to low",style: Theme.of(context).textTheme.bodyText2,),
+                                                    dense: true,
+                                                    toggleable: true,
+                                                    value: selectedSort,
+                                                    groupValue: 3,
+                                                    activeColor: Theme.of(context).primaryColor,
+                                                    selected: selectedSort==3,
+                                                    onChanged: (flag){
 
-                                                  SizedBox(height: 2,),
-                                                  Container(
-                                                    width: 10,
-                                                    height: 10,
-                                                    decoration: BoxDecoration(
-                                                      shape: BoxShape.circle,
-                                                      color: five?Colors.red:Colors.grey,
-                                                    ),
+                                                      setState((){
+                                                        selectedSort=3;
+
+                                                      });
+
+                                                    },
                                                   ),
 
-                                                  SizedBox(height: 2,),
-                                                  Container(
-                                                    width: 2,
-                                                    height: 30,
-                                                    decoration: BoxDecoration(
-                                                      shape: BoxShape.rectangle,
-                                                      color:five?Colors.red:Colors.grey,
-                                                    ),
+                                                  RadioListTile(
+                                                    title: Text("Cost: High to low",style: Theme.of(context).textTheme.bodyText2),
+                                                    dense: true,
+                                                    groupValue: 2,
+                                                    toggleable: true,
+                                                    activeColor: Theme.of(context).primaryColor,
+                                                    selected: selectedSort==2,
+                                                    value: selectedSort,
+                                                    onChanged: (flag){
+
+                                                      setState((){
+                                                        selectedSort=2;
+
+                                                      });
+
+                                                    },
+                                                  ),
+
+                                                  RadioListTile(
+                                                    title: Text("Cost: Low to high",style: Theme.of(context).textTheme.bodyText2),
+                                                    dense: true,
+                                                    groupValue: 1,
+                                                    toggleable: true,
+                                                    activeColor: Theme.of(context).primaryColor,
+                                                    selected: selectedSort==1,
+                                                    value: selectedSort,
+                                                    onChanged: (flag){
+
+                                                      setState((){
+                                                        selectedSort=1;
+
+                                                      });
+
+                                                    },
                                                   ),
                                                 ],
                                               ),
-                                            ],
-                                          ),
-                                        ),
-                                        InkWell(
-                                          onTap: (){
-                                            setState((){
-                                              hfour=!hfour;
-                                              if(hfour){
-                                                if(!ratings.contains('4.5')){
-                                                  ratings.add('4.5');
-                                                }
-                                              }else{
-                                                if(ratings.contains('4.5')){
-                                                  ratings.remove('4.5');
-                                                }
-                                              }});
-                                          },
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text("4.5 "),
-                                              SizedBox(width: 16,),
                                               Column(
+                                                mainAxisSize: MainAxisSize.max,
+
                                                 children: [
 
-                                                  SizedBox(height: 2,),
-                                                  Container(
-                                                    width: 10,
-                                                    height: 10,
-                                                    decoration: BoxDecoration(
-                                                      shape: BoxShape.circle,
-                                                      color:hfour? Colors.red:Colors.grey,
+                                                  SizedBox(height: 10,),
+                                                  Align(
+                                                    alignment: Alignment.topLeft,
+                                                      child: Text('Rating:  ${selectedRating==1?"Any":selectedRating}+' ,style: Theme.of(context).textTheme.subtitle1.copyWith(fontFamily: 'Metropolis Semi Bold'),)),
+                                                  SizedBox(height: 60,),
+
+                                                  Transform.rotate(
+                                                    angle:pi / 2,
+                                                    child:Column(
+                                                      children: [
+                                                        Slider(
+                                                          min: 1,
+                                                          max: 5,
+                                                          value: value,
+                                                          activeColor: Theme.of(context).primaryColor,
+                                                          divisions: 4,
+                                                          autofocus: true,
+                                                          inactiveColor:Theme.of(context).primaryColor.withOpacity(.3) ,
+                                                          onChanged: (val){
+                                                            setState((){
+                                                              if(val=="1.0"){
+                                                                value=2.0;
+                                                              }else{
+                                                                value=val;
+                                                              }
+
+                                                              print(val.toStringAsFixed(2));
+                                                              print(val);
+                                                               if(value.toStringAsFixed(2)=="1.00"){
+                                                                selectedRating=5;
+                                                              }else if(value.toStringAsFixed(2)=="2.00"){
+                                                                selectedRating=4.5;
+                                                              }else if(value.toStringAsFixed(2)=="3.00"){
+                                                                selectedRating=4;
+                                                              }else if(value.toStringAsFixed(2)=="4.00"){
+                                                                selectedRating=3.5;
+                                                              }else{
+                                                                selectedRating=1;
+                                                              }
+
+                                                            });
+                                                          },
+                                                        ),
+
+                                                        SizedBox(height: 16,),
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(left:24,right:16,top:8,bottom: 8),
+                                                          child: Row(
+                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                            children: [
+
+                                                              Transform.rotate(
+                                                                  angle:-pi / 2,
+                                                                  child: Text('5')),
+
+                                                              Transform.rotate(
+                                                                  angle:-pi / 2,
+                                                                  child: Text('4.5')),
+
+                                                              Transform.rotate(
+                                                                  angle:-pi / 2,
+                                                                  child: Text('4')),
+
+                                                              Transform.rotate(
+                                                                  angle:-pi / 2,
+                                                                  child:Text('3.5')),
+
+                                                              Transform.rotate(
+                                                                  angle:-pi / 2,
+                                                                  child: Text('Any')),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
+
                                                   ),
 
-                                                  SizedBox(height: 2,),
-                                                  Container(
-                                                    width: 2,
-                                                    height: 30,
-                                                    decoration: BoxDecoration(
-                                                      shape: BoxShape.rectangle,
-                                                      color:hfour? Colors.red:Colors.grey,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-
-                                        InkWell(
-                                          onTap: (){
-                                            setState((){
-
-                                              four=!four;
-
-                                              if(four){
-                                                if(!ratings.contains('4.0')){
-                                                  ratings.add('4.0');
-                                                }
-                                              }else{
-                                                if(ratings.contains('4.0')){
-                                                  ratings.remove('4.0');
-                                                }
-                                              }
-
-
-                                            });
-                                          },
-
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text("4.0 "),
-                                              SizedBox(width: 16,),
-                                              Column(
-                                                children: [
-
-                                                  SizedBox(height: 2,),
-                                                  Container(
-                                                    width: 10,
-                                                    height: 10,
-                                                    decoration: BoxDecoration(
-                                                      shape: BoxShape.circle,
-                                                      color:four? Colors.red:Colors.grey,
-                                                    ),
-                                                  ),
-
-                                                  SizedBox(height: 2,),
-                                                  Container(
-                                                    width: 2,
-                                                    height: 30,
-                                                    decoration: BoxDecoration(
-                                                      shape: BoxShape.rectangle,
-                                                      color:four? Colors.red:Colors.grey,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-
-                                        InkWell(
-                                          onTap: (){
-                                            setState((){
-                                              hthree=!hthree;
-                                              if(hthree){
-                                                if(!ratings.contains('3.5')){
-                                                  ratings.add('3.5');
-                                                }
-                                              }else{
-                                                if(ratings.contains('3.5')){
-                                                  ratings.remove('3.5');
-                                                }
-                                              }
-
-                                            });
-                                          },
-
-                                          child: Row(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Text("3.5 "),
-                                              SizedBox(width: 16,),
-                                              Column(
-                                                children: [
-
-                                                  SizedBox(height: 2,),
-                                                  Container(
-                                                    width: 10,
-                                                    height: 10,
-                                                    decoration: BoxDecoration(
-                                                      shape: BoxShape.circle,
-                                                      color: hthree?Colors.red:Colors.grey,
-                                                    ),
-                                                  ),
-
-                                                  SizedBox(height: 2,),
-                                                  Container(
-                                                    width: 2,
-                                                    height: 30,
-                                                    decoration: BoxDecoration(
-                                                      shape: BoxShape.rectangle,
-                                                      color: hthree? Colors.red:Colors.grey,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-
-                                        InkWell(
-
-                                          onTap: (){
-                                            setState((){
-                                              any=!any;
-                                              if(any){
-                                                ratings.clear();
-                                                ratings.add('1,2,3,4,5');
-                                              }else{
-                                                ratings.remove('1,2,3,4,5');
-                                              }
-
-                                            });
-                                          },
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text("Any"),
-                                              SizedBox(width: 16,),
-                                              Column(
-                                                children: [
-
-                                                  SizedBox(height: 2,),
-                                                  Container(
-                                                    width:30,
-                                                    height: 30,
-                                                    decoration: BoxDecoration(
-                                                      shape: BoxShape.circle,
-                                                      color: Colors.red,
-                                                    ),
-                                                  ),
 
                                                   SizedBox(height: 2,),
 
                                                 ],
                                               ),
                                             ],
-                                          ),
-                                        ),
-
-                                        SizedBox(height: 2,),
-
-                                      ],
+                                          )
                                     ),
-                                  )
-                                ],
+                                  ],
+                                ),
                               ),
                             ],
 
                           ),
                         ],
+                      ),
+
+                      Divider(
+                        height: 1,
+                        color: Colors.grey[300],
                       ),
 
                       Align(
@@ -519,28 +405,23 @@ class _HomeScreenState extends State<HomeScreen> {
                                 widget.allFrenchisiViewModel.getSortedFranchiseBySort(selectedSort);
                               }else{
 
-
-                                if(ratings.length>0) {
-                                  StringBuffer newratings = StringBuffer();
-                                  bool fist = true;
-                                  ratings.forEach((element) {
-                                    if (fist) {
-                                      fist = false;
-                                      newratings.write('$element');
-                                    } else {
-                                      newratings.write(',$element');
-                                    }
-                                  });
-
-                                  widget.allFrenchisiViewModel
-                                      .getSortedFranchiseByRating(
-                                      newratings.toString());
-                                }else{
-                                  widget.allFrenchisiViewModel
-                                      .getSortedFranchiseByRating(
-                                      '1,2,3,4,5');
-
+                              String ratings='';
+                                if(selectedRating==1){
+                                  ratings='1,2,3,4,5';
+                                }else if(selectedRating==5){
+                                  ratings='5';
+                                }else if(selectedRating==4.5){
+                                  ratings='4.5,5';
+                                }else if(selectedRating==4){
+                                  ratings='4,4.5,5';
+                                }else if(selectedRating==3.5){
+                                  ratings='3.5,4,,4.5,5';
                                 }
+
+
+                                widget.allFrenchisiViewModel
+                                    .getSortedFranchiseByRating(
+                                    ratings);
                               }
                               Navigator.pop(context);
                             },
@@ -734,14 +615,20 @@ class _HomeScreenState extends State<HomeScreen> {
     List<Widget> widgets=[];
     widget.allFrenchisiViewModel.frainchiseHomeData.offerData.forEach((element) {
       widgets.add(
+
+          CachedNetworkImage(
+          placeholder: (context, url) =>Image.asset('images/bannerplaceholder.jpg', fit: BoxFit.cover,),
+      imageUrl: '${imageUrl}${element.imageList[0].imageName}',
+      fit: BoxFit.cover,
+      imageBuilder: (context, imageProvider) =>
           Container(
-            margin: EdgeInsets.all(4),
             width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8.0),
               image: DecorationImage(image: NetworkImage('${imageUrl}${element.imageList[0].imageName}'),
                     fit: BoxFit.cover)
-      ),));
+      ),),)
+      );
     });
 
 
@@ -762,14 +649,34 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
 
+
+  @override
+  void dispose() {
+
+    super.dispose();
+  }
+
+  bool isNetWorkAvailable=true;
   @override
   void initState() {
-    // TODO: implement initState
-    // if(widget.allFrenchisiViewModel.isLoadingForFranchiseData) {
-      slider();
-    // }
+      // slider();
+      _disposer = reaction(
+              (_) => connectivityStore.connectivityStream.value,
+              (result) {
+            if(result == ConnectivityResult.none){
+              setState((){
+                isNetWorkAvailable=false;
 
-    super.initState();
+              });
+            }else{
+              setState((){
+                isNetWorkAvailable=true;
+
+              });
+            }
+          });
+
+      super.initState();
   }
 
 
@@ -792,34 +699,34 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
 
-  void slider(){
-    Timer.periodic(Duration(seconds: 4), (Timer t)  {
-
-      try {
-        if (widget.allFrenchisiViewModel.frainchiseHomeData.offerData.length >= 1){
-            if (currentPage < widget.allFrenchisiViewModel.frainchiseHomeData.offerData.length) {
-
-              _controller.nextPage(
-                  duration: Duration(milliseconds: 700),
-                  curve: Curves.linearToEaseOut);
-              setState(() {
-                currentPage =currentPage+1;
-              });
-            } else {
-             setState(() {
-               currentPage = 0;
-             });
-
-
-              _controller.jumpToPage(0);
-            }
-        }
-      }catch(error){
-        print(error);
-
-      }
-    });
-  }
+  // void slider(){
+  //   Timer.periodic(Duration(seconds: 4), (Timer t)  {
+  //
+  //     try {
+  //       if (widget.allFrenchisiViewModel.frainchiseHomeData.offerData.length >= 1){
+  //           if (currentPage < widget.allFrenchisiViewModel.frainchiseHomeData.offerData.length) {
+  //
+  //             _controller.nextPage(
+  //                 duration: Duration(milliseconds: 700),
+  //                 curve: Curves.linearToEaseOut);
+  //             setState(() {
+  //               currentPage =currentPage+1;
+  //             });
+  //           } else {
+  //            setState(() {
+  //              currentPage = 0;
+  //            });
+  //
+  //
+  //             _controller.jumpToPage(0);
+  //           }
+  //       }
+  //     }catch(error){
+  //       print(error);
+  //
+  //     }
+  //   });
+  // }
 
   final ScrollController _scrollController=ScrollController();
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
@@ -838,7 +745,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Scaffold(
               key: _scaffoldKey,
-              floatingActionButton: FloatingActionButton.extended(
+              floatingActionButton: (!widget.allFrenchisiViewModel.isLoadingForFranchiseData && widget.allFrenchisiViewModel.frainchiseHomeData==null)?Container(): FloatingActionButton.extended(
                 backgroundColor: Theme.of(context).primaryColor,
                 onPressed: () {
 
@@ -894,6 +801,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 title: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+
                     Row(
                       children: <Widget>[
                         Image.asset('images/place_icon.png',width: 28,height: 28,color: Colors.white,),
@@ -994,7 +902,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   builder: (_) =>
                       SingleChildScrollView(
                         child:  Container(
-                          margin: const EdgeInsets.only(top:8,bottom: 4),
+                          margin: const EdgeInsets.only(bottom: 4),
                           child:
 
 
@@ -1002,6 +910,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               width: MediaQuery.of(context).size.width,
                               height: MediaQuery.of(context).size.height,
                               color: Colors.white,
+                              margin: EdgeInsets.only(top:8),
                               child: Shimmer.fromColors(
                                 baseColor: Colors.grey[200],
                                 highlightColor: Colors.grey[50],
@@ -1068,10 +977,36 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ],
                                 ),
                               )
-                          ): Column(
+                          ):(!widget.allFrenchisiViewModel.isLoadingForFranchiseData && widget.allFrenchisiViewModel.frainchiseHomeData==null)?Container(
+                           height:  MediaQuery.of(context).size.height*.7,
+                           width: MediaQuery.of(context).size.width ,
+                            child:Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                             crossAxisAlignment: CrossAxisAlignment.center,
+                             children:[ Image.asset(
+                               "images/nointernet.png",
+                               height:250,
+                               width: MediaQuery.of(context).size.width*.6,
+                             ),
+
+
+                               SizedBox(
+                                   width: MediaQuery.of(context).size.width*.8,
+                                   child: Text("Could not connect to the internet. Please check your network",textAlign: TextAlign.center,style: Theme.of(context).textTheme.subtitle2.copyWith(color:Colors.grey),)),
+
+                               FlatButton(
+                                 onPressed: (){
+                                   widget.allFrenchisiViewModel.getNearestFranchiseById();
+                                 },
+                                 child: Text("Try Again",style: Theme.of(context).textTheme.button.copyWith(color:Theme.of(context).primaryColor,fontFamily: "Metropolis"),),
+                               )
+                           ]
+                           ),
+                          ):Column(
                             children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.only(left:12.0),
+                              NoNetWorkWidget(),
+                          Padding(
+                                padding: const EdgeInsets.only(left:12.0,top: 8),
                                 child: Observer(
                                   builder:(_)=> Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
@@ -1080,7 +1015,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         //  height: 30.0,
                                         child: GestureDetector(
                                           onTap: () async{
-
+                                            widget.allFrenchisiViewModel.setDelMode(2);
                                             if(widget.allFrenchisiViewModel.itemsIds.isEmpty) {
                                               if (widget.allFrenchisiViewModel
                                                   .outletType != 1) {
@@ -1163,6 +1098,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         child: GestureDetector(
                                           onTap: () async{
 
+                                            widget.allFrenchisiViewModel.setDelMode(2);
                                             if(widget.allFrenchisiViewModel.itemsIds.isEmpty){
                                             if( (!widget.allFrenchisiViewModel.isLoadingForFranchiseData && widget.allFrenchisiViewModel.frainchiseHomeData.subCategoryData.isEmpty)){
                                               _showSnackbar("Please wait , We are on it ..",true);
@@ -1338,22 +1274,43 @@ class _HomeScreenState extends State<HomeScreen> {
 
                                     widget.allFrenchisiViewModel.searchString==''?  SizedBox(
                                       height: 200,
+                                      width: MediaQuery.of(context).size.width,
                                       child: Padding(
-                                        padding: const EdgeInsets.only(top:2.0,left: 12,right: 12),
-                                        child: PageView(
-                                          scrollDirection: Axis.horizontal,
-                                          physics: ScrollPhysics(),
-                                          controller: _controller,
-                                          children: getSliderImages(),
-
-                                          onPageChanged: (page){
-                                          },
-                                        ),
+                                        padding: const EdgeInsets.only(top:2.0,),
+                                        child:
+                                        CarouselSlider.builder(
+                                          itemCount: getSliderImages().length,
+                                          itemBuilder: (BuildContext context, int itemIndex) =>
+                                            getSliderImages()[itemIndex],
+                                          options: CarouselOptions(
+                                            autoPlay: true,
+                                            initialPage: 0,
+                                            enlargeCenterPage: true,
+                                            enableInfiniteScroll: true,
+                                          ),
+                                        )
+                                        // PageView(
+                                        //   scrollDirection: Axis.horizontal,
+                                        //   physics: ScrollPhysics(),
+                                        //   controller: _controller,
+                                        //   children: getSliderImages(),
+                                        //
+                                        //   onPageChanged: (page){
+                                        //   },
+                                        // ),
                                       ),
                                     ):Container(),
                                   ],
                                 ),
-                              ):Container():Container(),
+                              ):Container(
+                                height: 1000,
+                                width: 1000,
+                                color: Colors.red,
+                              ):Container(
+                                height: 1000,
+                                width: 1000,
+                                color: Colors.red,
+                              ),
 
 
 
@@ -1363,7 +1320,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               Column(
 
                                 children: allFrenchisiViewModel.isSerching? getSearchedList(): getChildViews(),
-                              ):Container(),
+                              ):Container(
+
+                              ),
 
                               SizedBox(height: 60,),
 
@@ -2654,7 +2613,7 @@ class _HomeItemState extends State<HomeItem> {
                                     height: height,
                                     curve: Curves.easeInOut,
                                     child:FadeInImage.assetNetwork(
-                                        placeholder: 'images/ic_launcher.png',
+                                        placeholder: 'images/dairyplaceholder.jpg',
                                         image: '${imageUrl}${widget.itemData.imageList[0].imageName}',fit: BoxFit.fill
                                     ),
                                     //

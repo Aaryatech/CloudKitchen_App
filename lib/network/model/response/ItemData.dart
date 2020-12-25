@@ -11,7 +11,7 @@ class ItemData{
 
   int itemId,catId,subCatId,isDecimal,uomId,productType,productCategory,showInOrder,isAvailable;
   String itemName,catName, subCatName,itemUom,itemDesc,productStatus,productCategoryName,preperationTime,tagIds,
-  tasteTypeIds,tagName,tasteName,hsncd,relItemIds,offerIds,jsonStr;
+  tasteTypeIds,tagName,tasteName,hsncd,relItemIds,offerIds,jsonStr,exVar1;
   double cgstPer,sgstPer,itemSortId,rating,rateAmt,
       mrpAmt,spRateAmt,igstPer,discPer,mrpDiscAmt,spDiscAmt,freqOrderedQty;
 
@@ -30,6 +30,7 @@ class ItemData{
       this.subCatName,
       this.itemSortId,
       this.isDecimal,
+        this.exVar1,
       this.itemUom,
       this.uomId,
       this.itemDesc,

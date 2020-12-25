@@ -55,6 +55,32 @@ setSelectedRadioTile(int val) {
     selectedRadioTiles = val;
   });
 }
+
+Widget getLogo(String caption){
+  switch(caption.toLowerCase()){
+    case 'home':{
+      return Icon(Icons.home,color: Colors.black,);
+    }
+    break;
+
+
+    case 'work':{
+      return Icon(Icons.work,color: Colors.black);
+    }
+    break;
+
+
+    case 'other':{
+      return Icon(Icons.assistant_navigation,color: Colors.black);
+    }
+    break;
+
+
+  }
+
+
+}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,10 +100,10 @@ setSelectedRadioTile(int val) {
 
                    SizedBox(height:10.0),
                  ListTile(
-                     leading: Icon(Icons.home,size: 32.0,color: Colors.black,),
+                     leading: getLogo(widget.allFrenchisiViewModel.getCustAddressCaption()),
             //title: Text('item $index'),
-                     title: Text('Address',style:Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.bold).copyWith(color:Colors.black)),
-                     subtitle: Text('Peta poti apartment,4 floor,Mahavir nagar,Metdinagar,Vejalpur', style:Theme.of(context).textTheme.caption.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.grey)),
+                     title: Text('${ widget.allFrenchisiViewModel.getCustAddressCaption()}',style:Theme.of(context).textTheme.subtitle1.copyWith(fontFamily:"Metropolis Semi Bold")),
+                     subtitle: Text('${widget.allFrenchisiViewModel.getCustAddress()}', style:Theme.of(context).textTheme.caption.copyWith(fontFamily: 'Metropolis',color: Colors.black54)),
 
                    ),
                    SizedBox(height:10.0),
@@ -96,19 +122,18 @@ setSelectedRadioTile(int val) {
         scrollDirection: Axis.vertical,
         itemCount: diViewModel.deliveryInstructionMain.deliveryInstruction.length,
         separatorBuilder: (context, index) => Divider(
-        color: Colors.black,
+        color: Colors.grey[300],
         ),
         itemBuilder: (context, index) {
           return RadioListTile(value: diViewModel.selected, groupValue: index, onChanged:(flag) {
-
             setState(() {
               diViewModel.setSelectedvalue(index);
               widget.allFrenchisiViewModel.setDeliveryInstruction(diViewModel.deliveryInstructionMain.deliveryInstruction[index]);
             });
 
           },
-            title: Text(diViewModel.deliveryInstructionMain.deliveryInstruction[index].instructnCaption??""),
-            subtitle: Text(diViewModel.deliveryInstructionMain.deliveryInstruction[index].description??""),
+            title: Text(diViewModel.deliveryInstructionMain.deliveryInstruction[index].instructnCaption??"",style: Theme.of(context).textTheme.subtitle2.copyWith(fontFamily:"Metropolis Semi Bold"),),
+            subtitle: Text(diViewModel.deliveryInstructionMain.deliveryInstruction[index].description??"",style: Theme.of(context).textTheme.caption.copyWith(fontFamily: 'Metropolis',color: Colors.black54),),
             dense: true,
             activeColor: Theme.of(context).primaryColor,
           );
@@ -119,13 +144,13 @@ setSelectedRadioTile(int val) {
 
 
   Divider(
-     color: Colors.grey,
+     color: Colors.grey[300],
   ),
 
               Container(
                // margin: EdgeInsets.fromLTRB(20.0, 0.0, 0.0, 10.0),
-                padding: EdgeInsets.only(left: 32),
-                  child: Text("Addtional Instructions",style:Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.bold).copyWith(color:Colors.black)),),
+                padding: EdgeInsets.only(left: 32,top: 8),
+                  child: Text("Additional Instructions",style:Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.bold).copyWith(color:Colors.black)),),
 
  Container(
    padding: EdgeInsets.only(left: 16),
@@ -154,29 +179,56 @@ setSelectedRadioTile(int val) {
                  // Navigator.push(context, MaterialPageRoute(builder: (context)=> ProfileScreen()));
               },
               child: Container(
-        decoration: BoxDecoration(
-              border: Border.all(
-                   color: Theme.of(context).primaryColor,
-                  style: BorderStyle.solid,
-                  width: 1.0,
-              ),
-              color: Theme.of(context).primaryColor,
-              borderRadius: BorderRadius.circular(2.0),
-        ),
-        child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Center(
-                 child: Text(
-                      "SAVE",
-                    style:Theme.of(context).textTheme.button.copyWith(color:Colors.white)),
-                    ),
-                  )
-              ],
-        ),
-              ),
+    padding: EdgeInsets.all(8),
+    decoration: BoxDecoration(
+    border: Border.all(
+    color: Theme.of(context).primaryColor,
+    style: BorderStyle.solid,
+    width: 1.0,
+    ),
+    color: Theme.of(context).primaryColor,
+    borderRadius: BorderRadius.circular(8.0),
+
+    ),
+    child: Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: <Widget>[
+    SizedBox(height: 28,width: 4,),
+    Expanded(
+    child: Text( "Save",textAlign: TextAlign.center,
+    style:Theme.of(context).textTheme.button.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.white)),
+    )
+    ],
+    ),
+    )
+
+
+
+
+        //       Container(
+        // decoration: BoxDecoration(
+        //       border: Border.all(
+        //            color: Theme.of(context).primaryColor,
+        //           style: BorderStyle.solid,
+        //           width: 1.0,
+        //       ),
+        //       color: Theme.of(context).primaryColor,
+        //       borderRadius: BorderRadius.circular(2.0),
+        // ),
+        // child: Row(
+        //       mainAxisAlignment: MainAxisAlignment.center,
+        //       children: <Widget>[
+        //           Padding(
+        //             padding: const EdgeInsets.all(10.0),
+        //             child: Center(
+        //          child: Text(
+        //               "SAVE",
+        //             style:Theme.of(context).textTheme.button.copyWith(color:Colors.white)),
+        //             ),
+        //           )
+        //       ],
+        // ),
+        //       ),
     ),
 ),
 

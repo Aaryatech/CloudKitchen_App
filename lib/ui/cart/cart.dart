@@ -1,15 +1,12 @@
 import 'dart:io';
-
 import 'package:cashfree_pg/cashfree_pg.dart';
-import 'package:cloud_kitchen/network/model/httpresponce.dart';
 import 'package:cloud_kitchen/network/model/response/OfferList.dart';
-import 'package:cloud_kitchen/network/model/response/placeorder/placeordermain.dart';
-import 'package:cloud_kitchen/ui/user/AddressBook.dart';
 import 'package:cloud_kitchen/ui/order/deliveryInstruction.dart';
 import 'package:cloud_kitchen/ui/user/locationScreen.dart';
 import 'package:cloud_kitchen/viewmodel/franchisi/frviewmodel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -33,6 +30,7 @@ class _CartState extends State<Cart> {
    widget.allFrenchisiViewModel.getOffersandAdditionalCharge();
    inAppReview = InAppReview.instance;
 
+
    WidgetsBinding.instance.addPostFrameCallback((_) {
      inAppReview
          .isAvailable()
@@ -46,14 +44,17 @@ class _CartState extends State<Cart> {
 
     super.initState();
   }
-
+  final _textFieldController=TextEditingController();
 
   bool OffersOpen=false;
+  bool isWalletBallenceSelected=false;
+  bool isTwinWallet=false;
 
    InAppReview inAppReview ;
   double appliedDescunt=0;
   String offerApplied='';
   String appliedCoupen="";
+  bool isGstBill=false;
   String selecteddateTime='${DateTime.now().add(Duration(minutes: 40))}';
 
   @override
@@ -171,8 +172,8 @@ class _CartState extends State<Cart> {
                         child:
                         ListView.separated(
                           scrollDirection: Axis.vertical,
-                          separatorBuilder: (context, index) => Divider(
-                            color: Colors.grey.withOpacity(0.9),
+                          separatorBuilder: (context, index) =>  Divider(
+                            color: Colors.grey[300],
                           ),
                           shrinkWrap: true,
                           physics: BouncingScrollPhysics(),
@@ -223,6 +224,7 @@ class _CartState extends State<Cart> {
                                                 if(widget.allFrenchisiViewModel.items[index].qty>1) {
                                                   widget.allFrenchisiViewModel
                                                       .items[index].qty--;
+                                                  applyDiscount();
                                                 }else{
                                                   widget.allFrenchisiViewModel.removeItem(widget.allFrenchisiViewModel.items[index]);
                                                 }
@@ -236,6 +238,7 @@ class _CartState extends State<Cart> {
                                             onTap: (){
                                               setState(() {
                                                 widget.allFrenchisiViewModel.items[index].qty++;
+                                                applyDiscount();
 
                                               });
 
@@ -261,13 +264,10 @@ class _CartState extends State<Cart> {
                           Text('${widget.allFrenchisiViewModel.frainchiseHomeData.franchise?.frName??""}',style: Theme.of(context).textTheme.subtitle1.copyWith(fontFamily: 'Metropolis Semi Bold'),),
                           SizedBox(height: 4,),
                           Text('${widget.allFrenchisiViewModel.frainchiseHomeData.franchise?.frAddress??""}',style: Theme.of(context).textTheme.bodyText2,),
-
-                          SizedBox(height: 8,),
                         ],
                       ),
                     ),
                    // Text('Add Cooking Instructions [Optional]',style: Theme.of(context).textTheme.caption.copyWith(decoration: TextDecoration.underline),),
-                    SizedBox(height: 4,),
                     widget.allFrenchisiViewModel.isLoadingForOffers?LinearProgressIndicator(): widget.allFrenchisiViewModel.offersMain.offerList.isNotEmpty?    Observer(
                       builder:(_)=> AnimatedContainer(
                         duration: Duration(milliseconds: 300),
@@ -292,7 +292,12 @@ class _CartState extends State<Cart> {
                              Text('Offers',style: Theme.of(context).textTheme.subtitle1.copyWith(fontFamily: 'Metropolis Semi Bold'),),
                                       SizedBox(width: 16,),
 
-                                      Text('Select Promo Code',style: Theme.of(context).textTheme.caption.copyWith(fontFamily: 'Metropolis'),),
+                                      Column(
+                                        children: [
+                                          SizedBox(height: 3,),
+                                          Text('Select Promo Code',style: Theme.of(context).textTheme.caption.copyWith(fontFamily: 'Metropolis'),),
+                                        ],
+                                      ),
                                     ],
                                   ),
 
@@ -321,14 +326,18 @@ class _CartState extends State<Cart> {
                                           return Observer(
                                             builder:(_)=> InkWell(
                                               onTap: (){
-                                                applyDiscount(widget.allFrenchisiViewModel.offersMain.offerList[index]);
+                                                setState(() {
+                                                  selectedOffer=widget.allFrenchisiViewModel.offersMain.offerList[index];
+                                                  applyDiscount();
+                                                });
+
                                               },
                                               child: Container(
                                                   margin: EdgeInsets.all(8),
                                                   padding: EdgeInsets.all(4),
                                                   decoration: BoxDecoration(
                                                       borderRadius: BorderRadius.circular(8.0),
-                                                      border: Border.all(color: Colors.grey)
+                                                      border: Border.all(color: Theme.of(context).primaryColor)
                                                   ),
                                                   child: Row(
                                                     children: [
@@ -340,7 +349,7 @@ class _CartState extends State<Cart> {
                                                         crossAxisAlignment: CrossAxisAlignment.start,
                                                         mainAxisAlignment: MainAxisAlignment.center,
                                                         children: [
-                                                          Text('${widget.allFrenchisiViewModel.offersMain.offerList[index].offerName}', style: Theme.of(context).textTheme.bodyText1.copyWith(fontFamily: 'Metropolis',fontWeight: FontWeight.w600)),
+                                                          Text('${widget.allFrenchisiViewModel.offersMain.offerList[index].offerName}', style: Theme.of(context).textTheme.bodyText1.copyWith(fontFamily: 'Metropolis',fontWeight: FontWeight.w600,color:Theme.of(context).primaryColor)),
                                                           SizedBox(height: 4,),
                                                           Text('${widget.allFrenchisiViewModel.offersMain.offerList[index].offerDetailList[0].discPer} % off upto ${widget.allFrenchisiViewModel.offersMain.offerList[index].offerDetailList[0].offerLimit}',style: Theme.of(context).textTheme.caption.copyWith(fontFamily: 'Metropolis')),
                                                         ],
@@ -361,6 +370,51 @@ class _CartState extends State<Cart> {
                         ),
                       ),
                     ):Container(),
+
+                    widget.allFrenchisiViewModel.isLoadingForOffers?Container():
+                      widget.allFrenchisiViewModel.offersMain.custWalletTotal.total==0?Container():
+                    AnimatedContainer(
+                      height: isWalletBallenceSelected?0:40,
+                      duration:Duration(milliseconds: 500),
+                      padding: EdgeInsets.only(left: 16,right:16,top: 8,bottom: 8),
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                        color: Colors.green//Theme.of(context).primaryColor,
+
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Text("Madhvi Credits Balance :",style: Theme.of(context).textTheme.subtitle1.copyWith(color:Colors.white),),
+                              Image.asset('images/rupees_icn.png',width: 16,height: 16,color: Colors.white,),
+                              Text('${widget.allFrenchisiViewModel.offersMain.custWalletTotal.total}',style: Theme.of(context).textTheme.subtitle1.copyWith(color:Colors.white),),   ],
+                          ),
+                          FlatButton(
+                            onPressed: (){
+                              setState(() {
+                                isWalletBallenceSelected=true;
+                              });
+                              Future.delayed(Duration(milliseconds: 500)).then((value) =>
+                              setState((){
+                                isTwinWallet=true;
+                              }),
+                              );
+                            },
+                           child: Container(
+                             padding: EdgeInsets.fromLTRB(12,4,12,4),
+                               decoration: BoxDecoration(
+                                   borderRadius: BorderRadius.circular(4),
+                                   border: Border.all(color: Colors.white)
+                               ),
+                               child: Text("Apply",style: Theme.of(context).textTheme.bodyText1.copyWith(color:Colors.white))),
+                          )
+                        ],
+                      ),
+                    ),
+
+
                     Observer(
                       builder:(_)=> Container(
                         padding: EdgeInsets.only(top:8,left: 16,right: 16),
@@ -369,7 +423,7 @@ class _CartState extends State<Cart> {
                             Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('Item Total',style: Theme.of(context).textTheme.caption,),
+                              Text('Items Total',style: Theme.of(context).textTheme.caption,),
                               Row(
                                 children: [
                                    Image.asset('images/rupees_icn.png',width: 16,height: 16,),
@@ -395,17 +449,18 @@ class _CartState extends State<Cart> {
                             // ),
 
                             SizedBox(height: 4,),
-                            Row(
+                            (!widget.allFrenchisiViewModel.isLoadingForOffers && getDeliverCharges()!=0)?  Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Row(
                                   children: [
-                                    Text('Additional Charge',style: Theme.of(context).textTheme.caption,),SizedBox(width: 4,),
-                                    getDeliverCharges()==0?Container():     IconButton(
-                                    onPressed: (){
+                                    Text('Additional Charges',style: Theme.of(context).textTheme.caption,),SizedBox(width: 4,),
+                                    getDeliverCharges()==0?Container():     InkWell(
+                                    onTap: (){
                                       showDialog(context: context,
                                         child: AlertDialog(
-                                          title: new Text("Addition Charges"),
+                                          title: new Text("Additional Charges",style: Theme.of(context).textTheme.subtitle1,),
+                                          contentPadding: EdgeInsets.only(left:24,right: 16,top: 4,bottom: 4),
                                           content: Column(
                                             mainAxisSize: MainAxisSize.min,
                                             children: getAdditionalCharges()
@@ -420,7 +475,7 @@ class _CartState extends State<Cart> {
                                         ),
                                       );
                                     },
-                                     icon: Icon(Icons.info_outline,size: 16,)
+                                     child: Icon(Icons.info_outline,size: 16,)
 
                                     )
                                   ],
@@ -432,7 +487,8 @@ class _CartState extends State<Cart> {
                                   ],
                                 )
                               ],
-                            ),
+                            ):Container(),
+
                           ]
                         ),
                       ),
@@ -445,7 +501,14 @@ class _CartState extends State<Cart> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('Discount',style: Theme.of(context).textTheme.subtitle2,),
+                              Row(
+                                children: [
+                                  Text('Discount',style: Theme.of(context).textTheme.caption,),
+                                 SizedBox(width: 8,),
+                                  Text('($offerApplied)',style: Theme.of(context).textTheme.caption),
+                                ],
+                              ),
+
                               Row(
                                 children: [
                                   Image.asset('images/rupees_icn.png',width: 16,height: 16,),
@@ -457,10 +520,38 @@ class _CartState extends State<Cart> {
 
                             ],
                           ),
-                          Text(offerApplied),
+
                         ],
                       ),
                     ),
+
+                    (!widget.allFrenchisiViewModel.isLoadingForOffers  && isTwinWallet)?  Padding(
+                      padding: const EdgeInsets.only(left:16,right:16,top: 4,bottom: 4),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Text('Madhvi Credit Amount',style: Theme.of(context).textTheme.caption,),SizedBox(width: 4,),
+                              getDeliverCharges()==0?Container():     InkWell(
+                                  onTap: (){
+                                  },
+                                  child: Icon(Icons.info_outline,size: 16,)
+
+                              )
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Text('-' ,style: Theme.of(context).textTheme.caption,),
+                              Image.asset('images/rupees_icn.png',width: 16,height: 16,),
+                              Text('${widget.allFrenchisiViewModel.isLoadingForOffers?0:widget.allFrenchisiViewModel.offersMain.custWalletTotal.total}' ,style: Theme.of(context).textTheme.caption,),
+                            ],
+                          )
+                        ],
+                      ),
+                    ):Container(),
+
                     SizedBox(height: 8,),
 
                     Container(
@@ -472,7 +563,7 @@ class _CartState extends State<Cart> {
                           Row(
                             children: [
                               Image.asset('images/rupees_icn.png',width: 16,height: 16,),
-                              Text('${getGrandTotal()}',style: Theme.of(context).textTheme.subtitle2,),
+                              Text('${getGrandTotal().toStringAsFixed(2)}',style: Theme.of(context).textTheme.subtitle2.copyWith(fontFamily: 'Metropolis Semi Bold'),),
                             ],
                           ),
 
@@ -484,8 +575,8 @@ class _CartState extends State<Cart> {
                     SizedBox(height: 8,),
                     Padding(
                       padding: const EdgeInsets.only(left:16.0,right:16),
-                      child: Divider(
-                        color: Colors.grey.withOpacity(0.9),
+                      child:  Divider(
+                        color: Colors.grey[300],
                         height: 1,
                       ),
                     ),
@@ -496,7 +587,7 @@ class _CartState extends State<Cart> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text('Order Mode',style: Theme.of(context).textTheme.caption,),
-                            Text('${widget.allFrenchisiViewModel.selectedDelMode==1?'Take Away':"Home Delievry"}' ,style: Theme.of(context).textTheme.caption,),
+                            Text('${widget.allFrenchisiViewModel.selectedDelMode==1?'Take Away':"Home Delivery"}' ,style: Theme.of(context).textTheme.caption,),
 
                           ],
                         ),
@@ -534,51 +625,111 @@ class _CartState extends State<Cart> {
                     ),
                     SizedBox(height: 8,),
                     Container(
-                      color: Colors.grey[100],
-                      padding: EdgeInsets.all(16),
+                      color: Colors.white,
+                      padding:  EdgeInsets.only(left:16,right:16),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("Payment Modes",style: Theme.of(context).textTheme.subtitle2,),
-                          RadioListTile(
-                            title: Text("Cash on Delivery"),
-                            dense: true,
-                            value:  selectedPayMode,
-                            groupValue: 1,
-                            activeColor: Theme.of(context).primaryColor,
-                            onChanged: (flag){
-                              setState(() {
+                          Text("Payment Modes",style: Theme.of(context).textTheme.caption,),
 
-                                selectedPayMode=1;
-                              });
-                            },
-                            toggleable: true,
-                            selected: selectedPayMode==1,
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+
+                              Row(
+                                children: [
+
+                                  Radio(
+                                    value:  selectedPayMode,
+                                    groupValue: 1,
+                                    activeColor: Theme.of(context).primaryColor,
+                                  onChanged: (flag){
+                                        setState(() {
+                                          selectedPayMode=1;
+                                        });
+                                      },
+                                    toggleable: true,
+                                  ),
+
+                                  Text('Cash on Delivery',style: Theme.of(context).textTheme.caption ,),
+
+                                ],
+                              ),
+
+
+                              Row(
+                                children: [
+
+                                  Radio(
+                                    value:  selectedPayMode,
+                                    groupValue: 2,
+                                    activeColor: Theme.of(context).primaryColor,
+                                    onChanged: (flag){
+                                      setState(() {
+                                        selectedPayMode=2;
+                                      });
+                                    },
+                                    toggleable: true,
+
+                                  ),
+
+                                  Text('Pay Online',style: Theme.of(context).textTheme.caption ,),
+
+                                ],
+                              ),
+
+
+                            ],
                           ),
-
-                          RadioListTile(
-                            title: Text("Pay Online"),
-                            dense: true,
-                            toggleable: true,
-
-                            onChanged: (flag){
-                              setState(() {
-                                selectedPayMode=2;
-                              });
-                            },
-                            activeColor: Theme.of(context).primaryColor,
-                           selected: selectedPayMode==2,
-                            value:  selectedPayMode,
-                            groupValue: 2,
-                          ),
-
                         ],
                       ),
                     ),
                     Container(
-                      color: Colors.grey[100],
-                      padding: EdgeInsets.all(16),
+                      color: Colors.white,
+                      padding:  EdgeInsets.only(left:16,right:16),
+                      child: Column(
+                        children: [
+
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Business Invoice',style: Theme.of(context).textTheme.caption,),
+                              Switch.adaptive(
+
+                                onChanged: (vl){
+                                setState(() {
+                                  isGstBill=!isGstBill;
+                                });
+                                },
+
+                                activeColor: Theme.of(context).primaryColor,
+                                value: isGstBill,
+                              ),
+                            ],
+                          ),
+
+                          isGstBill?TextFormField(
+                            onChanged: (value) {
+
+                            },
+                            maxLength: 15,
+                            controller: _textFieldController,
+                            keyboardType: TextInputType.name,
+
+                            decoration: InputDecoration(hintText: "Enter GST Number",
+                           isDense: true,
+                            labelText: 'GST Number',
+                            border: OutlineInputBorder()
+                            ),
+                          ):Container(),
+                        ],
+                      ),
+                    ),
+
+                    Container(
+                      color: Colors.white,
+                      padding: EdgeInsets.only(left:16,right:16,top:8,bottom:8),
                       child: Column(
                         children: [
                           Row(
@@ -591,7 +742,7 @@ class _CartState extends State<Cart> {
                                     Navigator.push(context, MaterialPageRoute(builder: (context)=> DeliveryInstruction(allFrenchisiViewModel: widget.allFrenchisiViewModel,)));
 
                                   },
-                                  child: Text('CHANGE',style: Theme.of(context).textTheme.button.copyWith(color: Theme.of(context).primaryColor),)),
+                                  child: Text('Change',style: Theme.of(context).textTheme.button.copyWith(color: Theme.of(context).primaryColor),)),
 
 
                             ],
@@ -610,7 +761,7 @@ class _CartState extends State<Cart> {
                       ),
                     ),
 
-                    SizedBox(height: 40,),
+                    SizedBox(height: 60,),
 
                   ],
                 ),
@@ -619,7 +770,7 @@ class _CartState extends State<Cart> {
             ),
 
             Positioned(
-              bottom: 1,
+              bottom: 0,
               child: Observer(
                 builder:(_)=> Column(
                   children: [
@@ -636,7 +787,7 @@ class _CartState extends State<Cart> {
 
                     Container(
                       // margin: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
-                      //height: 50.0,
+                      height: 50.0,
                       padding: EdgeInsets.all(6),
                       width: MediaQuery.of(context).size.width,
                       color:  widget.allFrenchisiViewModel.items.isNotEmpty?Theme.of(context).primaryColor:Colors.grey,
@@ -648,7 +799,7 @@ class _CartState extends State<Cart> {
                             Row(
                               children: [
                                 Image.asset('images/rupees_icn.png',width: 16,height: 16,color: Colors.white,),
-                                Text('${getGrandTotal()}',style: Theme.of(context).textTheme.subtitle2.copyWith(color: Colors.white),),
+                                Text('${getGrandTotal()}',style: Theme.of(context).textTheme.subtitle1.copyWith(color: Colors.white),),
                               ],
                             ),
 
@@ -665,14 +816,15 @@ class _CartState extends State<Cart> {
 
                         onTap: () {
                           if (widget.allFrenchisiViewModel.items.isNotEmpty) {
+                            String gst=isGstBill?(_textFieldController.text==""?widget.allFrenchisiViewModel.gstNo():_textFieldController.text):"";
+
                             widget.allFrenchisiViewModel.placeOrder
                               (getItemTotal(), selectedPayMode, 0,
-                                getDeliverCharges(), appliedDescunt, selecteddateTime).then((
+                                getDeliverCharges(), appliedDescunt, selecteddateTime,gst).then((
                                 value){
-
                               if(value.status == 200){
                                 Scaffold.of(context).showSnackBar(
-                                    SnackBar(content: Text("Order Placed Successfully")));
+                                    SnackBar(backgroundColor: Colors.green,content: Text("Order Placed Successfully")));
 
                                 print('${widget.allFrenchisiViewModel.placeOrderModel.payMode}');
                                 if( widget.allFrenchisiViewModel.placeOrderModel
@@ -712,6 +864,8 @@ class _CartState extends State<Cart> {
      return 0.0;
    }else{
 
+     print(widget.allFrenchisiViewModel.offersMain.additionalCharges.toJson());
+
      double amount=widget.allFrenchisiViewModel.offersMain.additionalCharges.handlingChg
 
      +widget.allFrenchisiViewModel.offersMain.additionalCharges.packingChg
@@ -720,12 +874,16 @@ class _CartState extends State<Cart> {
      +widget.allFrenchisiViewModel.offersMain.additionalCharges.extraChg
      +widget.allFrenchisiViewModel.offersMain.additionalCharges.roundOffAmt;
 
+     print('*********$amount********');
 
     if(( widget.allFrenchisiViewModel.offersMain.deliveryCharges.minAmt??0)<=getItemTotal()
         &&(widget.allFrenchisiViewModel.offersMain.deliveryCharges.freeDelvLimit??9999)>=getItemTotal()){
-      return widget.allFrenchisiViewModel.offersMain.deliveryCharges.amt1??0+amount;
+      print('if less${widget.allFrenchisiViewModel.offersMain.deliveryCharges.amt1+amount}');
+
+      return (widget.allFrenchisiViewModel.offersMain.deliveryCharges.amt1+amount);
     }else if((widget.allFrenchisiViewModel.offersMain.deliveryCharges.freeDelvLimit??9999)<getItemTotal()){
-      return widget.allFrenchisiViewModel.offersMain.deliveryCharges.amt2??0+amount;
+      print(' if more${widget.allFrenchisiViewModel.offersMain.deliveryCharges.amt2+amount}');
+      return (widget.allFrenchisiViewModel.offersMain.deliveryCharges.amt2+amount);
     }
 
    }
@@ -756,7 +914,7 @@ class _CartState extends State<Cart> {
 
                widget.allFrenchisiViewModel.emtyCart();
                  widget.allFrenchisiViewModel.setPage(0);
-
+               Navigator.pop(context);
 
              }).catchError((onError){
                Navigator.pop(context);
@@ -775,12 +933,50 @@ class _CartState extends State<Cart> {
     List<Widget> list=[];
 
 
+    double diliveryCharges=0.0;
+    double amount=widget.allFrenchisiViewModel.offersMain.additionalCharges.handlingChg
+
+        +widget.allFrenchisiViewModel.offersMain.additionalCharges.packingChg
+
+        +widget.allFrenchisiViewModel.offersMain.additionalCharges.surchargeFee
+        +widget.allFrenchisiViewModel.offersMain.additionalCharges.extraChg
+        +widget.allFrenchisiViewModel.offersMain.additionalCharges.roundOffAmt;
+
+
+    if(( widget.allFrenchisiViewModel.offersMain.deliveryCharges.minAmt??0)<=getItemTotal()
+        &&(widget.allFrenchisiViewModel.offersMain.deliveryCharges.freeDelvLimit??9999)>=getItemTotal()){
+      diliveryCharges= widget.allFrenchisiViewModel.offersMain.deliveryCharges.amt1??0+amount;
+    }else if((widget.allFrenchisiViewModel.offersMain.deliveryCharges.freeDelvLimit??9999)<getItemTotal()){
+      diliveryCharges= widget.allFrenchisiViewModel.offersMain.deliveryCharges.amt2??0+amount;
+    }
+
+
+
+    if(diliveryCharges!=0){
+      list.add(
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text("Delivery Charge",style: Theme.of(context).textTheme.caption),
+              Row(
+                children: [
+                  Image.asset('images/rupees_icn.png',width: 16,height: 16,),
+                  Text('${diliveryCharges}' ,style: Theme.of(context).textTheme.caption,),
+
+                ],
+              )
+            ],
+          )
+      );
+    }
+
+
     if(widget.allFrenchisiViewModel.offersMain.additionalCharges.handlingChg!=0){
       list.add(
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("Handling Charges"),
+              Text("Handling Charge",style: Theme.of(context).textTheme.caption),
               Row(
                 children: [
                   Image.asset('images/rupees_icn.png',width: 16,height: 16,),
@@ -798,7 +994,7 @@ class _CartState extends State<Cart> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("Packaging Charges"),
+              Text("Packaging Charge",style: Theme.of(context).textTheme.caption),
               Row(
                 children: [
                   Image.asset('images/rupees_icn.png',width: 16,height: 16,),
@@ -817,7 +1013,7 @@ class _CartState extends State<Cart> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("Sur Charges"),
+              Text("Surcharge",style: Theme.of(context).textTheme.caption),
               Row(
                 children: [
                   Image.asset('images/rupees_icn.png',width: 16,height: 16,),
@@ -836,7 +1032,7 @@ class _CartState extends State<Cart> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("Extra Charges"),
+              Text("Extra Charge",style: Theme.of(context).textTheme.caption),
               Row(
                 children: [
                   Image.asset('images/rupees_icn.png',width: 16,height: 16,),
@@ -855,7 +1051,7 @@ class _CartState extends State<Cart> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("Round Off Charges"),
+              Text("Round Off Charge",style: Theme.of(context).textTheme.caption),
               Row(
                 children: [
                   Image.asset('images/rupees_icn.png',width: 16,height: 16,),
@@ -875,7 +1071,9 @@ class _CartState extends State<Cart> {
   void initiateHelpCall(){
    launch('tel:8260060046');
 
-  }  Widget getLogo(String caption){
+  }
+
+  Widget getLogo(String caption){
     switch(caption.toLowerCase()){
       case 'home':{
         return Icon(Icons.home,color: Theme.of(context).primaryColor,);
@@ -977,7 +1175,7 @@ class _CartState extends State<Cart> {
                                     child: ListView.separated(
                                         itemCount:  widget.allFrenchisiViewModel.adressesMain.addressList.length,
                                         separatorBuilder: (context, index) => Divider(
-                                          color: Colors.black54,
+                                          color: Colors.grey[300],
                                           height: 1,
                                         ),
                                         itemBuilder: (context, index) {
@@ -1056,6 +1254,7 @@ class _CartState extends State<Cart> {
       "orderAmount": (getItemTotal()+getDeliverCharges())-appliedDescunt??0,
       "customerName": widget.allFrenchisiViewModel.getCustName(),
       "orderCurrency": "INR",
+      "color1":'#FFFFFF',
       "appId": '7233535973c0dcc4f58af274653327',
       "customerPhone": widget.allFrenchisiViewModel.getCustMobile(),
       "customerEmail": 'madhviweb@gmail.com',
@@ -1076,12 +1275,10 @@ class _CartState extends State<Cart> {
 
 
                 Scaffold.of(context).showSnackBar(
-                    SnackBar(content: Text("Oredr Successfull")));
+                    SnackBar(backgroundColor: Colors.green,content: Text("Order Successful")));
                 widget.allFrenchisiViewModel.postPaymentService(
                     widget.allFrenchisiViewModel.placeOrderModel.uuidNo, "1",
                     "1", value).then((value){
-                  // widget.allFrenchisiViewModel.emtyCart();
-                  // widget.allFrenchisiViewModel.setPage(0);
 
                     widget.allFrenchisiViewModel.emtyCart();
                     widget.allFrenchisiViewModel.setPage(0);
@@ -1093,18 +1290,13 @@ class _CartState extends State<Cart> {
                 );
               } else {
                   Scaffold.of(context).showSnackBar(
-                      SnackBar(content: Text("Payment faild")));
-                // widget.allFrenchisiViewModel.postPaymentService(widget.allFrenchisiViewModel.placeOrderModel.uuidNo, "1", "2", value).then((value) {
-                // widget.allFrenchisiViewModel.emtyCart();
-
+                      SnackBar(backgroundColor: Colors.red,content: Text("Payment failed")));
                 onPaymentFailed();
 
                 // });
               }
             }
           })
-
-
       ).catchError((onError) {
         onPaymentFailed();
       });
@@ -1113,6 +1305,7 @@ class _CartState extends State<Cart> {
     }
   }
   double getItemTotal(){
+
     double prise=0;
     widget.allFrenchisiViewModel.items.forEach((element) {
       prise=(element.qty*  (element.prize*element.selectedQty))+prise;
@@ -1120,6 +1313,8 @@ class _CartState extends State<Cart> {
 return prise;
   }
 
+
+  OfferList selectedOffer;
 
   // Future<String> fetchUserOrder() {
   //   Future.delayed(Duration(milliseconds: 3000), () {
@@ -1132,25 +1327,37 @@ return prise;
   //   );
   // }
 
- void applyDiscount(OfferList offerList) {
+ void applyDiscount() {
 
     double calculateDiscount=0.0;
 
-    if(getItemTotal()!=0.0){
-    calculateDiscount=(getItemTotal()/offerList.offerDetailList[0].discPer);
 
-    if(calculateDiscount <= offerList.offerDetailList[0].offerLimit){
-      setState(() {
-        offerApplied=offerList.offerName;
-        appliedDescunt=calculateDiscount;
-        appliedCoupen=offerList.offerDetailList[0].couponCode;
-      });
-    }else {
-      setState(() {
-        appliedCoupen = offerList.offerDetailList[0].couponCode;
-        appliedDescunt = offerList.offerDetailList[0].offerLimit;
-      });
-    }
+    if(selectedOffer!=null) {
+      if (getItemTotal() != 0.0) {
+        calculateDiscount =
+        (getItemTotal() * (selectedOffer.offerDetailList[0].discPer/100));
+
+        if (calculateDiscount <= selectedOffer.offerDetailList[0].offerLimit) {
+
+          setState(() {
+            offerApplied = selectedOffer.offerName;
+            appliedDescunt =double.parse(calculateDiscount.toStringAsFixed(2)) ;
+            appliedCoupen = selectedOffer.offerDetailList[0].couponCode;
+
+          });
+
+        } else {
+
+          setState(() {
+            appliedCoupen = selectedOffer.offerDetailList[0].couponCode;
+            appliedDescunt = selectedOffer.offerDetailList[0].offerLimit;
+
+          });
+
+        }
+      } else {
+        appliedDescunt = 0.0;
+      }
     }else{
       appliedDescunt=0.0;
     }
@@ -1161,11 +1368,14 @@ return prise;
 
 
   double getGrandTotal(){
+
+
+
     if(getItemTotal()+getDeliverCharges()==0){
       appliedDescunt=0;
       return 0;
     }
-    return getItemTotal()+getDeliverCharges()-appliedDescunt;
+    return double.parse(((getItemTotal()+getDeliverCharges())-appliedDescunt-(isTwinWallet?widget.allFrenchisiViewModel.offersMain.custWalletTotal.total:0)).toStringAsFixed(2));
   }
 
 

@@ -9,6 +9,7 @@ part of 'PlaceOrder.dart';
 PlaceOrder _$PlaceOrderFromJson(Map<String, dynamic> json) {
   return PlaceOrder(
     frId: json['frId'] as int,
+    gst: json['gst'] as String,
     custId: json['custId'] as int,
     applicableFor: json['applicableFor'] as int,
     orderStatus: json['orderStatus'] as int,
@@ -50,6 +51,7 @@ Map<String, dynamic> _$PlaceOrderToJson(PlaceOrder instance) =>
       'deliveryDate': instance.deliveryDate,
       'deliveryTime': instance.deliveryTime,
       'deliveryInstructionText': instance.deliveryInstructionText,
+      'gst': instance.gst,
       'km': instance.km,
       'deliveryCharges': instance.deliveryCharges,
       'itemTotal': instance.itemTotal,

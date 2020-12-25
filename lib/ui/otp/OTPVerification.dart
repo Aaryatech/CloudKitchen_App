@@ -5,6 +5,7 @@ import 'package:cloud_kitchen/viewmodel/otp/otpviewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pinput/pin_put/pin_put.dart';
+import 'package:sms_autofill/sms_autofill.dart';
 
 
 final otpViewModel=OtpViewModel();
@@ -37,7 +38,15 @@ class _OTPVerificationState extends State<OTPVerification> {
   void initState() {
     // TODO: implement initState
     myLocalPrefes=MyLocalPrefes();
+    listenForCode();
     super.initState();
+  }
+
+  listenForCode()async{
+    await SmsAutoFill().listenForCode;
+    SmsAutoFill().getAppSignature.then((value) => {
+      print('############${value}#######'),
+    });
   }
 
   @override
@@ -92,35 +101,47 @@ class _OTPVerificationState extends State<OTPVerification> {
                 ),
 
 
-              PinPut(
-                fieldsCount: 6,
-                onSubmit: ((String pin)  {
-                  if(pin==widget.otp){
-                    _showSnackbar('Success', true);
-                    myLocalPrefes.setCustLogin(true);
+          //     PinPut(
+          //       fieldsCount: 6,
+          //       onSubmit: ((String pin)  {
+          //         if(pin==widget.otp){
+          //           _showSnackbar('Success', true);
+          //           myLocalPrefes.setCustLogin(true);
+          //
+          //           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> PersonalDetail(widget.mobileNumber)));
+          //
+          //         }else{
+          // _showSnackbar('OTP does not match,Please try agian', false);
+          //
+          // }
+          //
+          //       }),
+          //       focusNode: _pinPutFocusNode,
+          //       controller: _pinPutController,
+          //       submittedFieldDecoration: _pinPutDecoration.copyWith(
+          //         borderRadius: BorderRadius.circular(20.0),
+          //       ),
+          //
+          //       selectedFieldDecoration: _pinPutDecoration,
+          //       followingFieldDecoration: _pinPutDecoration.copyWith(
+          //         borderRadius: BorderRadius.circular(8.0),
+          //         border: Border.all(
+          //           color: Theme.of(context).primaryColor.withOpacity(.5),
+          //         ),
+          //       ),
+          //     ),
 
-                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> PersonalDetail(widget.mobileNumber)));
 
-                  }else{
-          _showSnackbar('OTP does not match,Please try agian', false);
+                  PinFieldAutoFill(
+                         // UnderlineDecoration, BoxLooseDecoration or BoxTightDecoration see https://github.com/TinoGuo/pin_input_text_field for more info,
+                      currentCode:'', // prefill with a code
+                      controller: _pinPutController,
+                      onCodeSubmitted:(str){
 
-          }
-
-                }),
-                focusNode: _pinPutFocusNode,
-                controller: _pinPutController,
-                submittedFieldDecoration: _pinPutDecoration.copyWith(
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-
-                selectedFieldDecoration: _pinPutDecoration,
-                followingFieldDecoration: _pinPutDecoration.copyWith(
-                  borderRadius: BorderRadius.circular(8.0),
-                  border: Border.all(
-                    color: Theme.of(context).primaryColor.withOpacity(.5),
+                      }, //code submitted callback
+                      onCodeChanged:(str){} ,//code changed callback
+                      codeLength: 6//code length, default 6
                   ),
-                ),
-              ),
 
 
                          SizedBox(height: 16),

@@ -30,6 +30,7 @@ GrievanceList _$GrievanceListFromJson(Map<String, dynamic> json) {
     remark: json['remark'] as String,
     currentStatus: json['currentStatus'] as int,
     insertDateTime: json['insertDateTime'] as String,
+    walletAmt: (json['walletAmt'] as num)?.toDouble(),
     insertById: json['insertById'] as int,
     grievenceTypeName: json['grievenceTypeName'] as String,
     grievenceSubtypeName: json['grievenceSubtypeName'] as String,
@@ -68,4 +69,5 @@ Map<String, dynamic> _$GrievanceListToJson(GrievanceList instance) =>
       'grvInstrustion': instance.grvInstrustion,
       'grvType': instance.grvType,
       'orderNo': instance.orderNo,
+      'walletAmt': instance.walletAmt,
     };

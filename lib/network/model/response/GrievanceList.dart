@@ -20,8 +20,8 @@ class GrievanceListMain {
 class GrievanceList{
 
    int grieveId,orderId,grievenceTypeId,grievenceSubtypeId,currentStatus,insertById,extraInt1,extraInt2,platform; 
-	 String remark,insertDateTime,grievenceTypeName,grievenceSubtypeName,date,extraVar1,extraVar2,grievencceNo,grvInstrustion,grvType,orderNo; 
-	 
+	 String remark,insertDateTime,grievenceTypeName,grievenceSubtypeName,date,extraVar1,extraVar2,grievencceNo,grvInstrustion,grvType,orderNo;
+	 double walletAmt;
 
      GrievanceList({this.grieveId,
       this.orderId,
@@ -30,6 +30,7 @@ class GrievanceList{
       this.remark,
       this.currentStatus,
       this.insertDateTime,
+       this.walletAmt,
       this.insertById,
       this.grievenceTypeName,
       this.grievenceSubtypeName,

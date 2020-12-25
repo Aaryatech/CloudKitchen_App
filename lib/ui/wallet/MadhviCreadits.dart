@@ -36,7 +36,7 @@ class _MadhviCreditsState extends State<MadhviCredits> {
           children: [
             Scaffold(
                 appBar: AppBar(
-                  title: Text('Madhvi Credits'),
+                  title: Text('Madhvi Credits',style: Theme.of(context).textTheme.headline6.copyWith(color: Colors.white),),
                 ),
                 body:SingleChildScrollView(
                   child: Observer(builder: (_){
@@ -53,56 +53,66 @@ class _MadhviCreditsState extends State<MadhviCredits> {
                         children: <Widget>[
 
                           Text(
-                              'Save money by using Madhvi Credits when paying online for an order',style:Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.grey)),
+                              'Save money by using Madhvi Credits when paying online for an order',style:Theme.of(context).textTheme.bodyText2.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.grey)),
                           SizedBox(height: 8,),
 
                           Text(
                               'Credit Balance',
-                              style:Theme.of(context).textTheme.headline6.copyWith(fontWeight: FontWeight.bold).copyWith(color:Colors.black)),
+                              style:Theme.of(context).textTheme.headline6),
                           Divider(
-                            color: Colors.grey,
+                            color: Colors.grey[300],
                           ),
                           SizedBox(
                             height: 4,
                           ),
 
-                          Text(
-                              '${madhviCreditViewModel.total}',style:Theme.of(context).textTheme.headline6.copyWith(fontWeight: FontWeight.bold).copyWith(color:Colors.black)),
+                          Row(
+                            children: [
+                              Image.asset('images/rupees_icn.png',width: 22,height: 22,),
+                              SizedBox(
+                                height: 4,
+                              ),
+                              Text(
+                                  '${madhviCreditViewModel.total}',style:Theme.of(context).textTheme.headline6.copyWith(fontWeight: FontWeight.bold).copyWith(color:Colors.black)),
+                            ],
+                          ),
+
                           SizedBox(height: 4,),
 
 
                           Divider(
-                            color: Colors.grey,
+                            color: Colors.grey[300],
                           ),
                           SizedBox(height: 12,),
                           Text(
                               'Credits History',
-                              style: Theme
-                                  .of(context)
-                                  .textTheme
-                                  .headline6
-                                  .copyWith(fontWeight: FontWeight.bold)
-                                  .copyWith(color: Colors.black)),
+                              style:Theme.of(context).textTheme.headline6),
                           SizedBox(height: 20,),
                         //  new ListDisplay(),
 
-                          (!madhviCreditViewModel.isLoading && madhviCreditViewModel.madhviCreditList.walletTransaction.isNotEmpty)? ListView.builder(
+                          (!madhviCreditViewModel.isLoading && madhviCreditViewModel.madhviCreditList.walletTransaction.isNotEmpty)? ListView.separated(
                             itemCount:  madhvi.length,
-                            shrinkWrap: true,
+                            separatorBuilder: (context, index) => Divider(
+                              color: Colors.grey[300],
+                              height: 1,
+                            ),                            shrinkWrap: true,
                              itemBuilder: (context, index) {
                             bool cr = madhvi[index].transcType == 'CR' ? true : false;
 
 
 
                             return ListTile(
-                              title: Text('${madhvi[index].orderDate}'),
-                              subtitle:Text( 'Paid for order :' + '${madhvi[index].billNo}') ,
-                              trailing: Text( cr ? '+ Rs' + '${madhvi[index].amount}' :  '- Rs' + '${madhvi[index].amount}', style: Theme
-                                              .of(context)
-                                              .textTheme
-                                              .subtitle1
-                                              .copyWith(fontWeight: FontWeight.bold)
-                                              .copyWith(color: cr ? Colors.green : Colors.red)),
+                              title: Text('${madhvi[index].orderDate}',style: Theme.of(context).textTheme.subtitle2,),
+                              subtitle:Text( 'Paid for order: ' + '${madhvi[index].billNo}',style: Theme.of(context).textTheme.subtitle2) ,
+                              trailing:Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text( cr ? '+' : '-', style: Theme.of(context).textTheme.subtitle1.copyWith(color: cr ? Color(0xff0A6D00) : Colors.red)),
+                                  SizedBox(width: 2,),
+                                  Image.asset('images/rupees_icn.png',width: 16,height: 16,color: cr ? Color(0xff0A6D00) : Colors.red,),
+                                  Text( '${madhvi[index].amount}', style: Theme.of(context).textTheme.subtitle2.copyWith(color: cr ? Color(0xff0A6D00) : Colors.red)),
+                                ],
+                              )
 
                           );
 

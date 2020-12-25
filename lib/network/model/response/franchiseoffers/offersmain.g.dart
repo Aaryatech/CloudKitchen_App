@@ -23,6 +23,9 @@ OffersMain _$OffersMainFromJson(Map<String, dynamic> json) {
         ? null
         : DeliveryCharges.fromJson(
             json['deliveryCharges'] as Map<String, dynamic>),
+    json['custWalletTotal'] == null
+        ? null
+        : CustWallet.fromJson(json['custWalletTotal'] as Map<String, dynamic>),
   );
 }
 
@@ -32,6 +35,7 @@ Map<String, dynamic> _$OffersMainToJson(OffersMain instance) =>
       'offerList': instance.offerList,
       'additionalCharges': instance.additionalCharges,
       'deliveryCharges': instance.deliveryCharges,
+      'custWalletTotal': instance.custWalletTotal,
     };
 
 AdditionalCharges _$AdditionalChargesFromJson(Map<String, dynamic> json) {

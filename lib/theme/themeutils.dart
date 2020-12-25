@@ -62,9 +62,8 @@ ThemeData _buildLightTheme() {
       ),
       //
       button: TextStyle(
-          fontFamily: "Open Sans regular",
+          fontFamily: "Metropolis",
           color: Colors.black
-
       ),
 
       //open sans

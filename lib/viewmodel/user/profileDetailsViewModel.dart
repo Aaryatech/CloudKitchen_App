@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:cloud_kitchen/local/prefs.dart';
 import 'package:cloud_kitchen/network/model/httpresponce.dart';
@@ -138,6 +139,30 @@ abstract class _ProfileDetailsViewModel with Store{
           myLocalPrefes.setCustId(customerDetails.custId);
           myLocalPrefes.setCustDetails(true);
           myLocalPrefes.setCustName(customerDetails.custName);
+          isLoading=false;
+
+          return true;
+        }
+
+      }else if(httpResponse.status==500) {
+        errorMessage=httpResponse.message;
+        isLoading=false;
+
+      return false;
+      }
+      isLoading=false;
+
+
+  }
+
+
+  Future<bool> saveUserProfileImage(File image) async {
+    isLoading=true;
+   HttpResponse httpResponse=  await saveUserRepo.updateUserProfile(image,customerDetails.custId);
+      if(httpResponse.status==200){
+
+        if(!httpResponse.info.error)
+        {
           isLoading=false;
 
           return true;

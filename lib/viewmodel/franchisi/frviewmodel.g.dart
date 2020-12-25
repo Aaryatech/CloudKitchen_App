@@ -667,9 +667,9 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
 
   @override
   Future<HttpResponse> placeOrder(double itemTotal, int payMode, int offerId,
-      double deliveryCharges, double descAmt, String dateTime) {
+      double deliveryCharges, double descAmt, String dateTime, String gst) {
     return _$placeOrderAsyncAction.run(() => super.placeOrder(
-        itemTotal, payMode, offerId, deliveryCharges, descAmt, dateTime));
+        itemTotal, payMode, offerId, deliveryCharges, descAmt, dateTime, gst));
   }
 
   final _$getAddressAsyncAction =
@@ -831,6 +831,61 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
         name: '_AllFrenchisiViewModel.setDeliveryInstruction');
     try {
       return super.setDeliveryInstruction(deliveryInstructiona);
+    } finally {
+      _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setPage(dynamic int) {
+    final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
+        name: '_AllFrenchisiViewModel.setPage');
+    try {
+      return super.setPage(int);
+    } finally {
+      _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  Future<dynamic> setGstNo(String gst) {
+    final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
+        name: '_AllFrenchisiViewModel.setGstNo');
+    try {
+      return super.setGstNo(gst);
+    } finally {
+      _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  String gstNo() {
+    final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
+        name: '_AllFrenchisiViewModel.gstNo');
+    try {
+      return super.gstNo();
+    } finally {
+      _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  String getProUrl() {
+    final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
+        name: '_AllFrenchisiViewModel.getProUrl');
+    try {
+      return super.getProUrl();
+    } finally {
+      _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  Future<dynamic> setProUrl(String url) {
+    final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
+        name: '_AllFrenchisiViewModel.setProUrl');
+    try {
+      return super.setProUrl(url);
     } finally {
       _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
     }

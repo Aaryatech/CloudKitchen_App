@@ -29,7 +29,28 @@ class MyLocalPrefes{
   String selectedAddressCaption='SelectedAddressCaption';
   String selectedOutletType="OutletType";
   String delType="DelType";
+  String profUrl="ProfUrl";
+  String gstNo="gstNo";
 
+
+  String getProUrl(){
+    return prefs.getString(profUrl)??"";
+  }
+
+
+  Future setProfUrl(String  url) async{
+    await prefs.setString(profUrl,url);
+  }
+
+
+  String getGSTNo(){
+    return prefs.getString(gstNo)??"";
+  }
+
+
+  Future setGSTNo(String  url) async{
+    await prefs.setString(gstNo,url);
+  }
 
   int getDefType(){
     return prefs.getInt(delType)??2;

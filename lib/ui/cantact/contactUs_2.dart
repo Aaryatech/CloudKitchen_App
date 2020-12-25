@@ -26,7 +26,7 @@ final messageController = TextEditingController();
           Scaffold(
             key: _scaffoldKey,
              appBar: AppBar(
-                title: Text('Contact Us'),
+                title: Text('Contact Us',style: Theme.of(context).textTheme.headline6.copyWith(color: Colors.white),),
               ),
               body: SingleChildScrollView(
                         child: Observer(builder: (_){
@@ -43,12 +43,16 @@ final messageController = TextEditingController();
                      // width: 300,
                       ),
 
+                    SizedBox(height: 16,),
+
                     TextField(
             textAlign: TextAlign.start,
             keyboardType: TextInputType.text,
             controller: usernameController,
+                      autofillHints: [AutofillHints.name],
             decoration: new InputDecoration(
                   hintText: 'Enter Your Name',
+                  labelText: 'Name',
                   // errorText: contactUSViewModel.contactUSErrorState.username??"",
                   prefixIcon: Icon(Icons.person),
                   border: new OutlineInputBorder(
@@ -65,15 +69,18 @@ final messageController = TextEditingController();
             ),
           ),
 
-            SizedBox( height: 10,),
+
+                        SizedBox( height: 10,),
 
              TextField(
             textAlign: TextAlign.start,
             keyboardType: TextInputType.number,
             controller: phoneNumberController,
+               autofillHints: [AutofillHints.telephoneNumber],
             decoration: new InputDecoration(
                   hintText: 'Enter Your Phone Number',
                   // errorText: contactUSViewModel.contactUSErrorState.phoneNumber,
+                labelText: 'Number',
                   prefixIcon: Icon(Icons.mobile_screen_share),
                   border: new OutlineInputBorder(
                     borderRadius: const BorderRadius.all(
@@ -94,10 +101,12 @@ final messageController = TextEditingController();
             textAlign: TextAlign.start,
             keyboardType: TextInputType.emailAddress,
             controller: emailController,
+               autofillHints: [AutofillHints.email],
             decoration: new InputDecoration(
                   hintText: 'Enter Your Email Address',
                   // errorText: contactUSViewModel.contactUSErrorState.email,
-                  prefixIcon: Icon(Icons.email),
+                labelText: 'Email',
+                prefixIcon: Icon(Icons.email),
                   border: new OutlineInputBorder(
                     borderRadius: const BorderRadius.all(
                       const Radius.circular(2.0),
@@ -121,7 +130,9 @@ final messageController = TextEditingController();
 
             decoration: new InputDecoration(
                   hintText: 'Enter Your Message',
-                  // errorText: contactUSViewModel.contactUSErrorState.message,
+                labelText: 'Message',
+
+                // errorText: contactUSViewModel.contactUSErrorState.message,
                   //prefixIcon: Icon(Icons.message),
                 // icon: Icon(Icons.question_answer),
                   prefixIcon: Padding(

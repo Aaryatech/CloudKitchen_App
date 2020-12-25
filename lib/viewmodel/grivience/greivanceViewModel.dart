@@ -128,13 +128,7 @@ abstract class _GreivanceViewModel with Store{
     // }
   
     Future getGrievanceList() async {
-      int custId;
-      // Timer(Duration(milliseconds: 700), (){
-      //   mobile = myLocalPrefes.getCustPhone();
 
-      // });
-
-      // custId = getCusId();
       isLoading = true;
 
       Future.delayed(Duration(milliseconds: 1000)).then((value) async {

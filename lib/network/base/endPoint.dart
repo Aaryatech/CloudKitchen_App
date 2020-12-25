@@ -43,6 +43,15 @@ class Auth{
   final deleteAddress='deleteCustAddress';
 
 
+  final profileUpload='uploadProfilePic';
+
+
+  final settingsForApp='getSettingValueForApp?key=DAIRY_MART_APP_ON_OFF';
+
+
+  final bulkOrder='sendDairyMartOrderMail';
+
+
 
 
 

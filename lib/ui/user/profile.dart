@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_kitchen/local/staticUrls.dart';
 import 'package:cloud_kitchen/ui/cantact/contactUs_2.dart';
 import 'package:cloud_kitchen/ui/grivience/grievance_1.dart';
 import 'package:cloud_kitchen/ui/outlettypes/outlettypes.dart';
@@ -87,34 +88,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   padding: EdgeInsets.all(16),
 
                                   child: Observer(
-                                    builder:(_)=> Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        Text(
-                                          widget.allFrenchisiViewModel.custName??"",
-                                         style:Theme.of(context).textTheme.headline6.copyWith(color:Colors.black)),
-                                        SizedBox(height: 4,),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                                widget.allFrenchisiViewModel.getCustMobile(),style:Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.grey)),
-                                            SizedBox(width: 8,),
+                                    builder:(_)=> Row(
+                                      children: [
 
-                                            InkWell(
-                                              onTap: (){
-                                                Navigator.push(context, MaterialPageRoute(builder: (context)=> EditProfile(widget.allFrenchisiViewModel)));
-
-                                              },
-                                              child: Text(
-                                                  'EDIT PROFILE',style:Theme.of(context).textTheme.caption.copyWith(fontWeight: FontWeight.bold).copyWith(color:Theme.of(context).primaryColor)),
-                                            ),
-                                          ],
+                                        CircleAvatar(
+                                          maxRadius: 50,
+                                          backgroundImage:widget.allFrenchisiViewModel.getProUrl()==""? AssetImage('images/ic_launcher.png'):NetworkImage('$profileImageUrl${widget.allFrenchisiViewModel.getProUrl()}')//:FileImage(_image) ,
                                         ),
 
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            Text(
+                                              widget.allFrenchisiViewModel.custName??"",
+                                             style:Theme.of(context).textTheme.headline6.copyWith(color:Colors.black,fontFamily: 'Metropolis Semi Bold')),
+                                            SizedBox(height: 4,),
 
+                                                Text(
+                                                    widget.allFrenchisiViewModel.getCustMobile(),style:Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.grey,fontFamily: 'Metropolis')),
+                                                SizedBox(height: 4,),
 
+                                                InkWell(
+                                                  onTap: (){
+                                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> EditProfile(widget.allFrenchisiViewModel)));
+
+                                                  },
+                                                  child: Text(
+                                                      'Edit Profile',style:Theme.of(context).textTheme.bodyText1.copyWith(color:Theme.of(context).primaryColor)),
+                                                ),
+
+                                          ],
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -129,7 +134,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
 
-                    Divider(color: Colors.grey,),
+                      Divider(
+                        color: Colors.grey[300],
+
+                      ),
 
                       SizedBox(height: 4,),
 
@@ -150,7 +158,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     children:[
                           Icon(Icons.description,color: index==0?Theme.of(context).primaryColor:Colors.black,),
                               Text(
-                                'Food Order',style:Theme.of(context).textTheme.subtitle2.copyWith(color:index==0?Theme.of(context).primaryColor:Colors.black)),
+                                'Food Order',style:Theme.of(context).textTheme.subtitle2.copyWith(color:index==0?Theme.of(context).primaryColor:Colors.black,fontFamily:'Metropolis')),
                           ],
                           ),
                         ),
@@ -167,7 +175,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               children:[
                                 Icon(Icons.account_balance_wallet_rounded,color:index==1?Theme.of(context).primaryColor:Colors.black,),
                                 Text(
-                                  'Wallet',style:Theme.of(context).textTheme.subtitle1.copyWith(color:Colors.black)),
+                                  'Wallet',style:Theme.of(context).textTheme.subtitle2.copyWith(color:Colors.black,fontFamily: 'Metropolis')),
 
                               ]
                           ),
@@ -187,7 +195,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               children:[
                                 Icon(Icons.settings,color:index==2?Theme.of(context).primaryColor:Colors.black,),
                                 Text(
-                                  'App Info',style:Theme.of(context).textTheme.subtitle1.copyWith(color:index==2?Theme.of(context).primaryColor:Colors.black)),
+                                  'App Info',style:Theme.of(context).textTheme.subtitle2.copyWith(color:index==2?Theme.of(context).primaryColor:Colors.black,fontFamily:'Metropolis')),
 
                               ]
                           ),
@@ -199,7 +207,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                       SizedBox(height: 8,),
 
-                      Divider(color: Colors.grey,),
+                      Divider(
+                        color: Colors.grey[300],
+
+                      ),
 
                       SizedBox(height: 8,),
 
@@ -220,10 +231,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Row(children: [
-                                Icon(Icons.restaurant,color: Colors.grey,),
+                                Container(
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.grey.withOpacity(0.2)
+                                    ),
+                                    padding: EdgeInsets.all(6),
+                                    child: Icon(Icons.restaurant,color: Colors.grey,size: 18,)),
+
                                 SizedBox(width: 8,),
                                 Text(
-                                  'Our restaurents/Outlets',style:Theme.of(context).textTheme.subtitle1.copyWith(color:Colors.black)),
+                                  'Our Restaurants/Outlets',style:Theme.of(context).textTheme.subtitle1.copyWith(color:Colors.black)),
 
                               ],),
                             ),
@@ -290,7 +308,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     child: Icon(Icons.notifications,color: Colors.grey,size: 18,)),
                                 SizedBox(width: 8,),
                                 Text(
-                                  'Tearms & Conditions',style:Theme.of(context).textTheme.subtitle1.copyWith(color:Colors.black)),
+                                  'Terms & Conditions',style:Theme.of(context).textTheme.subtitle1.copyWith(color:Colors.black)),
 
                               ],),
                             ),
@@ -312,7 +330,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     child: Icon(Icons.phone,color: Colors.grey,size: 18,)),
                                 SizedBox(width: 8,),
                                 Text(
-                                  'Contact Us',style:Theme.of(context).textTheme.subtitle1.copyWith(color:Colors.black)),
+                                    'Contact Us',style:Theme.of(context).textTheme.subtitle1.copyWith(color:Colors.black)),
+
+                              ],),
+                            ),
+                          ),
+
+                          InkWell(
+                            onTap: (){
+
+
+
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(children: [
+                                Container(
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.grey.withOpacity(0.2)
+                                    ),
+                                    padding: EdgeInsets.all(6),
+                                    child: Icon(Icons.share,color: Colors.grey,size: 18,)),
+                                SizedBox(width: 8,),
+                                Text(
+                                    'Share App',style:Theme.of(context).textTheme.subtitle1.copyWith(color:Colors.black)),
 
                               ],),
                             ),
@@ -421,7 +463,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                               SizedBox(width: 8,),
                               Text(
-                                  'Grivience',style:Theme.of(context).textTheme.subtitle1.copyWith(color:Colors.black)),
+                                  'Grievance',style:Theme.of(context).textTheme.subtitle1.copyWith(color:Colors.black)),
                             ],
                             ),
                           ),

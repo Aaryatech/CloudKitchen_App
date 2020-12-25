@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_kitchen/network/client/networkclient.dart';
 import 'package:cloud_kitchen/network/model/httpresponce.dart';
 import 'package:cloud_kitchen/network/model/request/SaveCustomer.dart';
@@ -123,6 +125,47 @@ SaveUserRepo(){
     return httpResponse;
   }
 
+
+  Future<HttpResponse> updateUserProfile(File image,int custId) async {
+    HttpResponse httpResponse = HttpResponse();
+    String fileName = image.path.split('/').last;
+
+    await httpClient.post('${endPoints.Auth().profileUpload}',body: FormData.fromMap(
+        {
+          "file": await MultipartFile.fromFile(image.path, filename: fileName),
+          "custId":custId
+        }
+    )).then((responce) {
+
+      print(responce);
+      if (responce.statusCode == 200) {
+        httpResponse.status = responce.statusCode;
+        httpResponse.message = 'Successful';
+        httpResponse.info=Info.fromJson(responce.data['info']);
+
+        if(!httpResponse.info.error) {
+          try {
+            httpResponse.data =
+                SaveUser.fromJson(responce.data['customerDisplay']);
+          } catch (error) {
+            httpResponse.info.error = true;
+            httpResponse.info.messege = 'no user data available';
+          }
+        }
+      } else {
+        httpResponse.status = 500;
+        httpResponse.message = 'Something went wrong';
+        httpResponse.data = null;
+      }
+    }).catchError((onError) {
+      print(onError);
+      httpResponse.status = 404;
+      httpResponse.message = 'Network not available';
+      httpResponse.data = null;
+    });
+
+    return httpResponse;
+  }
 
 
   Future<HttpResponse> saveContactUs(SaveCustomer saveUser) async {

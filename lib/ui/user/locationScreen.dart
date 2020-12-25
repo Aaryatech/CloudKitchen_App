@@ -259,8 +259,6 @@ class _LocationScreenState extends State<LocationScreen> {
 
                                                 if(value){
 
-
-
                                                   Navigator.pushAndRemoveUntil(context,
                                                       MaterialPageRoute(
                                                           builder: (context) =>

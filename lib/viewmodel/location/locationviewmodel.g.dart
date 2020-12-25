@@ -39,6 +39,15 @@ mixin _$AddLocationViewModel on _AddLocationViewModel, Store {
     });
   }
 
+  final _$saveUserDetailsAsyncAction =
+      AsyncAction('_AddLocationViewModel.saveUserDetails');
+
+  @override
+  Future<bool> saveUserDetails(SaveAddress saveUserDetails) {
+    return _$saveUserDetailsAsyncAction
+        .run(() => super.saveUserDetails(saveUserDetails));
+  }
+
   final _$_AddLocationViewModelActionController =
       ActionController(name: '_AddLocationViewModel');
 

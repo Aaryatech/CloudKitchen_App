@@ -56,6 +56,7 @@ class _OrderHistoryState extends State<OrderHistory> {
       key: _scaffoldKey,
       backgroundColor: Colors.white,
       appBar: AppBar(
+
         title: Text(
           'Your Order History',
           style: Theme.of(context)
@@ -89,7 +90,7 @@ class _OrderHistoryState extends State<OrderHistory> {
             : widget.allFrenchisiViewModel.orderHistory.orderList.isEmpty
                 ? Center(
                     child: Text(
-                      'N0 Data Available',
+                      'No Data Available',
                       style: Theme.of(context).textTheme.headline6,
                     ),
                   )
@@ -178,9 +179,10 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                         .textTheme
                                                         .caption
                                                         .copyWith(
+                                                        height: 1.2,
                                                             fontWeight:
                                                                 FontWeight
-                                                                    .normal)),
+                                                                    .normal,fontFamily: 'Metropolis')),
                                               ),
                                             ],
                                           ),
@@ -212,7 +214,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                 );
                                               },
                                               child: Image.asset(
-                                                "images/bell.gif",
+                                                "images/phonelink-ring.gif",
                                                 height: 32.0,
                                                 width: 32.0,
                                               ),
@@ -305,11 +307,11 @@ class _OrderHistoryState extends State<OrderHistory> {
                                       onTap: () {
                                         showGrievanceAlert(item.orderId);
                                       },
-                                      child: Text("Add Grievance",
+                                      child: Text("Cancel Order",
                                           style: Theme.of(context)
                                               .textTheme
                                               .button
-                                              .copyWith(color: Colors.red)),
+                                              .copyWith(color: Colors.red,fontFamily: 'Metropolis')),
                                     )
                                   ],
                                 ),

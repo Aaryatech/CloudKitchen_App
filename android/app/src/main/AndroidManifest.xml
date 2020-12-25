@@ -21,6 +21,7 @@
         tools:replace="android:label"
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true"
+        android:requestLegacyExternalStorage="true"
         tools:node="merge">
 
         <meta-data android:name="com.google.android.gms.maps.API_OPTIONS"
@@ -77,6 +78,14 @@
         </activity>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
+
+        <activity
+            android:name=".EmbeddingV1Activity"
+            android:theme="@android:style/Theme.Black.NoTitleBar"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />

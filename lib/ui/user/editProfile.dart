@@ -1,10 +1,14 @@
+import 'dart:io';
+
 import 'package:cloud_kitchen/local/prefs.dart';
+import 'package:cloud_kitchen/local/staticUrls.dart';
 import 'package:cloud_kitchen/network/model/request/SaveCustomer.dart';
 import 'package:cloud_kitchen/viewmodel/franchisi/frviewmodel.dart';
 import 'package:cloud_kitchen/viewmodel/user/profileDetailsViewModel.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'AddressBook.dart';
 
@@ -35,6 +39,23 @@ final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
     profileDetailsViewModel.getUserDetailsIfExist();
   }
 
+
+Future getImage() async {
+  final pickedFile = await picker.getImage(source: ImageSource.gallery);
+
+  setState(() {
+    if (pickedFile != null) {
+      _image = File(pickedFile.path);
+      profileDetailsViewModel.saveUserProfileImage(_image);
+    } else {
+      print('No image selected.');
+    }
+  });
+}
+
+File _image;
+final picker = ImagePicker();
+
 @override
 void dispose() {
   // Clean up the controller when the widget is removed from the
@@ -56,8 +77,18 @@ void dispose() {
             Scaffold(
               key: _scaffoldKey,
                appBar: AppBar(
-                  title: Text('Edit Profile'),
-                ),
+                  title: Text('Edit Profile',style: Theme.of(context).textTheme.headline6.copyWith(color:Colors.white),),
+
+               actions: [
+                 TextButton(
+                   child: Text('Addresses',style: Theme.of(context).textTheme.button.copyWith(color: Colors.white,fontFamily: 'Metropolis'),),
+                   onPressed: (){
+                     Navigator.push(context, MaterialPageRoute(builder: (context)=> AddressBook(widget.allFrenchisiViewModel)));
+
+                   },
+                 )
+               ],
+               ),
                 body: Container(
                   child: SingleChildScrollView(
                     child: Observer(builder: (_){
@@ -83,21 +114,52 @@ void dispose() {
                         ),
                       );
 
-                      addressController.value = TextEditingValue(
-                        text: profileDetailsViewModel.address,
-                        selection: TextSelection.fromPosition(
-                          TextPosition(offset: profileDetailsViewModel.address.length),
-                        ),
-                      );
+                      // addressController.value = TextEditingValue(
+                      //   text: profileDetailsViewModel.address,
+                      //   selection: TextSelection.fromPosition(
+                      //     TextPosition(offset: profileDetailsViewModel.address.length),
+                      //   ),
+                      // );
                       id = profileDetailsViewModel.gender;
                       return Container(
                       height: MediaQuery.of(context).size.height,
                       margin: EdgeInsets.fromLTRB(20.0,0.0,20.0,20.0),
+                    padding: EdgeInsets.all(8),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                             SizedBox( height: 20,),
+                             SizedBox( height: 12,),
+                         Stack(
+                           children: [
+                             CircleAvatar(
+                                 maxRadius: 50,
+                                 backgroundImage:_image==null? '${profileDetailsViewModel.customerDetails.profilePic??""}'==""? AssetImage('images/man.png'):NetworkImage('$profileImageUrl${profileDetailsViewModel.customerDetails.profilePic}'):FileImage(_image) ,
+                                 ),
+                             Positioned(
+                                 bottom: 0,
+                                 right: 0,
+                                 child: InkWell(
 
+                                   onTap: (){
+                                     getImage();
+                                   },
+                                  child:
+
+                                  Container(
+                                    padding: EdgeInsets.all(4),
+                                      decoration: BoxDecoration(
+                                        boxShadow: [
+                                          BoxShadow(color: Colors.grey,blurRadius: 5,offset: Offset(5,5))
+                                        ],
+                                        color: Theme.of(context).primaryColor,
+                                        borderRadius: BorderRadius.circular(16)
+                                      ),
+                                      child: Icon( Icons.edit,color: Colors.white,size: 16,))))
+                           ],
+                         ),
+
+
+                        SizedBox(height: 16,),
 
                         TextField(
                           controller: usernameController,
@@ -106,7 +168,8 @@ void dispose() {
               onChanged: ((str) { profileDetailsViewModel.username=str;}),
               decoration: new InputDecoration(
                       hintText: 'Enter Your Name',
-                      errorText: profileDetailsViewModel.profileDetailsErrorState.username,
+                labelText: 'Name',
+                errorText: profileDetailsViewModel.profileDetailsErrorState.username,
                       prefixIcon: Icon(Icons.person),
                       border: new OutlineInputBorder(
                         borderRadius: const BorderRadius.all(
@@ -130,7 +193,9 @@ void dispose() {
               onChanged: ((str){ profileDetailsViewModel.phoneNumber=str;}),
               decoration: new InputDecoration(
                       hintText: 'Enter Your Phone Number',
-                      errorText: profileDetailsViewModel.profileDetailsErrorState.phoneNumber,
+                labelText: 'Number',
+
+                errorText: profileDetailsViewModel.profileDetailsErrorState.phoneNumber,
                       prefixIcon: Icon(Icons.mobile_screen_share),
                       border: new OutlineInputBorder(
                         borderRadius: const BorderRadius.all(
@@ -153,6 +218,7 @@ void dispose() {
                               onChanged: ((str)  {profileDetailsViewModel.email=str;}),
                               decoration: new InputDecoration(
                                 hintText: 'Enter Your Email Address',
+                                labelText: 'Email',
                                 errorText: profileDetailsViewModel.profileDetailsErrorState.email,
                                 prefixIcon: Icon(Icons.email),
                                 border: new OutlineInputBorder(
@@ -176,6 +242,9 @@ void dispose() {
                               lastDate: DateTime.now(),
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(),
+                                labelText: 'Date Of Birth',
+                                hintText: '12-12-1990',
+                                prefixIcon: Icon(Icons.cake)
                               ),
                               dateLabelText: 'Date Of Birth',
                               onChanged: (val) {
@@ -245,45 +314,39 @@ void dispose() {
 
 
   SizedBox( height: 10,),
- TextField(
-   controller: addressController,
-              textAlign: TextAlign.start,
-              keyboardType: TextInputType.number,
-              onChanged: ((str) => profileDetailsViewModel.address=str),
-              maxLength: 15,
-              decoration: new InputDecoration(
-                      errorText: profileDetailsViewModel.profileDetailsErrorState.address,
-                      //prefixIcon: Icon(Icons.message),
-                      prefixText: "GST No-",
-                      prefixStyle: Theme.of(context).textTheme.subtitle2.copyWith(color: Theme.of(context).primaryColor,),
-                      border: new OutlineInputBorder(
-                        borderRadius: const BorderRadius.all(
-                          const Radius.circular(2.0),
-                        ),
-                        borderSide: new BorderSide(
-                          color: Colors.black,
-                          width: 1.0,
-                        ),
-                      ),
-              ),
-            ),
+//  TextField(
+//    controller: addressController,
+//               textAlign: TextAlign.start,
+//               keyboardType: TextInputType.number,
+//
+//               onChanged: ((str) => profileDetailsViewModel.address=str),
+//               maxLength: 15,
+//               decoration: new InputDecoration(
+//                       errorText: profileDetailsViewModel.profileDetailsErrorState.address,
+//                       //prefixIcon: Icon(Icons.message),
+//                       prefixText: "GST No-",
+//                       hintText: '165261652565256',
+//                       labelText: 'GSTIN',
+//                       prefixStyle: Theme.of(context).textTheme.subtitle2.copyWith(color: Theme.of(context).primaryColor,),
+//                       border: new OutlineInputBorder(
+//                         borderRadius: const BorderRadius.all(
+//                           const Radius.circular(2.0),
+//                         ),
+//                         borderSide: new BorderSide(
+//                           color: Colors.black,
+//                           width: 1.0,
+//                         ),
+//                       ),
+//               ),
+//             ),
+//
+//
+//
+// SizedBox(height: 8),
 
 
 
-SizedBox(height: 8),
 
-
-
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: TextButton(
-                                child: Text('Addresses',style: Theme.of(context).textTheme.button.copyWith(color: Theme.of(context).primaryColor),),
-                                onPressed: (){
-                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> AddressBook(widget.allFrenchisiViewModel)));
-
-                                },
-                              ),
-                            ),
 
                             SizedBox(height: 8),
 
@@ -295,6 +358,9 @@ SizedBox(height: 8),
             child: GestureDetector(
                       onTap: () {
                         //  Navigator.push(context, MaterialPageRoute(builder: (context)=> DeliveryInstruction()));
+                        widget.allFrenchisiViewModel.setGstNo(addressController.text);
+                        widget.allFrenchisiViewModel.setProUrl(profileDetailsViewModel.customerDetails.profilePic);
+
                         SaveCustomer saveCustomer = SaveCustomer();
                         saveCustomer.custName = usernameController.text;
                         saveCustomer.emailId = emailController.text;
@@ -303,7 +369,7 @@ SizedBox(height: 8),
                         saveCustomer.gender = id;
                         saveCustomer.custId = profileDetailsViewModel.getCustID();
                         saveCustomer.whatsappNo="";
-                        saveCustomer.profilePic="";
+                        saveCustomer.profilePic=profileDetailsViewModel.customerDetails.profilePic;
                         saveCustomer.gender=id;
                         saveCustomer.custDob="2020-10-10";
                         saveCustomer.ageGroup="";
@@ -355,29 +421,28 @@ SizedBox(height: 8),
                           }
                         });
                       },
-                      child: Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                           color: Theme.of(context).primaryColor,
-                          style: BorderStyle.solid,
-                          width: 1.0,
-                      ),
-                      color: Theme.of(context).primaryColor,
-                      borderRadius: BorderRadius.circular(2.0),
-                  ),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Center(
-                                child: Text(
-                                   "SAVE",
-                                   style:Theme.of(context).textTheme.headline6.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.white)),
-                            ),
-                          )
-                      ],
-                  ),
+                      child:  Container(
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Theme.of(context).primaryColor,
+                            style: BorderStyle.solid,
+                            width: 1.0,
+                          ),
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.circular(8.0),
+
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            SizedBox(height: 28,width: 4,),
+                            Expanded(
+                              child: Text( "Save",textAlign: TextAlign.center,
+                                  style:Theme.of(context).textTheme.button.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.white)),
+                            )
+                          ],
+                        ),
                       ),
             ),
 ),

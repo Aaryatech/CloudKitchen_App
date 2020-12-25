@@ -29,32 +29,34 @@ abstract class _AddLocationViewModel with Store {
   }
 
 
+  @action
   Future<bool> saveUserDetails(SaveAddress saveUserDetails) async {
     isLoading=true;
-    saveUserDetails.custId=getCustId();
+
+    saveUserDetails.custId=myLocalPrefes.getCustId();
     HttpResponse httpResponse=  await customerAddressRepo.gsaveCustomerAddresss(saveUserDetails);
     if(httpResponse.status==200){
-
-      if(!httpResponse.info.error)
-      {
-
         isLoading=false;
-        myLocalPrefes.setSelectedAddress(saveUserDetails.landmark);
-        myLocalPrefes.setCustLocationCapture(true);
-        myLocalPrefes.setSelectedAddressCaption(saveUserDetails.addressCaption);
+
+      try {
+        await  myLocalPrefes.setSelectedAddress(saveUserDetails.landmark);
+        await myLocalPrefes.setCustLocationCapture(true);
+        await myLocalPrefes.setSelectedAddressCaption(saveUserDetails.addressCaption);
         // await myLocalPrefes.setAddressId(saveUserDetails.custAddressId);
-         myLocalPrefes.setAddressId(int.parse(httpResponse.message));
-        myLocalPrefes.setUserLatitude(saveUserDetails.latitude);
-        myLocalPrefes.setUserLongitude(saveUserDetails.longitude);
-
+        await myLocalPrefes.setUserLatitude(saveUserDetails.latitude);
+        await myLocalPrefes.setUserLongitude(saveUserDetails.longitude);
+        await myLocalPrefes.setdefFranchiseDairy(0);
+        await myLocalPrefes.setDefFranchiseRest(0);
+        await myLocalPrefes.setAddressId(int.parse(httpResponse.message));
         return true;
-      }else{
+
+      }catch(onError){
         isLoading=false;
-        msg=httpResponse.message;
-        return false;
+        return true;
       }
 
     }else if(httpResponse.status==500) {
+      isLoading=false;
       return false;
     }
 

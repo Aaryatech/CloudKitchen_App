@@ -1,6 +1,7 @@
 
 import 'package:cloud_kitchen/network/model/httpresponce.dart';
 import 'package:cloud_kitchen/network/model/response/OfferList.dart';
+import 'package:cloud_kitchen/network/model/response/custwallet/custwallet.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'offersmain.g.dart';
 
@@ -10,9 +11,10 @@ class OffersMain{
  final List<OfferList> offerList;
  final AdditionalCharges additionalCharges;
  final DeliveryCharges deliveryCharges;
+ final CustWallet custWalletTotal;
 
 
- OffersMain(this.info,this.offerList,this.additionalCharges,this.deliveryCharges);
+ OffersMain(this.info,this.offerList,this.additionalCharges,this.deliveryCharges,this.custWalletTotal);
   factory OffersMain.fromJson(Map<String, dynamic> json) => _$OffersMainFromJson(json);
   Map<String, dynamic> toJson() => _$OffersMainToJson(this);
 }

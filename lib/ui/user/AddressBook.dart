@@ -4,6 +4,7 @@ import 'package:cloud_kitchen/ui/home/HomeScreen.dart';
 import 'package:cloud_kitchen/ui/model/AddressBookModel.dart';
 import 'package:cloud_kitchen/viewmodel/franchisi/frviewmodel.dart';
 import 'package:cloud_kitchen/viewmodel/location/locationviewmodel.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
@@ -36,31 +37,30 @@ class _AddressBookState extends State<AddressBook> {
   ];
 
 
- Widget getLogo(String caption){
-   switch(caption.toLowerCase()){
-     case 'home':{
-       return Icon(Icons.home);
-     }
-     break;
+  Widget getLogo(String caption){
+    switch(caption.toLowerCase()){
+      case 'home':{
+        return Icon(Icons.home,color: Theme.of(context).primaryColor,);
+      }
+      break;
 
 
-     case 'work':{
-       return Icon(Icons.work);
-     }
-     break;
+      case 'work':{
+        return Icon(Icons.work,color: Theme.of(context).primaryColor);
+      }
+      break;
 
 
-     case 'other':{
-       return Icon(Icons.assistant_navigation);
-     }
-     break;
+      case 'other':{
+        return Icon(Icons.assistant_navigation,color: Theme.of(context).primaryColor);
+      }
+      break;
 
 
-   }
+    }
 
 
- }
-
+  }
 
  final colpeteadrres=TextEditingController();
  final floor=TextEditingController();
@@ -68,9 +68,10 @@ class _AddressBookState extends State<AddressBook> {
 
   void showImagePickerBottomSheet(BuildContext context,CustomerAddress addressMain){
 
-    colpeteadrres.text=addressMain.address.trim().split('-')[0]??"";
-    floor.text=addressMain.address.trim().split('-')[1]??"";
-    howtoreach.text=addressMain.address.trim().split('-')[2]??"";
+    print(addressMain.address);
+    colpeteadrres.text=addressMain.address.trim().split('~')[0]??"";
+    floor.text=addressMain.address.trim().split('~')[1]??"";
+    howtoreach.text=addressMain.address.trim().split('~')[2]??"";
 
 
 
@@ -82,16 +83,16 @@ class _AddressBookState extends State<AddressBook> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
         ),
-        enableDrag: true,
-        isScrollControlled: true,
+
 
         builder: (BuildContext bc){
           return StatefulBuilder(
               builder: (context, setState) {
-                return SafeArea(
+                return SizedBox(
+                  height: MediaQuery.of(context).size.height*7,
                   child: SingleChildScrollView(
                     child: Container(
-                      height: MediaQuery.of(context).size.height,
+                      height: MediaQuery.of(context).size.height*7,
 
                       padding: EdgeInsets.only(left: 16,right: 16,bottom: 16,top: 8),
                       child: Column(
@@ -258,44 +259,47 @@ class _AddressBookState extends State<AddressBook> {
                               });
 
 
-                if(!addLocationViewModel.isLoading){
-                SaveAddress saveUserDetails=SaveAddress();
+                  if(!addLocationViewModel.isLoading){
+                  SaveAddress saveUserDetails=SaveAddress();
 
-                saveUserDetails.custAddressId= 0;
+                  saveUserDetails.custAddressId= addressMain.custAddressId;
 
-                saveUserDetails.addressCaption= addressMain.addressCaption;
-                saveUserDetails.address= "${colpeteadrres.text} ~ ${floor.text} ~ ${howtoreach.text}";
-                saveUserDetails.areaId= 0;
-                saveUserDetails.area= null;
-                saveUserDetails.landmark= "${addressMain.landmark}";
-                saveUserDetails.pincode= "";
-                saveUserDetails.cityId= 1;
-                saveUserDetails.langId=1;
-                saveUserDetails.delStatus= 0;
-                saveUserDetails.latitude= '${addressMain.latitude}';
-                saveUserDetails.longitude= '${addressMain.longitude}';
-                saveUserDetails.exInt1= 0;
-                saveUserDetails.exInt2= 0;
-                saveUserDetails.exInt3= 0;
-                saveUserDetails.exVar1= "";
-                saveUserDetails.exVar2= "";
-                saveUserDetails.exVar3="";
-                saveUserDetails.exFloat1=0;
-                saveUserDetails.exFloat2= 0;
-                saveUserDetails.exFloat3= 0;
+                  saveUserDetails.addressCaption= addressMain.addressCaption;
+                  saveUserDetails.custId= addressMain.custId;
+                  saveUserDetails.address= "${colpeteadrres.text} ~ ${floor.text} ~ ${howtoreach.text}";
+                  saveUserDetails.areaId= 0;
+                  saveUserDetails.area= null;
+                  saveUserDetails.landmark= "${addressMain.landmark}";
+                  saveUserDetails.pincode= "";
+                  saveUserDetails.cityId= 1;
+                  saveUserDetails.langId=1;
+                  saveUserDetails.delStatus= 0;
+                  saveUserDetails.latitude= '${addressMain.latitude}';
+                  saveUserDetails.longitude= '${addressMain.longitude}';
+                  saveUserDetails.exInt1= 0;
+                  saveUserDetails.exInt2= 0;
+                  saveUserDetails.exInt3= 0;
+                  saveUserDetails.exVar1= "";
+                  saveUserDetails.exVar2= "";
+                  saveUserDetails.exVar3="";
+                  saveUserDetails.exFloat1=0;
+                  saveUserDetails.exFloat2= 0;
+                  saveUserDetails.exFloat3= 0;
 
-                FocusScope.of(context).unfocus();
-                addLocationViewModel.saveUserDetails(saveUserDetails).then((value) => {
+                  FocusScope.of(context).unfocus();
+                  addLocationViewModel.saveUserDetails(saveUserDetails).then((value) => {
                   print(value),
+
+                  widget.allFrenchisiViewModel.getAddress(),
                   Navigator.pop(context),
 
-                }).catchError((onError){
+                  }).catchError((onError){
 
-
-                });
-                }},
+                  });
+                  }},
 
                             child: Container(
+                              padding: EdgeInsets.all(8),
                               decoration: BoxDecoration(
                                 border: Border.all(
                                   color: Theme.of(context).primaryColor,
@@ -303,18 +307,16 @@ class _AddressBookState extends State<AddressBook> {
                                   width: 1.0,
                                 ),
                                 color: Theme.of(context).primaryColor,
-                                borderRadius: BorderRadius.circular(2.0),
+                                borderRadius: BorderRadius.circular(8.0),
+
                               ),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: Center(
-                                      child: Text(
-                                          "SAVE",
-                                          style:Theme.of(context).textTheme.headline6.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.white)),
-                                    ),
+                                  SizedBox(height: 28,width: 4,),
+                                  Expanded(
+                                    child: Text( "Save",textAlign: TextAlign.center,
+                                        style:Theme.of(context).textTheme.button.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.white)),
                                   )
                                 ],
                               ),
@@ -390,38 +392,63 @@ class _AddressBookState extends State<AddressBook> {
       child: Observer(
         builder:(_)=> Scaffold(
           appBar: AppBar(
-            title: Text('Address Book'),
+            title: Text('Address Book',style: Theme.of(context).textTheme.headline6.copyWith(color:Colors.white),),
           ),
           body:
 
-        widget.allFrenchisiViewModel.isAddressLoading?LinearProgressIndicator(): ListView.builder(
-          itemCount: widget.allFrenchisiViewModel.adressesMain.addressList.length,
-    itemBuilder: (context, index) {
-    return  ListTile(
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                icon: Icon(Icons.edit),
-                onPressed: (){
-                  showImagePickerBottomSheet(context,widget.allFrenchisiViewModel.adressesMain.addressList[index]);
-                },
-              ),
+        widget.allFrenchisiViewModel.isAddressLoading?LinearProgressIndicator(): ListView.separated(
+          separatorBuilder:(context, index)=>Divider(
+            color: Colors.grey[300],
+          ) ,
 
-              IconButton(
-                icon: Icon(Icons.delete),
-                onPressed: (){
-                  _showMyDialog(widget.allFrenchisiViewModel.adressesMain.addressList[index].custAddressId);
-                },
-              ),
-            ],
-          ),
-          isThreeLine: true,
-          contentPadding: EdgeInsets.all(4),
-          leading: getLogo(widget.allFrenchisiViewModel.adressesMain.addressList[index].addressCaption),
-          title: Text(widget.allFrenchisiViewModel.adressesMain.addressList[index].addressCaption),
-          subtitle: Text(widget.allFrenchisiViewModel.adressesMain.addressList[index].landmark),
-        );
+          itemCount: widget.allFrenchisiViewModel.adressesMain.addressList.length??0,
+    itemBuilder: (context, index) {
+    return  Container(
+      padding: EdgeInsets.only(left: 16,right: 16,top: 8,bottom: 8),
+      width: MediaQuery.of(context).size.width,
+      child: Row(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                getLogo(widget.allFrenchisiViewModel.adressesMain.addressList[index].addressCaption),
+                SizedBox(width: 16,),
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(widget.allFrenchisiViewModel.adressesMain.addressList[index].addressCaption,style: Theme.of(context).textTheme.subtitle1,),
+                      SizedBox(height: 8,),
+                      Text(widget.allFrenchisiViewModel.adressesMain.addressList[index].landmark,softWrap: true,style: Theme.of(context).textTheme.bodyText2,),
+                      SizedBox(height: 8,),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          InkWell(
+                            child: Text("Edit",style: Theme.of(context).textTheme.button.copyWith(color: Theme.of(context).primaryColor,fontFamily: 'Metropolis'),),
+                            onTap: (){
+                              showImagePickerBottomSheet(context,widget.allFrenchisiViewModel.adressesMain.addressList[index]);
+                            },
+                          ),
+
+                          SizedBox(width: 16,),
+
+                          InkWell(
+                            child: Text("Delete",style: Theme.of(context).textTheme.button.copyWith(color: Theme.of(context).primaryColor,fontFamily: 'Metropolis'),),
+                            onTap: (){
+                              _showMyDialog(widget.allFrenchisiViewModel.adressesMain.addressList[index].custAddressId);
+                            },
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                )
+
+
+
+              ],
+            ),
+    );
     },
           ),
         ),
