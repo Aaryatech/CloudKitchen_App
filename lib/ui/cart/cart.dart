@@ -3,12 +3,15 @@ import 'package:cashfree_pg/cashfree_pg.dart';
 import 'package:cloud_kitchen/network/model/response/OfferList.dart';
 import 'package:cloud_kitchen/ui/order/deliveryInstruction.dart';
 import 'package:cloud_kitchen/ui/user/locationScreen.dart';
+import 'package:cloud_kitchen/viewmodel/con/internet.dart';
 import 'package:cloud_kitchen/viewmodel/franchisi/frviewmodel.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:in_app_review/in_app_review.dart';
+import 'package:mobx/mobx.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 
@@ -24,9 +27,30 @@ class Cart extends StatefulWidget {
 
 class _CartState extends State<Cart> {
 
+  bool isNetWorkAvailable=true;
+
+  ReactionDisposer _disposer;
+  ConnectivityStore connectivityStore=ConnectivityStore();
   @override
   void initState() {
     // TODO: implement initState
+
+    _disposer = reaction(
+            (_) => connectivityStore.connectivityStream.value,
+            (result) {
+          if(result == ConnectivityResult.none){
+            setState((){
+
+              isNetWorkAvailable=false;
+
+            });
+          }else{
+            setState((){
+              isNetWorkAvailable=true;
+            });
+          }
+        });
+
    widget.allFrenchisiViewModel.getOffersandAdditionalCharge();
    inAppReview = InAppReview.instance;
 
@@ -52,6 +76,7 @@ class _CartState extends State<Cart> {
 
    InAppReview inAppReview ;
   double appliedDescunt=0;
+  double appliedWalletAmount=0;
   String offerApplied='';
   String appliedCoupen="";
   bool isGstBill=false;
@@ -195,7 +220,7 @@ class _CartState extends State<Cart> {
                                           ,Row(
                                             children: [
                                               Image.asset('images/rupees_icn.png',width: 16,height: 16,),
-                                              Text('${widget.allFrenchisiViewModel.items[index].prize*widget.allFrenchisiViewModel.items[index].selectedQty} x ${widget.allFrenchisiViewModel.items[index].qty}',style: Theme.of(context).textTheme.bodyText2.copyWith( fontFamily: "Metropolis",),),
+                                              Text('${(widget.allFrenchisiViewModel.items[index].prize*widget.allFrenchisiViewModel.items[index].selectedQty).toStringAsFixed(2)} x ${widget.allFrenchisiViewModel.items[index].qty}',style: Theme.of(context).textTheme.bodyText2.copyWith( fontFamily: "Metropolis",),),
                                             ],
                                           )
                                         ],
@@ -239,9 +264,7 @@ class _CartState extends State<Cart> {
                                               setState(() {
                                                 widget.allFrenchisiViewModel.items[index].qty++;
                                                 applyDiscount();
-
                                               });
-
                                             },
                                             child: Image.asset('images/plus_icon.png',width: 16,height: 16,color:Colors.black)),
 
@@ -374,42 +397,52 @@ class _CartState extends State<Cart> {
                     widget.allFrenchisiViewModel.isLoadingForOffers?Container():
                       widget.allFrenchisiViewModel.offersMain.custWalletTotal.total==0?Container():
                     AnimatedContainer(
-                      height: isWalletBallenceSelected?0:40,
+                      height: isWalletBallenceSelected?0:120,
                       duration:Duration(milliseconds: 500),
                       padding: EdgeInsets.only(left: 16,right:16,top: 8,bottom: 8),
                       width: MediaQuery.of(context).size.width,
                       decoration: BoxDecoration(
-                        color: Colors.green//Theme.of(context).primaryColor,
+                        color:getItemTotal()>= widget.allFrenchisiViewModel.offersMain.custWalletTotal.walletLimitRs? Colors.green:Theme.of(context).primaryColor,
 
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Row(
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text("Madhvi Credits Balance :",style: Theme.of(context).textTheme.subtitle1.copyWith(color:Colors.white),),
-                              Image.asset('images/rupees_icn.png',width: 16,height: 16,color: Colors.white,),
-                              Text('${widget.allFrenchisiViewModel.offersMain.custWalletTotal.total}',style: Theme.of(context).textTheme.subtitle1.copyWith(color:Colors.white),),   ],
+                              Row(
+                                children: [
+                                  Text("Madhvi Credits Balance :",style: Theme.of(context).textTheme.subtitle1.copyWith(color:Colors.white),),
+                                  Image.asset('images/rupees_icn.png',width: 16,height: 16,color: Colors.white,),
+                                  Text('${widget.allFrenchisiViewModel.offersMain.custWalletTotal.total}',style: Theme.of(context).textTheme.subtitle1.copyWith(color:Colors.white),),   ],
+                              ),
+                              FlatButton(
+                                onPressed: (){
+                                 if(getItemTotal()>= widget.allFrenchisiViewModel.offersMain.custWalletTotal.walletLimitRs){
+                                  setState(() {
+                                    isWalletBallenceSelected=true;
+                                  });
+                                 }
+                                  Future.delayed(Duration(milliseconds: 500)).then((value) =>
+                                  setState((){
+                                    isTwinWallet=true;
+                                  }),
+                                  );
+                                },
+                               child: Container(
+                                 padding: EdgeInsets.fromLTRB(12,4,12,4),
+                                   decoration: BoxDecoration(
+                                       borderRadius: BorderRadius.circular(4),
+                                       border: Border.all(color: Colors.white)
+                                   ),
+                                   child: Text( getItemTotal()>= widget.allFrenchisiViewModel.offersMain.custWalletTotal.walletLimitRs?"Apply":'Add ${getItemTotal()- widget.allFrenchisiViewModel.offersMain.custWalletTotal.walletLimitRs} More',style: Theme.of(context).textTheme.bodyText1.copyWith(color:Colors.white))),
+                              )
+                            ],
                           ),
-                          FlatButton(
-                            onPressed: (){
-                              setState(() {
-                                isWalletBallenceSelected=true;
-                              });
-                              Future.delayed(Duration(milliseconds: 500)).then((value) =>
-                              setState((){
-                                isTwinWallet=true;
-                              }),
-                              );
-                            },
-                           child: Container(
-                             padding: EdgeInsets.fromLTRB(12,4,12,4),
-                               decoration: BoxDecoration(
-                                   borderRadius: BorderRadius.circular(4),
-                                   border: Border.all(color: Colors.white)
-                               ),
-                               child: Text("Apply",style: Theme.of(context).textTheme.bodyText1.copyWith(color:Colors.white))),
-                          )
+                          Text('Note - Madhvi credit amount will be applicable only when order amount is greater than Rs.${widget.allFrenchisiViewModel.offersMain.custWalletTotal.walletLimitRs}/-',style: Theme.of(context).textTheme.caption.copyWith(color: Colors.white),)
                         ],
                       ),
                     ),
@@ -427,7 +460,7 @@ class _CartState extends State<Cart> {
                               Row(
                                 children: [
                                    Image.asset('images/rupees_icn.png',width: 16,height: 16,),
-                                  Text('${getItemTotal()}',style: Theme.of(context).textTheme.caption,),
+                                  Text('${getItemTotal().toStringAsFixed(2)}',style: Theme.of(context).textTheme.caption,),
                                 ],
                               )
                             ],
@@ -463,7 +496,7 @@ class _CartState extends State<Cart> {
                                           contentPadding: EdgeInsets.only(left:24,right: 16,top: 4,bottom: 4),
                                           content: Column(
                                             mainAxisSize: MainAxisSize.min,
-                                            children: getAdditionalCharges()
+                                            children:widget.allFrenchisiViewModel.selectedDelMode==1?0:getAdditionalCharges()
                                           ),
                                           actions: [
                                             FlatButton(onPressed: (){
@@ -483,7 +516,7 @@ class _CartState extends State<Cart> {
                                 Row(
                                   children: [
                                     Image.asset('images/rupees_icn.png',width: 16,height: 16,),
-                                    Text('${widget.allFrenchisiViewModel.isLoadingForOffers?0:getDeliverCharges()}' ,style: Theme.of(context).textTheme.caption,),
+                                    Text('${widget.allFrenchisiViewModel.isLoadingForOffers?0:widget.allFrenchisiViewModel.selectedDelMode==1?0:getDeliverCharges()}' ,style: Theme.of(context).textTheme.caption,),
                                   ],
                                 )
                               ],
@@ -545,7 +578,7 @@ class _CartState extends State<Cart> {
                             children: [
                               Text('-' ,style: Theme.of(context).textTheme.caption,),
                               Image.asset('images/rupees_icn.png',width: 16,height: 16,),
-                              Text('${widget.allFrenchisiViewModel.isLoadingForOffers?0:widget.allFrenchisiViewModel.offersMain.custWalletTotal.total}' ,style: Theme.of(context).textTheme.caption,),
+                              Text('${widget.allFrenchisiViewModel.isLoadingForOffers?0:getWalletAmount()}' ,style: Theme.of(context).textTheme.caption,),
                             ],
                           )
                         ],
@@ -709,55 +742,84 @@ class _CartState extends State<Cart> {
                             ],
                           ),
 
-                          isGstBill?TextFormField(
-                            onChanged: (value) {
+                          isGstBill?
+                          TextField(
+                            textAlign: TextAlign.start,
 
-                            },
+                            keyboardType: TextInputType.streetAddress,
                             maxLength: 15,
                             controller: _textFieldController,
-                            keyboardType: TextInputType.name,
+                            decoration: new InputDecoration(
+                              hintText: "Enter GST Number",
+                              labelText: 'GST Number',
 
-                            decoration: InputDecoration(hintText: "Enter GST Number",
-                           isDense: true,
-                            labelText: 'GST Number',
-                            border: OutlineInputBorder()
+                              prefixIcon: Icon(Icons.money),
+                              border: new OutlineInputBorder(
+                                borderRadius: const BorderRadius.all(
+                                  const Radius.circular(2.0),
+                                ),
+                                borderSide: new BorderSide(
+                                  color: Colors.black,
+                                  width: 1.0,
+                                ),
+                              ),
                             ),
-                          ):Container(),
+                          )
+
+                          // TextField(
+                          //   onChanged: (value) {
+                          //
+                          //   },
+                          //   maxLength: 15,
+                          //   controller: _textFieldController,
+                          //   keyboardType: TextInputType.name,
+                          //
+                          //   decoration: InputDecoration(hintText: "Enter GST Number",
+                          //  isDense: true,
+                          //
+                          //   labelText: 'GST Number',
+                          //   border: OutlineInputBorder()
+                          //   ),
+                          // )
+
+                              :Container(),
                         ],
                       ),
                     ),
 
-                    Container(
-                      color: Colors.white,
-                      padding: EdgeInsets.only(left:16,right:16,top:8,bottom:8),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text('Delivery Instructions',style: Theme.of(context).textTheme.caption.copyWith(letterSpacing: 2),),
+                    Observer(
+                      builder:(_)=> Container(
+                        color: Colors.white,
+                        padding: EdgeInsets.only(left:16,right:16,top:8,bottom:8),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('Delivery Instructions',style: Theme.of(context).textTheme.caption.copyWith(letterSpacing: 2),),
 
-                              InkWell(
-                                  onTap: (){
-                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> DeliveryInstruction(allFrenchisiViewModel: widget.allFrenchisiViewModel,)));
+                                InkWell(
+                                    onTap: (){
+                                      Navigator.push(context, MaterialPageRoute(builder: (context)=> DeliveryInstruction(allFrenchisiViewModel: widget.allFrenchisiViewModel,)));
 
-                                  },
-                                  child: Text('Change',style: Theme.of(context).textTheme.button.copyWith(color: Theme.of(context).primaryColor),)),
+                                    },
+                                    child: Text('Change',style: Theme.of(context).textTheme.button.copyWith(color: Theme.of(context).primaryColor),)),
 
 
-                            ],
-                          ),
+                              ],
+                            ),
 
-                          Row(
-                            children: [
+                            Row(
+                              children: [
 
-                              Icon(Icons.check_circle,color: Theme.of(context).primaryColor,size: 16,),
-                            SizedBox(width: 8,)
-                            ,  Text(widget.allFrenchisiViewModel.deliveryInstruction.instructnCaption??"",style: Theme.of(context).textTheme.caption.copyWith(color: Colors.black),),
+                                Icon(Icons.check_circle,color: Theme.of(context).primaryColor,size: 16,),
+                              SizedBox(width: 8,)
+                              , Text('${widget.allFrenchisiViewModel.deliveryInstruction.instructnCaption??""} ${widget.allFrenchisiViewModel.valueC?"\n Don't ring the bell":""}',style: Theme.of(context).textTheme.caption.copyWith(color: Colors.black),overflow: TextOverflow.ellipsis),
 
-                            ],
-                          ),
-                        ],
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
 
@@ -776,13 +838,14 @@ class _CartState extends State<Cart> {
                   children: [
 
                     widget.allFrenchisiViewModel.isPlaceingOrder?SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      height: 4,
+
                       child: LinearProgressIndicator(
-                        backgroundColor: Theme.of(context).primaryColor.withOpacity(0.7),
+                        backgroundColor: Theme.of(context).primaryColor.withOpacity(0.5),
                         valueColor:AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor) ,
 
                       ),
+                      height: 4,
+                      width: MediaQuery.of(context).size.width,
                     ):Container(),
 
                     Container(
@@ -790,7 +853,7 @@ class _CartState extends State<Cart> {
                       height: 50.0,
                       padding: EdgeInsets.all(6),
                       width: MediaQuery.of(context).size.width,
-                      color:  widget.allFrenchisiViewModel.items.isNotEmpty?Theme.of(context).primaryColor:Colors.grey,
+                      color:  widget.allFrenchisiViewModel.items.isNotEmpty?  widget.allFrenchisiViewModel.cartValueMin?Colors.grey: Theme.of(context).primaryColor:Colors.grey,
                       child: InkWell(
 
                         child: Row(
@@ -815,33 +878,80 @@ class _CartState extends State<Cart> {
                         ),
 
                         onTap: () {
-                          if (widget.allFrenchisiViewModel.items.isNotEmpty) {
-                            String gst=isGstBill?(_textFieldController.text==""?widget.allFrenchisiViewModel.gstNo():_textFieldController.text):"";
 
-                            widget.allFrenchisiViewModel.placeOrder
-                              (getItemTotal(), selectedPayMode, 0,
-                                getDeliverCharges(), appliedDescunt, selecteddateTime,gst).then((
-                                value){
-                              if(value.status == 200){
-                                Scaffold.of(context).showSnackBar(
-                                    SnackBar(backgroundColor: Colors.green,content: Text("Order Placed Successfully")));
+                          if(isNetWorkAvailable){
 
-                                print('${widget.allFrenchisiViewModel.placeOrderModel.payMode}');
-                                if( widget.allFrenchisiViewModel.placeOrderModel
-                                    .payMode == 2){
-                                  _doPayment();
-                                } else
-                                {
-                                  // Scaffold.of(context).showSnackBar(SnackBar(content: Text("Oredr Successfull"))),
-                                  widget.allFrenchisiViewModel.emtyCart();
-                                  widget.allFrenchisiViewModel.setPage(0);
+                            if(!widget.allFrenchisiViewModel.isPlaceingOrder) {
+                              if (widget.allFrenchisiViewModel.items
+                                  .isNotEmpty) {
+                                if (!widget.allFrenchisiViewModel
+                                    .cartValueMin) {
+                                  String gst = isGstBill
+                                      ? (_textFieldController
+                                      .text == "" ? widget.allFrenchisiViewModel
+                                      .gstNo() : _textFieldController.text)
+                                      : "";
 
-                                  // Navigator.pushReplacementNamed(context,'/home'),}
+                                  setState(() {
+                                    widget.allFrenchisiViewModel.setCartValue(true) ;
+                                    widget.allFrenchisiViewModel
+                                        .isPlaceingOrder = true;
+                                  });
+
+
+                                  widget.allFrenchisiViewModel.placeOrder
+                                    (
+                                      getItemTotal(),
+                                      selectedPayMode,
+                                      0,
+                                      getDeliverCharges(),
+                                      appliedDescunt,
+                                      selecteddateTime,
+                                      gst).then((value) {
+                                    if (value.status == 200) {
+                                      Scaffold.of(context).showSnackBar(
+                                          SnackBar(
+                                              backgroundColor: Colors.green,
+                                              content: Text(
+                                                  "Order Placed Successfully")));
+
+                                      print('${widget.allFrenchisiViewModel
+                                          .placeOrderModel.payMode}');
+
+
+                                      if (widget.allFrenchisiViewModel
+                                          .placeOrderModel
+                                          .payMode == 2) {
+                                        _doPayment();
+                                      } else {
+                                        // Scaffold.of(context).showSnackBar(SnackBar(content: Text("Oredr Successfull"))),
+                                        widget.allFrenchisiViewModel.emtyCart();
+                                        widget.allFrenchisiViewModel.setPage(0);
+
+                                        // Navigator.pushReplacementNamed(context,'/home'),}
+                                      }
+                                    }
+                                  });
+                                } else {
+                                  Scaffold.of(context).showSnackBar(
+                                      SnackBar(backgroundColor: Colors.red,
+                                          content: Text(
+                                              "Minimum order amount should be ${widget
+                                                  .allFrenchisiViewModel
+                                                  .offersMain.deliveryCharges
+                                                  .minAmt}/-")));
                                 }
                               }
-                            });
-                          }
-                        },
+                            }else{
+                              Scaffold.of(context).showSnackBar(
+                                  SnackBar(backgroundColor: Colors.red,content: Text("Please wait while placing order")));
+
+                            }
+                        }else{
+                      Scaffold.of(context).showSnackBar(
+                      SnackBar(backgroundColor: Colors.red,content: Text("Network not available")));
+
+                      }},
                       ),
                     ),
                   ],
@@ -858,6 +968,9 @@ class _CartState extends State<Cart> {
 
   bool blockOrder=true;
   int selectedPayMode=1;
+
+
+
 
   double getDeliverCharges(){
    if(widget.allFrenchisiViewModel.isLoadingForOffers){
@@ -1073,6 +1186,41 @@ class _CartState extends State<Cart> {
 
   }
 
+
+  double getWalletAmount(){
+  double walletAmount=  widget.allFrenchisiViewModel.offersMain.custWalletTotal.total;
+  double walletMinAmount=  widget.allFrenchisiViewModel.offersMain.custWalletTotal.walletMinAmt;
+
+     if((double.parse(((getItemTotal()+ (widget.allFrenchisiViewModel.selectedDelMode==1?0: widget.allFrenchisiViewModel.isLoadingForOffers?0:getDeliverCharges()))-appliedDescunt).toStringAsFixed(2)))>=widget.allFrenchisiViewModel.offersMain.custWalletTotal.walletLimitRs){
+
+       double percentageAmount=getGrandTotal()*(widget.allFrenchisiViewModel.offersMain.custWalletTotal.walletPercent/100);
+
+       if(percentageAmount<=walletMinAmount){
+         if(walletMinAmount>walletAmount){
+           appliedWalletAmount=walletAmount;
+           return walletAmount;
+         }else{
+           appliedWalletAmount= walletMinAmount;
+           return walletMinAmount;
+         }
+       }else{
+         if(walletMinAmount>walletAmount){
+           appliedWalletAmount= walletAmount;
+           return walletAmount;
+         }else{
+           appliedWalletAmount= walletMinAmount;
+           return walletMinAmount;
+         }
+       }
+     }else{
+       appliedWalletAmount= 0;
+       return 0;
+     }
+
+
+
+  }
+
   Widget getLogo(String caption){
     switch(caption.toLowerCase()){
       case 'home':{
@@ -1251,7 +1399,7 @@ class _CartState extends State<Cart> {
 
     Map<String, dynamic> inputParams = {
       "orderId": widget.allFrenchisiViewModel.placeOrderModel.uuidNo,
-      "orderAmount": (getItemTotal()+getDeliverCharges())-appliedDescunt??0,
+      "orderAmount": getGrandTotal(),
       "customerName": widget.allFrenchisiViewModel.getCustName(),
       "orderCurrency": "INR",
       "color1":'#FFFFFF',
@@ -1310,7 +1458,19 @@ class _CartState extends State<Cart> {
     widget.allFrenchisiViewModel.items.forEach((element) {
       prise=(element.qty*  (element.prize*element.selectedQty))+prise;
     });
-return prise;
+
+    if(!widget.allFrenchisiViewModel.isLoadingForOffers) {
+      if (prise >=
+          widget.allFrenchisiViewModel.offersMain.deliveryCharges?.minAmt ??
+          0) {
+        widget.allFrenchisiViewModel.setCartValue(false);
+      } else {
+        widget.allFrenchisiViewModel.setCartValue(true);
+      }
+    }else{
+      widget.allFrenchisiViewModel.setCartValue(true);
+    }
+   return prise;
   }
 
 
@@ -1330,6 +1490,7 @@ return prise;
  void applyDiscount() {
 
     double calculateDiscount=0.0;
+
 
 
     if(selectedOffer!=null) {
@@ -1375,7 +1536,8 @@ return prise;
       appliedDescunt=0;
       return 0;
     }
-    return double.parse(((getItemTotal()+getDeliverCharges())-appliedDescunt-(isTwinWallet?widget.allFrenchisiViewModel.offersMain.custWalletTotal.total:0)).toStringAsFixed(2));
+
+    return double.parse(((getItemTotal()+ (widget.allFrenchisiViewModel.selectedDelMode==1?0: widget.allFrenchisiViewModel.isLoadingForOffers?0:getDeliverCharges()))-appliedDescunt-(isTwinWallet?appliedWalletAmount:0)).toStringAsFixed(2));
   }
 
 

@@ -49,12 +49,29 @@ abstract class _AllFrenchisiViewModel with Store {
 
 
   @observable
-  List<CartItem> items = [];
-
+  bool isFirstTime = true;
 
 
   @observable
+  List<CartItem> items = [];
+
+  @observable
+ int  selectedRadio = 1;
+
+  @observable
+ int selectedRadioTile = 1;
+
+
+  @observable
+ int selectedRadioTiles=2;
+
+  @observable
   String selectedAddress = '';
+
+  @observable
+  var valueC = false;
+
+
 
 
   @observable
@@ -100,6 +117,10 @@ abstract class _AllFrenchisiViewModel with Store {
 
   @observable
   int selectedDelMode = 2;
+
+
+  @observable
+  bool cartValueMin = true;
 
 
   @observable
@@ -352,6 +373,11 @@ abstract class _AllFrenchisiViewModel with Store {
   }
 
 
+  @action setCartValue(bool flag){
+    cartValueMin=flag;
+  }
+
+
   @action getSelectedOutlet(){
     outletType=myLocalPrefes.getSelectedOutletType();
   }
@@ -436,6 +462,7 @@ abstract class _AllFrenchisiViewModel with Store {
 
 
     isPlaceingOrder=true;
+  cartValueMin=true;
     List<OrderDetailList> orderDetailedList=[];
     items.forEach((element) {
       orderDetailedList.add(OrderDetailList(
@@ -543,6 +570,15 @@ abstract class _AllFrenchisiViewModel with Store {
     tampitemsIds.remove(item.itemId);
     items=tempList;
     tampitemsIds=                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    itemsIds;
+  }
+
+
+  @action
+  logOut(){
+    myLocalPrefes.setCustLogin(false);
+    myLocalPrefes.setFrSelected(false);
+    myLocalPrefes.setCustLocationCapture(false);
+    myLocalPrefes.setCustDetails(false);
   }
 
 
@@ -655,6 +691,25 @@ abstract class _AllFrenchisiViewModel with Store {
   }
 
 
+  @action
+  Future<HttpResponse> productRatings(String itemId,double value,String review)async{
+    HttpResponse httpResponse= await orderRepo.productReview('${myLocalPrefes.getCustId()}',itemId,value,review);
+    if(httpResponse.status==200){
+      return httpResponse;
+    }
+  }
+
+
+  @action
+  Future<HttpResponse> cancelOrder(String orderId)async{
+
+    HttpResponse httpResponse= await orderRepo.cancelorder(orderId,'${myLocalPrefes.getCustId()}');
+    if(httpResponse.status==200){
+      return httpResponse;
+    }
+  }
+
+
 
   @action String getCustAddress(){
 
@@ -711,15 +766,26 @@ abstract class _AllFrenchisiViewModel with Store {
       isLoadingForHistory = true;
       loadingMessage = 'Fetching nearest franchise';
       HttpResponse httpResponse = await orderHistoryRepo.orderHistory('${myLocalPrefes.getCustId()}');
-      isLoadingForHistory = false;
 
+      print(httpResponse.data);
       if (httpResponse.status == 200) {
 
-        orderHistory= httpResponse.data;
 
+        print('******${httpResponse.message}');
+
+        try {
+          orderHistory= httpResponse.data;
+        } on Exception catch (e) {
+          print('on error with assigning  $e');
+        }
+
+        isLoadingForHistory = false;
 
       } else {
+        print('******${httpResponse.message}');
+
         error = httpResponse.message;
+        print('**error****${error}');
         isLoadingForHistory = false;
       }
       return httpResponse;
@@ -1104,8 +1170,8 @@ abstract class _AllFrenchisiViewModel with Store {
 
   @action
   Future getAllFranchiseForTackAway()async{
-    await fetchUserOrder();
     isLoading = true;
+    await fetchUserOrder();
     loadingMessage = 'Fetching nearest franchise';
     HttpResponse httpResponse = await allFranchiseRepo.allFranchise();
 

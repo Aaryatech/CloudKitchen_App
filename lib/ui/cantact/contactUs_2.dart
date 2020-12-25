@@ -3,6 +3,7 @@ import 'package:cloud_kitchen/network/model/request/SaveCustomer.dart';
 import 'package:cloud_kitchen/ui/cantact/contactUSViewModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:regexpattern/regexpattern.dart';
 
 
 ContactUSViewModel contactUSViewModel=ContactUSViewModel();
@@ -17,6 +18,9 @@ class _ContactUsState extends State<ContactUs> {
 final emailController = TextEditingController();
 final phoneNumberController = TextEditingController();
 final messageController = TextEditingController();
+
+String usernameError,emailError,phoneNumberError,messegeError;
+
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   Widget build(BuildContext context) {
@@ -53,7 +57,7 @@ final messageController = TextEditingController();
             decoration: new InputDecoration(
                   hintText: 'Enter Your Name',
                   labelText: 'Name',
-                  // errorText: contactUSViewModel.contactUSErrorState.username??"",
+                errorText: usernameError,
                   prefixIcon: Icon(Icons.person),
                   border: new OutlineInputBorder(
                     borderRadius: const BorderRadius.all(
@@ -67,19 +71,30 @@ final messageController = TextEditingController();
                 isDense: true
 
             ),
+                      onChanged: (str){
+                        setState(() {
+                          usernameError=null;
+                        });
+                      },
           ),
 
 
                         SizedBox( height: 10,),
 
              TextField(
+               onChanged: (str){
+                 setState(() {
+                   phoneNumberError=null;
+                 });
+               },
             textAlign: TextAlign.start,
             keyboardType: TextInputType.number,
             controller: phoneNumberController,
+               maxLength: 10,
                autofillHints: [AutofillHints.telephoneNumber],
             decoration: new InputDecoration(
                   hintText: 'Enter Your Phone Number',
-                  // errorText: contactUSViewModel.contactUSErrorState.phoneNumber,
+                   errorText:phoneNumberError,
                 labelText: 'Number',
                   prefixIcon: Icon(Icons.mobile_screen_share),
                   border: new OutlineInputBorder(
@@ -98,13 +113,18 @@ final messageController = TextEditingController();
             SizedBox( height: 10,),
 
              TextField(
+               onChanged: (str){
+                 setState(() {
+                   emailError=null;
+                 });
+               },
             textAlign: TextAlign.start,
             keyboardType: TextInputType.emailAddress,
             controller: emailController,
                autofillHints: [AutofillHints.email],
             decoration: new InputDecoration(
                   hintText: 'Enter Your Email Address',
-                  // errorText: contactUSViewModel.contactUSErrorState.email,
+                   errorText:emailError,
                 labelText: 'Email',
                 prefixIcon: Icon(Icons.email),
                   border: new OutlineInputBorder(
@@ -124,6 +144,11 @@ final messageController = TextEditingController();
 
   SizedBox( height: 10,),
  TextField(
+   onChanged: (str){
+     setState(() {
+       messegeError=null;
+     });
+   },
             textAlign: TextAlign.start,
             keyboardType: TextInputType.emailAddress,
             controller: messageController,
@@ -132,7 +157,7 @@ final messageController = TextEditingController();
                   hintText: 'Enter Your Message',
                 labelText: 'Message',
 
-                // errorText: contactUSViewModel.contactUSErrorState.message,
+                 errorText: messegeError,
                   //prefixIcon: Icon(Icons.message),
                 // icon: Icon(Icons.question_answer),
                   prefixIcon: Padding(
@@ -161,28 +186,64 @@ SizedBox(height: 20),
           child: GestureDetector(
                   onTap: () async{
                     //  Navigator.push(context, MaterialPageRoute(builder: (context)=> EditProfile()));
-                    SaveCustomer saveCustomer= SaveCustomer();
 
-                    saveCustomer.custName = usernameController.text;
-                    saveCustomer.emailId = emailController.text;
-                    saveCustomer.phoneNumber = phoneNumberController.text;
-                    saveCustomer.msg= messageController.text;
-                  await contactUSViewModel.saveContactUS(saveCustomer);
+               bool isValid=true;
 
-                  if(!contactUSViewModel.httpResponseMian.info.error){
-                    _scaffoldKey.currentState.showSnackBar(
-                        SnackBar(content: Text("Thanks to Connect us, Our executive will called you Shortly"),duration: Duration(seconds: 2),));
+               if(usernameController.text==""){
+                 isValid=false;
+                 setState(() {
+                   usernameError="Please Enter Valid Username";
+                 });
+               }
+
+               if(emailController.text=="" || !emailController.text.toString().isEmail()){
+                 isValid=false;
+                 setState(() {
+                   emailError="Please Enter Valid Email";
+                 });
+               }
+
+               if(phoneNumberController.text=="" || phoneNumberController.text.length!=10){
+                 isValid=false;
+                 setState(() {
+                   phoneNumberError="Please Enter Valid Mobile Number";
+                 });
+               }
+
+               if(messageController.text==""){
+                 isValid=false;
+                 setState(() {
+                   messegeError="Please Enter Valid  Message";
+                 });
+               }
+
+
+
+
+               if(isValid) {
+                 SaveCustomer saveCustomer = SaveCustomer();
+
+                 saveCustomer.custName = usernameController.text;
+                 saveCustomer.emailId = emailController.text;
+                 saveCustomer.phoneNumber = phoneNumberController.text;
+                 saveCustomer.msg = messageController.text;
+                 await contactUSViewModel.saveContactUS(saveCustomer);
+
+                 if (!contactUSViewModel.httpResponseMian.info.error) {
+                   _scaffoldKey.currentState.showSnackBar(
+                       SnackBar(content: Text(
+                           "Thanks to Connect us, Our executive will called you Shortly"),
+                         duration: Duration(seconds: 2),));
 
                    Future.delayed(Duration(milliseconds: 3000)).then((value) {
                      Navigator.pop(context);
                    });
-
-
-                  }else{
-                    _scaffoldKey.currentState.showSnackBar(
-                        SnackBar(content: Text("Something went wrong,please call on support")));
-                  }
-
+                 } else {
+                   _scaffoldKey.currentState.showSnackBar(
+                       SnackBar(content: Text(
+                           "Something went wrong,please call on support")));
+                 }
+               }
                   },
                   child: Container(
                         decoration: BoxDecoration(
@@ -212,7 +273,7 @@ SizedBox(height: 20),
 ),
 
 
-                        contactUSViewModel.isLoading?LinearProgressIndicator():Container(),
+                        // contactUSViewModel.isLoading?LinearProgressIndicator():Container(),
 
                       ],
                   ),

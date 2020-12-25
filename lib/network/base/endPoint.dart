@@ -50,6 +50,8 @@ class Auth{
 
 
   final bulkOrder='sendDairyMartOrderMail';
+  final cancelOrder='changeStatusByOrderId';
+  final productReview='saveProdRatingsForApp';
 
 
 

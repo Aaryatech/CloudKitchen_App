@@ -84,6 +84,21 @@ mixin _$ProfileDetailsViewModel on _ProfileDetailsViewModel, Store {
     });
   }
 
+  final _$custDobAtom = Atom(name: '_ProfileDetailsViewModel.custDob');
+
+  @override
+  DateTime get custDob {
+    _$custDobAtom.reportRead();
+    return super.custDob;
+  }
+
+  @override
+  set custDob(DateTime value) {
+    _$custDobAtom.reportWrite(value, super.custDob, () {
+      super.custDob = value;
+    });
+  }
+
   final _$genderAtom = Atom(name: '_ProfileDetailsViewModel.gender');
 
   @override
@@ -243,6 +258,7 @@ username: ${username},
 email: ${email},
 phoneNumber: ${phoneNumber},
 address: ${address},
+custDob: ${custDob},
 gender: ${gender},
 customerDetails: ${customerDetails},
 loginStatus: ${loginStatus},

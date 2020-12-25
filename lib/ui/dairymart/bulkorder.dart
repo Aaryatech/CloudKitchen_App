@@ -1,8 +1,13 @@
 import 'package:cloud_kitchen/network/model/request/bulkorder.dart';
 import 'package:cloud_kitchen/ui/dairymart/dairymart.dart';
 import 'package:cloud_kitchen/viewmodel/bulkorderviewmodel/bulkorderviewmodel.dart';
+import 'package:cloud_kitchen/viewmodel/con/internet.dart';
+import 'package:connectivity/connectivity.dart';
+import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
+import 'package:regexpattern/regexpattern.dart';
 
 class BulkOrder extends StatefulWidget {
   BulkOrder(this.bulkOrderViewModel);
@@ -23,7 +28,48 @@ class _BulkOrderState extends State<BulkOrder> {
   final noOfPeopleTextController=TextEditingController();
   final companyNameTextController=TextEditingController();
   final addressTextController=TextEditingController();
+
+  String nameError,emailError,mobileError,peoplrError,companyError,addressError;
+
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
+  String selecteddateTime='${DateTime.now().add(Duration(days: 1))}';
+
+
+
+  void  _showSnackbar(String msg,bool isPositive) {
+    _scaffoldKey.currentState.showSnackBar(
+        SnackBar(
+          content: Text(msg,style: TextStyle(color: Colors.white),),
+          duration: Duration(seconds: 3),
+          backgroundColor: isPositive?Colors.green:Colors.redAccent,
+        ));
+  }
+
+  bool isNetWorkAvailable=true;
+  ReactionDisposer _disposer;
+  ConnectivityStore connectivityStore=ConnectivityStore();
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    _disposer = reaction(
+            (_) => connectivityStore.connectivityStream.value,
+            (result) {
+          if(result == ConnectivityResult.none){
+            setState((){
+
+              isNetWorkAvailable=false;
+
+            });
+          }else{
+            setState((){
+              isNetWorkAvailable=true;
+            });
+          }
+        });
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,14 +87,16 @@ class _BulkOrderState extends State<BulkOrder> {
             children: [
               TextField(
                 textAlign: TextAlign.start,
-                keyboardType: TextInputType.text,
+                keyboardType: TextInputType.name,
                 autofillHints: [AutofillHints.name],
-                onChanged: ((str) { }),
+                onChanged: ((str) {
+                  nameError=null;
+                }),
                 controller:nameTextController,
                 decoration: new InputDecoration(
                   hintText: 'Name',
                   labelText: 'Name',
-                  // errorText: profileDetailsViewModel.profileDetailsErrorState.username,
+                   errorText:nameError,
                   prefixIcon: Icon(Icons.person),
                   border: new OutlineInputBorder(
                     borderRadius: const BorderRadius.all(
@@ -66,14 +114,16 @@ class _BulkOrderState extends State<BulkOrder> {
 
               TextField(
                 textAlign: TextAlign.start,
-                keyboardType: TextInputType.text,
+                keyboardType: TextInputType.emailAddress,
                 autofillHints: [AutofillHints.email],
-                onChanged: ((str) { }),
+                onChanged: ((str) {
+                  emailError=null;
+                }),
                 controller: emailTextController,
                 decoration: new InputDecoration(
                   hintText: 'Email',
                   labelText: 'Email',
-                  // errorText: profileDetailsViewModel.profileDetailsErrorState.username,
+                   errorText: emailError,
                   prefixIcon: Icon(Icons.email),
                   border: new OutlineInputBorder(
                     borderRadius: const BorderRadius.all(
@@ -90,14 +140,19 @@ class _BulkOrderState extends State<BulkOrder> {
 
               TextField(
                 textAlign: TextAlign.start,
-                keyboardType: TextInputType.text,
+                keyboardType: TextInputType.number,
+                maxLength: 10,
                 autofillHints: [AutofillHints.telephoneNumber],
-                onChanged: ((str) { }),
+                onChanged: ((str) {
+                  setState(() {
+                    mobileError=null;
+                  });
+                }),
                 controller: mobileNoTextController,
                 decoration: new InputDecoration(
                   hintText: 'Mobile No',
                   labelText: 'Mobile No',
-                  // errorText: profileDetailsViewModel.profileDetailsErrorState.username,
+                   errorText: mobileError,
                   prefixIcon: Icon(Icons.phone_android),
                   border: new OutlineInputBorder(
                     borderRadius: const BorderRadius.all(
@@ -112,39 +167,43 @@ class _BulkOrderState extends State<BulkOrder> {
               ),
 
               SizedBox(height: 16,),
-              TextField(
-                textAlign: TextAlign.start,
-                keyboardType: TextInputType.text,
-                autofillHints: [AutofillHints.birthday],
-                onChanged: ((str) { }),
-                controller: dateTextController,
-                decoration: new InputDecoration(
-                  hintText: 'Date',
-                  labelText: 'Preferred Date',
-                  // errorText: profileDetailsViewModel.profileDetailsErrorState.username,
-                  prefixIcon: Icon(Icons.date_range),
-                  border: new OutlineInputBorder(
-                    borderRadius: const BorderRadius.all(
-                      const Radius.circular(2.0),
-                    ),
-                    borderSide: new BorderSide(
-                      color: Colors.black,
-                      width: 1.0,
-                    ),
-                  ),
+              DateTimePicker(
+                type: DateTimePickerType.date,
+                use24HourFormat: false,
+                decoration:  InputDecoration(
+                    prefixIcon: Icon(Icons.calendar_today),
+                    labelText: 'Schedule Delivery'
                 ),
+                initialValue: '${DateTime.now().add(Duration(minutes: 40))}',
+                firstDate: DateTime.now().add(Duration(minutes: 40)),
+                lastDate: DateTime.now().add(Duration(days: 8)),
+                dateLabelText: 'Schedule Delivery',
+
+                style: Theme.of(context).textTheme.caption,
+                onChanged: (val) {
+                  selecteddateTime=val;
+                },
+                validator: (val) {
+                  print(val);
+                  return null;
+                },
+                onSaved: (val) => print(val),
               ),
               SizedBox(height: 16,),
 
               TextField(
                 textAlign: TextAlign.start,
-                keyboardType: TextInputType.text,
-                onChanged: ((str) { }),
+                keyboardType: TextInputType.number,
+                onChanged: ((str) {
+                  setState(() {
+                    peoplrError=null;
+                  });
+                }),
                 controller: noOfPeopleTextController,
                 decoration: new InputDecoration(
                   hintText: 'No. of people',
                   labelText: 'No. of people',
-                  // errorText: profileDetailsViewModel.profileDetailsErrorState.username,
+                  errorText: peoplrError,
                   prefixIcon: Icon(Icons.people),
                   border: new OutlineInputBorder(
                     borderRadius: const BorderRadius.all(
@@ -162,12 +221,16 @@ class _BulkOrderState extends State<BulkOrder> {
               TextField(
                 textAlign: TextAlign.start,
                 keyboardType: TextInputType.text,
-                onChanged: ((str) { }),
+                onChanged: ((str) {
+                  setState(() {
+                    companyError=null;
+                  });
+                }),
                 controller: companyNameTextController,
                 decoration: new InputDecoration(
                   hintText: 'Company Name(optional)',
                   labelText: 'Company Name',
-                  // errorText: profileDetailsViewModel.profileDetailsErrorState.username,
+                   errorText: companyError,
                   prefixIcon: Icon(Icons.work),
                   border: new OutlineInputBorder(
                     borderRadius: const BorderRadius.all(
@@ -183,14 +246,18 @@ class _BulkOrderState extends State<BulkOrder> {
               SizedBox(height: 16,),
               TextField(
                 textAlign: TextAlign.start,
-                keyboardType: TextInputType.text,
+                keyboardType: TextInputType.streetAddress,
                 autofillHints: [AutofillHints.postalAddress],
-                onChanged: ((str) { }),
+                onChanged: ((str) {
+                  setState(() {
+                    addressError=null;
+                  });
+                }),
                 controller: addressTextController,
                 decoration: new InputDecoration(
                   hintText: 'Address',
                   labelText: 'Address',
-                  // errorText: profileDetailsViewModel.profileDetailsErrorState.username,
+                   errorText:addressError,
                   prefixIcon: Icon(Icons.location_on),
                   border: new OutlineInputBorder(
                     borderRadius: const BorderRadius.all(
@@ -207,23 +274,91 @@ class _BulkOrderState extends State<BulkOrder> {
 
               Observer(
                 builder:(_)=> InkWell(
-                  onTap: (){
-                    bulkOrderViewModel.placeBulkOrder(BulkOrderModel(
-                      time: dateTextController.text,
-                      email: emailTextController.text,
-                      number: mobileNoTextController.text,
-                      name: nameTextController.text,
-                      address: addressTextController.text,
-                      people: noOfPeopleTextController.text,
-                    )).then((value) {
-                      _scaffoldKey.currentState.showSnackBar(
-                          SnackBar(content: Text("Order Placed Successfully",style: Theme.of(context).textTheme.subtitle2.copyWith(color: Colors.white),),backgroundColor: Colors.green,));
-                      Future.delayed(Duration(seconds: 3)).then((value) =>
-                      Navigator.of(context).pop(),
-                      );
-                    }
-                    );
-                  },
+                  onTap: () {
+                    if (isNetWorkAvailable) {
+
+                      bool validate=true;
+
+                      if(nameTextController.text==""){
+                        setState(() {
+                          validate=false;
+                          nameError="Please Enter Name";
+                        });
+                      }
+
+                      if(mobileNoTextController.text==""){
+                        setState(() {
+                          validate=false;
+                          mobileError="Please Enter Contact No";
+                        });
+                      }
+
+                      if(mobileNoTextController.text.length<10){
+                        setState(() {
+                          validate=false;
+                          mobileError="Please Enter Valid Contact No";
+                        });
+                      }
+
+                      if(emailTextController.text==""){
+                        setState(() {
+                          validate=false;
+                          emailError="Please Enter Email";
+                        });
+                      }
+
+                      if(!emailTextController.text.toString().isEmail()){
+                        setState(() {
+                          validate=false;
+                          emailError="Please Enter Valid Email";
+                        });
+                      }
+
+                      if(noOfPeopleTextController.text==""){
+                        setState(() {
+                          validate=false;
+                          peoplrError="Please Enter Number of People";
+                        });
+                      }
+
+
+                      if(addressTextController.text==""){
+                        setState(() {
+                          validate=false;
+                          addressError="Please Enter Address";
+                        });
+                      }
+
+
+
+                      if(validate) {
+                        bulkOrderViewModel.placeBulkOrder(BulkOrderModel(
+                          time: dateTextController.text,
+                          email: emailTextController.text,
+                          number: mobileNoTextController.text,
+                          name: nameTextController.text,
+                          address: addressTextController.text,
+                          people: noOfPeopleTextController.text,
+                        )).then((value) {
+                          _scaffoldKey.currentState.showSnackBar(
+                              SnackBar(content: Text(
+                                "Order Placed Successfully", style: Theme
+                                  .of(context)
+                                  .textTheme
+                                  .subtitle2
+                                  .copyWith(color: Colors.white),),
+                                backgroundColor: Colors.green,));
+                          Future.delayed(Duration(seconds: 3)).then((value) =>
+                              Navigator.of(context).pop(),
+                          );
+                        }
+                        );
+                      }
+                    }else {
+                        _showSnackbar(
+                            'Please check internet connection', false);
+                      }}
+                ,
                   child: Column(
                     children: [
                       Container(
@@ -254,7 +389,9 @@ class _BulkOrderState extends State<BulkOrder> {
                           ],
                         ),
                       ),
-                      bulkOrderViewModel.isLoading?LinearProgressIndicator():Container(),
+                      bulkOrderViewModel.isLoading?LinearProgressIndicator(  backgroundColor: Theme.of(context).primaryColor.withOpacity(0.5),
+                        valueColor:AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor) ,
+                      ):Container(),
                     ],
                   ),
                 ),

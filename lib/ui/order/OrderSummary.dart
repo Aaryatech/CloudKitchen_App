@@ -1,8 +1,11 @@
 import 'package:cloud_kitchen/network/model/response/OrderHistory.dart';
 import 'package:cloud_kitchen/ui/user/AddressBook.dart';
+import 'package:cloud_kitchen/viewmodel/con/internet.dart';
 import 'package:cloud_kitchen/viewmodel/franchisi/frviewmodel.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:mobx/mobx.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class OrderSummary extends StatefulWidget {
@@ -16,18 +19,121 @@ final AllFrenchisiViewModel allFrenchisiViewModel;
 
 class _OrderSummaryState extends State<OrderSummary> {
 
+  GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
+  void _showSnackbar(String msg, bool isPositive) {
+    _scaffoldKey.currentState.showSnackBar(SnackBar(
+      content: Text(
+        msg,
+        style: TextStyle(color: Colors.white),
+      ),
+      duration: Duration(seconds: 3),
+      backgroundColor: isPositive ? Colors.green : Colors.redAccent,
+    ));
+  }
 
+  List<Widget> getChildren(int orederId) {
+    List<Widget> list = [];
+    widget.allFrenchisiViewModel.grievanceTypeListMain.forEach((element) {
+      list.add(Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          InkWell(
+              onTap: () {
+                widget.allFrenchisiViewModel
+                    .addGrievance(
+                    orederId, element.grievanceId, element.grievenceTypeId)
+                    .then((value) {
+                  if (value.status == 200) {
+                    _showSnackbar("Grievance Raise", true);
+                  } else {
+                    _showSnackbar("Something Went Wrong", false);
+                  }
+                });
+
+                Navigator.pop(context);
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(element.caption),
+              )),
+          Divider(
+            color: Colors.grey[300],
+            height: 1,
+          )
+        ],
+      ));
+    });
+
+    return list;
+  }
+
+  void showGrievanceAlert(int orderId) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Select Grievance Reason',style: Theme.of(context).textTheme.headline6.copyWith(fontFamily: 'Metropolis Semi Bold'),),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: getChildren(orderId),
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel',style: Theme.of(context).textTheme.button.copyWith(color: Theme.of(context).primaryColor),),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
+  bool isNetWorkAvailable=true;
+  ReactionDisposer _disposer;
+  ConnectivityStore connectivityStore=ConnectivityStore();
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    _disposer = reaction(
+            (_) => connectivityStore.connectivityStream.value,
+            (result) {
+          if(result == ConnectivityResult.none){
+            setState((){
+
+              isNetWorkAvailable=false;
+
+            });
+          }else{
+            setState((){
+              isNetWorkAvailable=true;
+            });
+          }
+        });
+
+    widget.allFrenchisiViewModel.getGetGrievanceTypes();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text('Order Summary',style: Theme.of(context).textTheme.headline6.copyWith(color: Colors.white),),
         actions: [
           TextButton(
-            child: Text('Support',style: Theme.of(context).textTheme.button.copyWith(color: Colors.white,fontFamily: 'Metropolis'),),
+            child: Text('Support', style: Theme.of(context)
+                .textTheme
+                .bodyText1
+                .copyWith(color: Colors.white),),
             onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context)=> AddressBook(widget.allFrenchisiViewModel)));
+              showGrievanceAlert(widget.orderHistoryItem.orderId);
 
             },
           )

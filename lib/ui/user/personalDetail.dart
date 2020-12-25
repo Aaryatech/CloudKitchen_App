@@ -2,13 +2,16 @@ import 'package:cloud_kitchen/network/model/request/SaveCustomer.dart';
 import 'package:cloud_kitchen/ui/home/dashboard.dart';
 import 'package:cloud_kitchen/ui/otp/OTPVerification.dart';
 import 'package:cloud_kitchen/ui/user/locationScreen.dart';
+import 'package:cloud_kitchen/viewmodel/con/internet.dart';
 import 'package:cloud_kitchen/viewmodel/user/personaldetailsviewmodel.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:mobx/mobx.dart';
 
 
 PersonalDetailsViewModel personalDetailsViewModel=PersonalDetailsViewModel();
@@ -29,9 +32,28 @@ class _PersonalDetailState extends State<PersonalDetail> {
   final emailController = TextEditingController();
 
 
+  bool isNetWorkAvailable=true;
+  ReactionDisposer _disposer;
+  ConnectivityStore connectivityStore=ConnectivityStore();
   @override
   void initState() {
     // TODO: implement initState
+
+    _disposer = reaction(
+            (_) => connectivityStore.connectivityStream.value,
+            (result) {
+          if(result == ConnectivityResult.none){
+            setState((){
+
+              isNetWorkAvailable=false;
+
+            });
+          }else{
+            setState((){
+              isNetWorkAvailable=true;
+            });
+          }
+        });
     initializeFirebase();
     personalDetailsViewModel.getUserDetailsIfExist(widget.userMobile);
     personalDetailsViewModel.setupValidations();
@@ -57,7 +79,7 @@ class _PersonalDetailState extends State<PersonalDetail> {
   String token ='';
 void generateTocken()async{
 
-    token = await FirebaseMessaging.instance.getToken();
+     token = await FirebaseMessaging().getToken();
 
   }
 
@@ -217,64 +239,70 @@ void generateTocken()async{
                                       }catch(error){
                                         id=0;
                                       }
+    if(isNetWorkAvailable) {
+      if (!personalDetailsViewModel.personalDetailsErrorState.hasErrors) {
+        SaveCustomer saveCustomer = SaveCustomer();
+        saveCustomer.phoneNumber = widget.userMobile;
+        saveCustomer.custName = personalDetailsViewModel.username;
+        saveCustomer.emailId = personalDetailsViewModel.email;
+        saveCustomer.custId = id;
+        saveCustomer.whatsappNo = "";
+        saveCustomer.profilePic = "";
+        saveCustomer.gender = 1;
+        saveCustomer.custDob = "2020-10-10";
+        saveCustomer.ageGroup = "";
+        saveCustomer.langId = 1;
+        saveCustomer.compId = 1;
+        saveCustomer.cityId = 1;
+        saveCustomer.frId = 0;
+        saveCustomer.isBuissHead = 0;
+        saveCustomer.companyName = "";
+        saveCustomer.gstNo = "";
+        saveCustomer.address = "";
+        saveCustomer.isActive = 0;
+        saveCustomer.delStatus = 0;
+        saveCustomer.custAddPlatform = 2;
+        saveCustomer.custAddDatetime = "2020-10-23 10:30:50";
+        saveCustomer.addedFromType = "2";
+        saveCustomer.userId = 0;
+        saveCustomer.isPremiumCust = 0;
+        saveCustomer.exInt1 = 0;
+        saveCustomer.exInt2 = 0;
+        saveCustomer.exInt3 = 0;
+        saveCustomer.exInt4 = 0;
+        saveCustomer.exInt5 = 0;
+        saveCustomer.exVar1 = '';
+        saveCustomer.exVar2 = "";
+        saveCustomer.exVar3 = token;
+        saveCustomer.exVar4 = "";
+        saveCustomer.exVar5 = "";
+        saveCustomer.exFloat1 = 0;
+        saveCustomer.exFloat2 = 0;
+        saveCustomer.exFloat3 = 0;
+        saveCustomer.exFloat4 = 0;
+        saveCustomer.exFloat5 = 0;
 
-                    if(!personalDetailsViewModel.personalDetailsErrorState.hasErrors)
-                    { SaveCustomer saveCustomer = SaveCustomer();
-                    saveCustomer.phoneNumber = widget.userMobile;
-                    saveCustomer.custName = personalDetailsViewModel.username;
-                    saveCustomer.emailId = personalDetailsViewModel.email;
-                    saveCustomer.custId = id;
-                    saveCustomer.whatsappNo="";
-                    saveCustomer.profilePic="";
-                    saveCustomer.gender=1;
-                    saveCustomer.custDob="2020-10-10";
-                    saveCustomer.ageGroup="";
-                    saveCustomer.langId=1;
-                    saveCustomer.compId=1;
-                    saveCustomer.cityId=1;
-                    saveCustomer.frId=0;
-                    saveCustomer.isBuissHead=0;
-                    saveCustomer.companyName="";
-                    saveCustomer.gstNo="";
-                    saveCustomer.address="";
-                    saveCustomer.isActive=0;
-                    saveCustomer.delStatus=0;
-                    saveCustomer.custAddPlatform=2;
-                    saveCustomer.custAddDatetime="2020-10-23 10:30:50";
-                    saveCustomer.addedFromType="2";
-                    saveCustomer.userId=0;
-                    saveCustomer.isPremiumCust=0;
-                    saveCustomer.exInt1=0;
-                    saveCustomer.exInt2=0;
-                    saveCustomer.exInt3=0;
-                    saveCustomer.exInt4=0;
-                    saveCustomer.exInt5=0;
-                    saveCustomer.exVar1='';
-                    saveCustomer.exVar2="";
-                    saveCustomer.exVar3=token;
-                    saveCustomer.exVar4="";
-                    saveCustomer.exVar5="";
-                    saveCustomer.exFloat1=0;
-                    saveCustomer.exFloat2=0;
-                    saveCustomer.exFloat3=0;
-                    saveCustomer.exFloat4=0;
-                    saveCustomer.exFloat5=0;
 
+        personalDetailsViewModel.saveUserDetails(
+            saveCustomer).then((value) =>
+        {
+          if(value){
+            Navigator.pushAndRemoveUntil(context,
+                MaterialPageRoute(builder: (context) => LocationScreen()), (
+                    r) => false),
 
-                    personalDetailsViewModel.saveUserDetails(
-                    saveCustomer).then((value) => {
-                    if(value){
-                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> LocationScreen()),(r) => false),
+          } else
+            {
+              _showSnackbar(personalDetailsViewModel.errorMessage, false),
 
-                    }else{
-                    _showSnackbar(personalDetailsViewModel.errorMessage, false),
-
-                    }
-                    });
-                    }else{
-                    _showSnackbar("Please enter valid details", false);
-
-                    };
+            }
+        });
+      } else {
+        _showSnackbar("Please enter valid details", false);
+      };
+    }else{
+      _showSnackbar("Please check internet connection", false);
+    }
                     }, child: Container(
                                       decoration: BoxDecoration(
                                         border: Border.all(
@@ -362,6 +390,7 @@ void generateTocken()async{
 
                               InkWell(
                                 onTap: () {
+
                                   personalDetailsViewModel.signInWithGoogle();
                                 },
                                 child: Image.asset(
@@ -382,7 +411,7 @@ void generateTocken()async{
         ),
       ),
 
-                personalDetailsViewModel.isLoading?Container(
+                (personalDetailsViewModel.isLoading||personalDetailsViewModel.isLoadingForLogin)?Container(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height,
                   color: Colors.black.withOpacity(.3),

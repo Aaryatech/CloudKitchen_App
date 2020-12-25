@@ -56,6 +56,11 @@ abstract class _ProfileDetailsViewModel with Store{
   @observable
   String address='';
 
+
+  @observable
+  DateTime custDob=DateTime.now();
+
+
   @observable
   int gender=0;
 
@@ -139,6 +144,7 @@ abstract class _ProfileDetailsViewModel with Store{
           myLocalPrefes.setCustId(customerDetails.custId);
           myLocalPrefes.setCustDetails(true);
           myLocalPrefes.setCustName(customerDetails.custName);
+
           isLoading=false;
 
           return true;
@@ -164,6 +170,9 @@ abstract class _ProfileDetailsViewModel with Store{
         if(!httpResponse.info.error)
         {
           isLoading=false;
+
+          myLocalPrefes.setProfUrl(httpResponse.data['fileName']);
+
 
           return true;
         }
@@ -196,6 +205,7 @@ abstract class _ProfileDetailsViewModel with Store{
     phoneNumber = customerDetails.phoneNumber;
     address = customerDetails.gstNo;
     gender = customerDetails.gender;
+    custDob=DateTime.parse(customerDetails.custDob);
 
     }
     }else if(value.status==500) {

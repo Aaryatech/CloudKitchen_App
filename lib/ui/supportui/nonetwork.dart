@@ -31,6 +31,7 @@ class _NoNetWorkWidgetState extends State<NoNetWorkWidget> {
                   ishideUi=false;
                   isNetWorkAvailable=false;
 
+
                });
               }else{
                 setState((){
@@ -70,14 +71,17 @@ class _NoNetWorkWidgetState extends State<NoNetWorkWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedContainer(
-      height: ishideUi?0:30,
+    return isNetWorkAvailable?Container(): AnimatedContainer(
+      height: (ishideUi)?0: 30,
       duration:Duration(milliseconds: 400),
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
           color:isNetWorkAvailable?Colors.green:Theme.of(context).primaryColor,
       ),
-      child: Center(child: Text(isNetWorkAvailable?"We are back...":'Could not connect to internet.',style: Theme.of(context).textTheme.caption.copyWith(color:Colors.white),)),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(isNetWorkAvailable?"We are back...":'Could not connect to internet.',style: Theme.of(context).textTheme.caption.copyWith(color:Colors.white),),
+      ),
     );
   }
 }

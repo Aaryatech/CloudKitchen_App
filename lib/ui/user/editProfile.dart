@@ -3,12 +3,16 @@ import 'dart:io';
 import 'package:cloud_kitchen/local/prefs.dart';
 import 'package:cloud_kitchen/local/staticUrls.dart';
 import 'package:cloud_kitchen/network/model/request/SaveCustomer.dart';
+import 'package:cloud_kitchen/ui/supportui/nonetworkui.dart';
+import 'package:cloud_kitchen/viewmodel/con/internet.dart';
 import 'package:cloud_kitchen/viewmodel/franchisi/frviewmodel.dart';
 import 'package:cloud_kitchen/viewmodel/user/profileDetailsViewModel.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mobx/mobx.dart';
 
 import 'AddressBook.dart';
 
@@ -28,15 +32,32 @@ String radioButtonItem = 'ONE';
 final usernameController = TextEditingController();
 final emailController = TextEditingController();
 final phoneNumberController = TextEditingController();
-final addressController = TextEditingController();
+final dateOfBirthController = TextEditingController();
 final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+bool isNetWorkAvailable=true;
+ReactionDisposer _disposer;
+ConnectivityStore connectivityStore=ConnectivityStore();
 @override
-  void initState() {
-    // TODO: implement initState
-   var  myLocalPrefes = MyLocalPrefes();
-  //  String phone = myLocalPrefes.getCustPhone();
-  //  print(phone);
+void initState() {
+  // TODO: implement initState
+
+  _disposer = reaction(
+          (_) => connectivityStore.connectivityStream.value,
+          (result) {
+        if(result == ConnectivityResult.none){
+          setState((){
+
+            isNetWorkAvailable=false;
+
+          });
+        }else{
+          setState((){
+            isNetWorkAvailable=true;
+          });
+        }
+      });
     profileDetailsViewModel.getUserDetailsIfExist();
+    super.initState();
   }
 
 
@@ -63,7 +84,7 @@ void dispose() {
   usernameController.dispose();
   emailController.dispose();
   phoneNumberController.dispose();
-  addressController.dispose();
+  dateOfBirthController.dispose();
   super.dispose();
 }
 
@@ -83,14 +104,24 @@ void dispose() {
                  TextButton(
                    child: Text('Addresses',style: Theme.of(context).textTheme.button.copyWith(color: Colors.white,fontFamily: 'Metropolis'),),
                    onPressed: (){
-                     Navigator.push(context, MaterialPageRoute(builder: (context)=> AddressBook(widget.allFrenchisiViewModel)));
 
+                     if(isNetWorkAvailable) {
+                       Navigator.push(context, MaterialPageRoute(builder: (
+                           context) =>
+                           AddressBook(widget.allFrenchisiViewModel)));
+                     }else{
+                       _scaffoldKey.currentState.showSnackBar(
+                           SnackBar(content: Text(
+                               "Please check network connection"),
+                             duration: Duration(milliseconds: 1500),backgroundColor: Colors.red,));
+
+                     }
                    },
                  )
                ],
                ),
                 body: Container(
-                  child: SingleChildScrollView(
+                  child:(!isNetWorkAvailable)?NoNetworkUi(): SingleChildScrollView(
                     child: Observer(builder: (_){
                       usernameController.value = TextEditingValue(
                         text: profileDetailsViewModel.username,
@@ -114,12 +145,13 @@ void dispose() {
                         ),
                       );
 
-                      // addressController.value = TextEditingValue(
-                      //   text: profileDetailsViewModel.address,
+                      // dateOfBirthController.value = TextEditingValue(
+                      //   text: profileDetailsViewModel.custDob.toString(),
                       //   selection: TextSelection.fromPosition(
-                      //     TextPosition(offset: profileDetailsViewModel.address.length),
+                      //     TextPosition(offset: profileDetailsViewModel.custDob.toString().length),
                       //   ),
                       // );
+
                       id = profileDetailsViewModel.gender;
                       return Container(
                       height: MediaQuery.of(context).size.height,
@@ -133,7 +165,7 @@ void dispose() {
                            children: [
                              CircleAvatar(
                                  maxRadius: 50,
-                                 backgroundImage:_image==null? '${profileDetailsViewModel.customerDetails.profilePic??""}'==""? AssetImage('images/man.png'):NetworkImage('$profileImageUrl${profileDetailsViewModel.customerDetails.profilePic}'):FileImage(_image) ,
+                                 backgroundImage:_image==null? '${profileDetailsViewModel.customerDetails?.profilePic??""}'==""? AssetImage('images/man.png'):NetworkImage('$profileImageUrl${profileDetailsViewModel.customerDetails.profilePic}'):FileImage(_image) ,
                                  ),
                              Positioned(
                                  bottom: 0,
@@ -234,21 +266,20 @@ void dispose() {
                             ),
 
                             SizedBox( height: 10,),
-
-                            profileDetailsViewModel.isLoading?Container():  DateTimePicker(
+                             DateTimePicker(
                               type: DateTimePickerType.date,
-                              initialValue: '${DateTime(int.parse(profileDetailsViewModel.customerDetails.custDob?.split('-')[0]),int.parse(profileDetailsViewModel.customerDetails.custDob?.split('-')[1]),int.parse(profileDetailsViewModel.customerDetails.custDob?.split('-')[2]))??'${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}'}',
+                                // controller: dateOfBirthController,
+                              initialValue:profileDetailsViewModel.customerDetails?.custDob==null? '${DateTime.now()}':'${DateTime(int.parse(profileDetailsViewModel.customerDetails?.custDob?.split('-')[0]),int.parse(profileDetailsViewModel.customerDetails?.custDob?.split('-')[1]),int.parse(profileDetailsViewModel.customerDetails?.custDob?.split('-')[2]))??'${DateTime.now()}'}',
                               firstDate: DateTime(1940),
                               lastDate: DateTime.now(),
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(),
                                 labelText: 'Date Of Birth',
-                                hintText: '12-12-1990',
                                 prefixIcon: Icon(Icons.cake)
                               ),
                               dateLabelText: 'Date Of Birth',
                               onChanged: (val) {
-                                selecteddate=val;
+                                profileDetailsViewModel.customerDetails?.custDob=val;
                               },
                               validator: (val) {
                                 print(val);
@@ -314,35 +345,6 @@ void dispose() {
 
 
   SizedBox( height: 10,),
-//  TextField(
-//    controller: addressController,
-//               textAlign: TextAlign.start,
-//               keyboardType: TextInputType.number,
-//
-//               onChanged: ((str) => profileDetailsViewModel.address=str),
-//               maxLength: 15,
-//               decoration: new InputDecoration(
-//                       errorText: profileDetailsViewModel.profileDetailsErrorState.address,
-//                       //prefixIcon: Icon(Icons.message),
-//                       prefixText: "GST No-",
-//                       hintText: '165261652565256',
-//                       labelText: 'GSTIN',
-//                       prefixStyle: Theme.of(context).textTheme.subtitle2.copyWith(color: Theme.of(context).primaryColor,),
-//                       border: new OutlineInputBorder(
-//                         borderRadius: const BorderRadius.all(
-//                           const Radius.circular(2.0),
-//                         ),
-//                         borderSide: new BorderSide(
-//                           color: Colors.black,
-//                           width: 1.0,
-//                         ),
-//                       ),
-//               ),
-//             ),
-//
-//
-//
-// SizedBox(height: 8),
 
 
 
@@ -357,69 +359,83 @@ void dispose() {
             //height: 50.0,
             child: GestureDetector(
                       onTap: () {
-                        //  Navigator.push(context, MaterialPageRoute(builder: (context)=> DeliveryInstruction()));
-                        widget.allFrenchisiViewModel.setGstNo(addressController.text);
-                        widget.allFrenchisiViewModel.setProUrl(profileDetailsViewModel.customerDetails.profilePic);
 
-                        SaveCustomer saveCustomer = SaveCustomer();
-                        saveCustomer.custName = usernameController.text;
-                        saveCustomer.emailId = emailController.text;
-                        saveCustomer.phoneNumber = phoneNumberController.text;
-                        saveCustomer.address = "";
-                        saveCustomer.gender = id;
-                        saveCustomer.custId = profileDetailsViewModel.getCustID();
-                        saveCustomer.whatsappNo="";
-                        saveCustomer.profilePic=profileDetailsViewModel.customerDetails.profilePic;
-                        saveCustomer.gender=id;
-                        saveCustomer.custDob="2020-10-10";
-                        saveCustomer.ageGroup="";
-                        saveCustomer.langId=1;
-                        saveCustomer.compId=1;
-                        saveCustomer.cityId=1;
-                        saveCustomer.frId=0;
-                        saveCustomer.isBuissHead=0;
-                        saveCustomer.companyName="";
-                        saveCustomer.gstNo=addressController.text;
+                        if(isNetWorkAvailable) {
+                          //  Navigator.push(context, MaterialPageRoute(builder: (context)=> DeliveryInstruction()));
 
-                        saveCustomer.isActive=0;
-                        saveCustomer.delStatus=0;
-                        saveCustomer.custAddPlatform=2;
-                        saveCustomer.custAddDatetime="2020-10-23 10:30:50";
-                        saveCustomer.addedFromType="2";
-                        saveCustomer.userId=0;
-                        saveCustomer.isPremiumCust=0;
-                        saveCustomer.exInt1=0;
-                        saveCustomer.exInt2=0;
-                        saveCustomer.exInt3=0;
-                        saveCustomer.exInt4=0;
-                        saveCustomer.exInt5=0;
-                        saveCustomer.exVar1="";
-                        saveCustomer.exVar2="";
-                        saveCustomer.exVar3="";
-                        saveCustomer.exVar4="";
-                        saveCustomer.exVar5="";
-                        saveCustomer.exFloat1=0;
-                        saveCustomer.exFloat2=0;
-                        saveCustomer.exFloat3=0;
-                        saveCustomer.exFloat4=0;
-                        saveCustomer.exFloat5=0;
+                          widget.allFrenchisiViewModel.setProUrl(
+                              profileDetailsViewModel.customerDetails
+                                  .profilePic);
+
+                          SaveCustomer saveCustomer = SaveCustomer();
+                          saveCustomer.custName = usernameController.text;
+                          saveCustomer.emailId = emailController.text;
+                          saveCustomer.phoneNumber = phoneNumberController.text;
+                          saveCustomer.address = "";
+                          saveCustomer.gender = id;
+                          saveCustomer.custId =
+                              profileDetailsViewModel.getCustID();
+                          saveCustomer.whatsappNo = "";
+                          saveCustomer.profilePic =profileDetailsViewModel.customerDetails.profilePic;
+                          saveCustomer.gender = id;
+                          saveCustomer.custDob = profileDetailsViewModel.customerDetails?.custDob;
+                          saveCustomer.ageGroup = "";
+                          saveCustomer.langId = 1;
+                          saveCustomer.compId = 1;
+                          saveCustomer.cityId = 1;
+                          saveCustomer.frId = 0;
+                          saveCustomer.isBuissHead = 0;
+                          saveCustomer.companyName = "";
 
 
-                        FocusScope.of(context).unfocus();
-                        profileDetailsViewModel.saveUserDetails(saveCustomer).then((value) {
-                          if(value){
-                          _scaffoldKey.currentState.showSnackBar(
-                                SnackBar(content: Text("Profile Updated Successfully"),duration: Duration(milliseconds: 1500),));
+                          saveCustomer.isActive = 0;
+                          saveCustomer.delStatus = 0;
+                          saveCustomer.custAddPlatform = 2;
+                          saveCustomer.custAddDatetime = "2020-10-23 10:30:50";
+                          saveCustomer.addedFromType = "2";
+                          saveCustomer.userId = 0;
+                          saveCustomer.isPremiumCust = 0;
+                          saveCustomer.exInt1 = 0;
+                          saveCustomer.exInt2 = 0;
+                          saveCustomer.exInt3 = 0;
+                          saveCustomer.exInt4 = 0;
+                          saveCustomer.exInt5 = 0;
+                          saveCustomer.exVar1 = "";
+                          saveCustomer.exVar2 = "";
+                          saveCustomer.exVar3 = "";
+                          saveCustomer.exVar4 = "";
+                          saveCustomer.exVar5 = "";
+                          saveCustomer.exFloat1 = 0;
+                          saveCustomer.exFloat2 = 0;
+                          saveCustomer.exFloat3 = 0;
+                          saveCustomer.exFloat4 = 0;
+                          saveCustomer.exFloat5 = 0;
 
-                          widget.allFrenchisiViewModel.setCustName(usernameController.text);
-                          Future.delayed(Duration(seconds: 3)).then((value) {
 
+                          FocusScope.of(context).unfocus();
+                          profileDetailsViewModel.saveUserDetails(saveCustomer)
+                              .then((value) {
+                            if (value) {
+                              _scaffoldKey.currentState.showSnackBar(
+                                  SnackBar(content: Text(
+                                      "Profile Updated Successfully"),
+                                    duration: Duration(milliseconds: 1500),));
 
-                            Navigator.pop(context);
+                              widget.allFrenchisiViewModel.setCustName(
+                                  usernameController.text);
+                              Future.delayed(Duration(seconds: 3)).then((
+                                  value) {
+                                Navigator.pop(context);
+                              });
+                            }
                           });
+                        }else{
+                          _scaffoldKey.currentState.showSnackBar(
+                              SnackBar(content: Text(
+                                  "Please check network connection"),
+                                duration: Duration(milliseconds: 1500),backgroundColor: Colors.red,));
 
-                          }
-                        });
+                        }
                       },
                       child:  Container(
                         padding: EdgeInsets.all(8),

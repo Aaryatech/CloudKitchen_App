@@ -1,9 +1,12 @@
 import 'package:cloud_kitchen/local/prefs.dart';
 import 'package:cloud_kitchen/ui/otp/OTPScreen.dart';
 import 'package:cloud_kitchen/ui/user/personalDetail.dart';
+import 'package:cloud_kitchen/viewmodel/con/internet.dart';
 import 'package:cloud_kitchen/viewmodel/otp/otpviewmodel.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mobx/mobx.dart';
 import 'package:pinput/pin_put/pin_put.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
@@ -34,9 +37,27 @@ class _OTPVerificationState extends State<OTPVerification> {
     );
   }
 
+  bool isNetWorkAvailable=true;
+  ReactionDisposer _disposer;
+  ConnectivityStore connectivityStore=ConnectivityStore();
   @override
   void initState() {
     // TODO: implement initState
+
+    _disposer = reaction(
+            (_) => connectivityStore.connectivityStream.value,
+            (result) {
+          if (result == ConnectivityResult.none) {
+            setState(() {
+              isNetWorkAvailable = false;
+            });
+          } else {
+            setState(() {
+              isNetWorkAvailable = true;
+            });
+          }
+        });
+
     myLocalPrefes=MyLocalPrefes();
     listenForCode();
     super.initState();
@@ -136,10 +157,21 @@ class _OTPVerificationState extends State<OTPVerification> {
                          // UnderlineDecoration, BoxLooseDecoration or BoxTightDecoration see https://github.com/TinoGuo/pin_input_text_field for more info,
                       currentCode:'', // prefill with a code
                       controller: _pinPutController,
-                      onCodeSubmitted:(str){
+                       //code submitted callback
+                      onCodeChanged:(str){
 
-                      }, //code submitted callback
-                      onCodeChanged:(str){} ,//code changed callback
+                        if(str.length==6){
+                          if(str==widget.otp){
+                            myLocalPrefes.setCustLogin(true);
+                            Navigator.pushReplacement(context, MaterialPageRoute(
+                                builder: (context) => PersonalDetail(widget.mobileNumber)));
+
+                          }else{
+                            _showSnackbar('Please enter valid OTP or click resend',false);
+                          }
+                        }
+                      } ,//code changed callback
+
                       codeLength: 6//code length, default 6
                   ),
 
@@ -158,20 +190,30 @@ class _OTPVerificationState extends State<OTPVerification> {
 
                     SizedBox(width: 4,),
                     InkWell(onTap: (){
-                      otpViewModel.mobileVerification(widget.mobileNumber, widget.otp).then((value) => {
 
-                         if(value){
-                           _showSnackbar('Otp is Send to ${widget.mobileNumber}', true)
-                         }else{
-                      _showSnackbar('Something went wrong,Please try again.', true)
+                      if(isNetWorkAvailable) {
+                        otpViewModel.mobileVerification(
+                            widget.mobileNumber, widget.otp).then((value) =>
+                        {
+
+                          if(value){
+                            _showSnackbar(
+                                'Otp is Send to ${widget.mobileNumber}', true)
+                          } else
+                            {
+                              _showSnackbar(
+                                  'Something went wrong,Please try again.',
+                                  true)
+                            }
+                        }).catchError((onError) {
+                          _showSnackbar(
+                              'Something went wrong,Please try again.', true);
+                        });
+                      }else{
+                        _showSnackbar(
+                            'Please check internet connection', false);
 
                       }
-
-                      }).catchError((onError){
-                        _showSnackbar('Something went wrong,Please try again.', true);
-
-                      });
-
 
                     }, child:Text('Resend Now',style:Theme.of(context).textTheme.caption.copyWith(fontWeight: FontWeight.normal,color:Colors.red,decoration: TextDecoration.underline))),
                   ],
@@ -184,9 +226,16 @@ class _OTPVerificationState extends State<OTPVerification> {
       child: GestureDetector(
           onTap: () {
 
+            if(isNetWorkAvailable) {
               myLocalPrefes.setCustLogin(true);
-                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> PersonalDetail(widget.mobileNumber)));
-          },
+              Navigator.pushReplacement(context, MaterialPageRoute(
+                  builder: (context) => PersonalDetail(widget.mobileNumber)));
+            }else{
+              _showSnackbar(
+                  'Please check internet connection', false);
+
+            }
+                 },
           child: Container(
                     decoration: BoxDecoration(
                         border: Border.all(

@@ -1,12 +1,12 @@
 import 'package:cloud_kitchen/network/model/response/DetailList.dart';
 import 'package:cloud_kitchen/network/model/response/OrderHistory.dart';
-import 'package:cloud_kitchen/network/repository/grievanceListRepo.dart';
-import 'package:cloud_kitchen/ui/supportui/nodataavailable.dart';
-import 'package:cloud_kitchen/ui/wallet/MadhviCreadits.dart';
 import 'package:cloud_kitchen/ui/order/OrderSummary.dart';
+import 'package:cloud_kitchen/viewmodel/con/internet.dart';
 import 'package:cloud_kitchen/viewmodel/franchisi/frviewmodel.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class OrderHistory extends StatefulWidget {
@@ -42,12 +42,41 @@ class _OrderHistoryState extends State<OrderHistory> {
     launch('tel:8260060046');
   }
 
+  bool isNetWorkAvailable=true;
+  ReactionDisposer _disposer;
+  ConnectivityStore connectivityStore=ConnectivityStore();
   @override
   void initState() {
     // TODO: implement initState
+
+    _disposer = reaction(
+            (_) => connectivityStore.connectivityStream.value,
+            (result) {
+          if(result == ConnectivityResult.none){
+            setState((){
+
+              isNetWorkAvailable=false;
+
+            });
+          }else{
+            setState((){
+              isNetWorkAvailable=true;
+            });
+          }
+        });
+
+
     widget.allFrenchisiViewModel.getOrderHistory();
     widget.allFrenchisiViewModel.getGetGrievanceTypes();
     super.initState();
+  }
+
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _disposer();
+    super.dispose();
   }
 
   @override
@@ -82,7 +111,7 @@ class _OrderHistoryState extends State<OrderHistory> {
         ],
       ),
       body: Observer(
-        builder: (_) => (widget.allFrenchisiViewModel.isLoadingForHistory)
+        builder: (_) => widget.allFrenchisiViewModel.isLoadingForHistory
             ? LinearProgressIndicator(
                 valueColor: AlwaysStoppedAnimation<Color>(
                     Theme.of(context).primaryColor),
@@ -214,7 +243,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                                                 );
                                               },
                                               child: Image.asset(
-                                                "images/phonelink-ring.gif",
+                                                "images/.png",
                                                 height: 32.0,
                                                 width: 32.0,
                                               ),
@@ -303,16 +332,16 @@ class _OrderHistoryState extends State<OrderHistory> {
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodyText1),
-                                    InkWell(
+                                    item.orderStatus==1? InkWell(
                                       onTap: () {
-                                        showGrievanceAlert(item.orderId);
+                                        cancelOrder(item.orderId);
                                       },
                                       child: Text("Cancel Order",
                                           style: Theme.of(context)
                                               .textTheme
                                               .button
                                               .copyWith(color: Colors.red,fontFamily: 'Metropolis')),
-                                    )
+                                    ):Container(),
                                   ],
                                 ),
                               ],
@@ -323,11 +352,31 @@ class _OrderHistoryState extends State<OrderHistory> {
                     },
                   ),
       ),
-      //  ),
-    );
+       );
   }
 
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
+
+
+
+  void cancelOrder(int id ){
+
+    widget.allFrenchisiViewModel
+        .cancelOrder('$id')
+        .then((value) {
+      if (value.status == 200) {
+
+        _showSnackbar("Order Canceled", true);
+        widget.allFrenchisiViewModel.getOrderHistory();
+      } else {
+        _showSnackbar("Something Went Wrong", false);
+      }
+    });
+
+
+
+
+  }
 
   void _showSnackbar(String msg, bool isPositive) {
     _scaffoldKey.currentState.showSnackBar(SnackBar(

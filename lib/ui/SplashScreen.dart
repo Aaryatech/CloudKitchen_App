@@ -45,12 +45,12 @@ class _SplashScreenState extends State<SplashScreen> {
     );
 
   }
-  startTime() async {
+  startTime()  {
     var _duration = new Duration(seconds:3);
     return new Timer(_duration, navigationPage);
   }
 
-  void navigationPage() {
+  void navigationPage() async{
     if (!myLocalPrefes.getCustLogin()) {
       print('login status false');
       Navigator.pushReplacement(context,

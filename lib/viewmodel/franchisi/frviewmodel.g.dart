@@ -9,6 +9,21 @@ part of 'frviewmodel.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
+  final _$isFirstTimeAtom = Atom(name: '_AllFrenchisiViewModel.isFirstTime');
+
+  @override
+  bool get isFirstTime {
+    _$isFirstTimeAtom.reportRead();
+    return super.isFirstTime;
+  }
+
+  @override
+  set isFirstTime(bool value) {
+    _$isFirstTimeAtom.reportWrite(value, super.isFirstTime, () {
+      super.isFirstTime = value;
+    });
+  }
+
   final _$itemsAtom = Atom(name: '_AllFrenchisiViewModel.items');
 
   @override
@@ -21,6 +36,54 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
   set items(List<CartItem> value) {
     _$itemsAtom.reportWrite(value, super.items, () {
       super.items = value;
+    });
+  }
+
+  final _$selectedRadioAtom =
+      Atom(name: '_AllFrenchisiViewModel.selectedRadio');
+
+  @override
+  int get selectedRadio {
+    _$selectedRadioAtom.reportRead();
+    return super.selectedRadio;
+  }
+
+  @override
+  set selectedRadio(int value) {
+    _$selectedRadioAtom.reportWrite(value, super.selectedRadio, () {
+      super.selectedRadio = value;
+    });
+  }
+
+  final _$selectedRadioTileAtom =
+      Atom(name: '_AllFrenchisiViewModel.selectedRadioTile');
+
+  @override
+  int get selectedRadioTile {
+    _$selectedRadioTileAtom.reportRead();
+    return super.selectedRadioTile;
+  }
+
+  @override
+  set selectedRadioTile(int value) {
+    _$selectedRadioTileAtom.reportWrite(value, super.selectedRadioTile, () {
+      super.selectedRadioTile = value;
+    });
+  }
+
+  final _$selectedRadioTilesAtom =
+      Atom(name: '_AllFrenchisiViewModel.selectedRadioTiles');
+
+  @override
+  int get selectedRadioTiles {
+    _$selectedRadioTilesAtom.reportRead();
+    return super.selectedRadioTiles;
+  }
+
+  @override
+  set selectedRadioTiles(int value) {
+    _$selectedRadioTilesAtom.reportWrite(value, super.selectedRadioTiles, () {
+      super.selectedRadioTiles = value;
     });
   }
 
@@ -37,6 +100,21 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
   set selectedAddress(String value) {
     _$selectedAddressAtom.reportWrite(value, super.selectedAddress, () {
       super.selectedAddress = value;
+    });
+  }
+
+  final _$valueCAtom = Atom(name: '_AllFrenchisiViewModel.valueC');
+
+  @override
+  bool get valueC {
+    _$valueCAtom.reportRead();
+    return super.valueC;
+  }
+
+  @override
+  set valueC(bool value) {
+    _$valueCAtom.reportWrite(value, super.valueC, () {
+      super.valueC = value;
     });
   }
 
@@ -211,6 +289,21 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
   set selectedDelMode(int value) {
     _$selectedDelModeAtom.reportWrite(value, super.selectedDelMode, () {
       super.selectedDelMode = value;
+    });
+  }
+
+  final _$cartValueMinAtom = Atom(name: '_AllFrenchisiViewModel.cartValueMin');
+
+  @override
+  bool get cartValueMin {
+    _$cartValueMinAtom.reportRead();
+    return super.cartValueMin;
+  }
+
+  @override
+  set cartValueMin(bool value) {
+    _$cartValueMinAtom.reportWrite(value, super.cartValueMin, () {
+      super.cartValueMin = value;
     });
   }
 
@@ -698,6 +791,24 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
         .run(() => super.postPaymentService(orderId, status, paid, txStatus));
   }
 
+  final _$productRatingsAsyncAction =
+      AsyncAction('_AllFrenchisiViewModel.productRatings');
+
+  @override
+  Future<HttpResponse> productRatings(
+      String itemId, double value, String review) {
+    return _$productRatingsAsyncAction
+        .run(() => super.productRatings(itemId, value, review));
+  }
+
+  final _$cancelOrderAsyncAction =
+      AsyncAction('_AllFrenchisiViewModel.cancelOrder');
+
+  @override
+  Future<HttpResponse> cancelOrder(String orderId) {
+    return _$cancelOrderAsyncAction.run(() => super.cancelOrder(orderId));
+  }
+
   final _$setCustNameAsyncAction =
       AsyncAction('_AllFrenchisiViewModel.setCustName');
 
@@ -892,6 +1003,17 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
   }
 
   @override
+  dynamic setCartValue(bool flag) {
+    final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
+        name: '_AllFrenchisiViewModel.setCartValue');
+    try {
+      return super.setCartValue(flag);
+    } finally {
+      _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   dynamic getSelectedOutlet() {
     final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
         name: '_AllFrenchisiViewModel.getSelectedOutlet');
@@ -996,6 +1118,17 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
         name: '_AllFrenchisiViewModel.removeItem');
     try {
       return super.removeItem(item);
+    } finally {
+      _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic logOut() {
+    final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
+        name: '_AllFrenchisiViewModel.logOut');
+    try {
+      return super.logOut();
     } finally {
       _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
     }
@@ -1158,8 +1291,13 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
   @override
   String toString() {
     return '''
+isFirstTime: ${isFirstTime},
 items: ${items},
+selectedRadio: ${selectedRadio},
+selectedRadioTile: ${selectedRadioTile},
+selectedRadioTiles: ${selectedRadioTiles},
 selectedAddress: ${selectedAddress},
+valueC: ${valueC},
 filterList: ${filterList},
 isSerching: ${isSerching},
 isUpdateAvailable: ${isUpdateAvailable},
@@ -1171,6 +1309,7 @@ isChagesdataAvailable: ${isChagesdataAvailable},
 adressesMain: ${adressesMain},
 selectedOutlet: ${selectedOutlet},
 selectedDelMode: ${selectedDelMode},
+cartValueMin: ${cartValueMin},
 currentIndex: ${currentIndex},
 itemsIds: ${itemsIds},
 isLoading: ${isLoading},

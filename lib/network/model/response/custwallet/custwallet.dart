@@ -5,7 +5,7 @@ part 'custwallet.g.dart';
 @JsonSerializable(nullable: true)
 class CustWallet {
 
-  final double total,walletLimitRs,walletPercent,walletMinAmt;
+  final double    total,walletLimitRs,walletPercent,walletMinAmt;
 
   CustWallet(this.total, this.walletLimitRs, this.walletPercent, this.walletMinAmt);
 

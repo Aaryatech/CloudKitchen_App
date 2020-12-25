@@ -3,14 +3,19 @@ import 'package:cloud_kitchen/network/model/request/SaveAddress.dart';
 import 'package:cloud_kitchen/ui/home/dashboard.dart';
 import 'package:cloud_kitchen/ui/locationpicker/locationpickerui.dart';
 import 'package:cloud_kitchen/ui/tackaway.dart';
+import 'package:cloud_kitchen/viewmodel/con/internet.dart';
 import 'package:cloud_kitchen/viewmodel/location/locationviewmodel.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:connectivity/connectivity.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:google_map_location_picker/google_map_location_picker.dart';
+import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platform_interface.dart';
 import 'package:google_maps_webservice/geocoding.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:location_permissions/location_permissions.dart';
 import 'package:location/location.dart' as loc;
+import 'package:mobx/mobx.dart';
 
 AddLocationViewModel addLocationViewModel=AddLocationViewModel();
 class LocationScreen extends StatefulWidget {
@@ -32,6 +37,7 @@ class _LocationScreenState extends State<LocationScreen> {
 
     List<PlacesSearchResult> result=[];
     PlacesSearchResult selectedResult;
+
 
     showModalBottomSheet(
         context: context,
@@ -84,7 +90,15 @@ class _LocationScreenState extends State<LocationScreen> {
                             setState((){
                               selectedResult=null;
                               result=response.results;
+
+
+
                             });
+                            print('${result[0].formattedAddress}');
+                            print('${result[0].geometry.locationType}');
+                            print('${result[0].geometry.location.toString()}');
+                            print('${result[0].vicinity}');
+                            print('${result[0].types[0]}');
                           },
                           decoration: InputDecoration(
                             border: OutlineInputBorder(),
@@ -324,27 +338,33 @@ class _LocationScreenState extends State<LocationScreen> {
 
   }
 
+
+  bool isNetWorkAvailable=true;
+  ReactionDisposer _disposer;
+  ConnectivityStore connectivityStore=ConnectivityStore();
   @override
   void initState() {
     // TODO: implement initState
 
+    _disposer = reaction(
+            (_) => connectivityStore.connectivityStream.value,
+            (result) {
+          if(result == ConnectivityResult.none){
+            setState((){
+
+              isNetWorkAvailable=false;
+
+            });
+          }else{
+            setState((){
+              isNetWorkAvailable=true;
+            });
+          }
+        });
     super.initState();
   }
 
   bool _serviceEnabled=false;
-  Future<void> _requestService() async {
-    if (_serviceEnabled == null || !_serviceEnabled) {
-      final bool serviceRequestedResult = await location.requestService();
-      setState(() {
-        _serviceEnabled = serviceRequestedResult;
-      });
-      if (!serviceRequestedResult) {
-        return;
-      }
-    }else{
-
-    }
-  }
 
   PermissionStatus permissionStatus;
   Future<PermissionStatus> checkLocationPermisionStatus()async{
@@ -360,7 +380,7 @@ class _LocationScreenState extends State<LocationScreen> {
       ServiceStatus serviceStatus=   await  checkifGpsActive();
       {
         _requestService();
-        _showSnackbar('Please start gps', false);
+        _showSnackbar('Please start GPS', false);
 
       }
 
@@ -376,13 +396,35 @@ class _LocationScreenState extends State<LocationScreen> {
     return  await LocationPermissions().checkServiceStatus();
   }
 
+  Future<void> _requestService() async {
+    if (_serviceEnabled == null || !_serviceEnabled) {
+      final bool serviceRequestedResult = await location.requestService();
+      setState(() {
+        _serviceEnabled = serviceRequestedResult;
+      });
+      if (!serviceRequestedResult) {
+        return;
+      }else{
+        // Navigator.push(context, MaterialPageRoute(builder: (context)=> LocationPickerUI()));
+      }
+    }
+  }
+
   void askForPermission()async{
     PermissionStatus status= await LocationPermissions().requestPermissions();
 
     if(status==loc.PermissionStatus.denied || status==loc.PermissionStatus.denied){
 
     }else{
-      Navigator.push(context, MaterialPageRoute(builder: (context)=> LocationPickerUI()));
+      checkifGpsActive().then((status) {
+        if(status==ServiceStatus.enabled){
+          // Navigator.push(context, MaterialPageRoute(builder: (context)=> LocationPickerUI()));
+        }else{
+          _requestService();
+        }
+
+      });
+
 
     }
     checkLocationPermisionStatus();
@@ -397,6 +439,292 @@ class _LocationScreenState extends State<LocationScreen> {
         ));
   }
 
+
+  void launchFlutterMap()async {
+    LocationResult result = await showLocationPicker(
+      context, "AIzaSyBahlnISPYhetj3q50ADqVE6SECypRGe4A",
+     automaticallyAnimateToCurrentLocation: true,
+      hintText: '',
+      searchBarBoxDecoration: BoxDecoration(
+
+      ),
+      initialCenter: LatLng(24.179331,72.426682),
+      layersButtonEnabled: true,
+      appBarColor: Colors.transparent,
+      requiredGPS: true,
+      myLocationButtonEnabled: true,
+      countries: ['IN'],
+
+    );
+
+
+    if (result != null) {
+      showModalBottomSheet(
+          context: context,
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          enableDrag: true,
+          isScrollControlled: true,
+
+          builder: (BuildContext bc) {
+            return StatefulBuilder(
+                builder: (context, setState) {
+                  return SafeArea(
+                    child: Container(
+
+                      padding: EdgeInsets.only(
+                          left: 16, right: 16, bottom: 16, top: 24),
+                      child: SingleChildScrollView(
+                        child: Stack(
+                          children: [
+                            Container(
+                              color: Colors.white,
+                              height: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .height * .56,
+                              child: Observer(
+                                builder: (_) =>
+                                    Container(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment
+                                            .start,
+                                        children: [
+
+                                          Text('Selected address ${result
+                                              .address}', style: Theme
+                                              .of(context)
+                                              .textTheme
+                                              .subtitle2),
+
+
+                                          TextFormField(
+                                            onChanged: (str) {
+                                              completeaddress = str;
+                                            },
+                                            decoration: InputDecoration(
+                                              hintText: 'Complete Address *',
+                                            ),
+                                          ),
+
+                                          TextFormField(
+                                            onChanged: (str) {
+                                              floor = str;
+                                            },
+
+                                            decoration: InputDecoration(
+                                              hintText: 'Floor(Optional)',
+                                            ),
+                                          ),
+
+                                          TextFormField(
+                                            onChanged: (str) {
+                                              howtoreach = str;
+                                            },
+                                            decoration: InputDecoration(
+
+
+                                              hintText: 'How to reach(Optional)',
+                                            ),
+                                          ),
+
+                                          SizedBox(height: 16,),
+                                          Text('TAG THIS LOCATION FOR LATER',
+                                            style: Theme
+                                                .of(context)
+                                                .textTheme
+                                                .subtitle2
+                                                .copyWith(color: Colors.grey),),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment
+                                                .spaceEvenly,
+                                            children: [
+                                              FilterChip(
+                                                shape: StadiumBorder(
+                                                    side: BorderSide(
+                                                        color: Colors.grey)),
+                                                label: Text("Home", style: Theme
+                                                    .of(context)
+                                                    .textTheme
+                                                    .caption,),
+                                                padding: EdgeInsets.only(
+                                                    left: 12, right: 12),
+                                                labelStyle: TextStyle(
+                                                    letterSpacing: 2,
+                                                    color: Colors.black),
+
+                                                selected: selected == "Home",
+                                                selectedColor: Colors
+                                                    .transparent,
+                                                // backgroundColor: Theme.of(context).primaryColor,
+                                                onSelected: (flag) {
+                                                  if (flag) {
+                                                    setState(() {
+                                                      selected = "Home";
+                                                    });
+                                                  }
+                                                },
+                                              ),
+
+                                              FilterChip(
+                                                shape: StadiumBorder(
+                                                    side: BorderSide(
+                                                        color: Colors.grey)),
+                                                label: Text("Work", style: Theme
+                                                    .of(context)
+                                                    .textTheme
+                                                    .caption),
+                                                labelStyle: TextStyle(
+                                                    letterSpacing: 2,
+                                                    color: Colors.black),
+                                                padding: EdgeInsets.only(
+                                                    left: 12, right: 12),
+                                                selected: selected == "Work",
+                                                selectedColor: Colors
+                                                    .transparent,
+                                                // backgroundColor: Theme.of(context).primaryColor,
+                                                onSelected: (flag) {
+                                                  setState(() {
+                                                    if (flag) {
+                                                      selected = "Work";
+                                                    }
+                                                  });
+                                                },
+                                              ),
+
+                                              FilterChip(
+                                                // avatar: Icon(Icons.close,color: Colors.black),
+                                                shape: StadiumBorder(
+                                                    side: BorderSide(
+                                                        color: Colors.grey)),
+                                                label: Text(
+                                                    "Other", style: Theme
+                                                    .of(context)
+                                                    .textTheme
+                                                    .caption),
+                                                labelStyle: TextStyle(
+                                                    letterSpacing: 2,
+                                                    color: Colors.black),
+                                                padding: EdgeInsets.only(
+                                                    left: 12, right: 12),
+                                                selected: selected == "Other",
+                                                selectedColor: Colors
+                                                    .transparent,
+                                                // backgroundColor: Theme.of(context).primaryColor,
+                                                onSelected: (flag) {
+                                                  setState(() {
+                                                    selected = "Other";
+                                                  });
+                                                },
+                                              ),
+                                            ],
+                                          ),
+
+                                          Align(
+                                            alignment: Alignment.center,
+                                            child: RaisedButton(onPressed: () {
+                                              if (!addLocationViewModel
+                                                  .isLoading) {
+                                                SaveAddress saveUserDetails = SaveAddress();
+
+                                                saveUserDetails.custAddressId =
+                                                0;
+
+                                                saveUserDetails.addressCaption =
+                                                    selected;
+                                                saveUserDetails.address =
+                                                "${completeaddress} ~ ${floor} ~ ${howtoreach}";
+                                                saveUserDetails.areaId = 0;
+                                                saveUserDetails.area = null;
+                                                saveUserDetails.landmark =
+                                                "${result.address}";
+                                                saveUserDetails.pincode = "";
+                                                saveUserDetails.cityId = 1;
+                                                saveUserDetails.langId = 1;
+                                                saveUserDetails.delStatus = 0;
+                                                saveUserDetails.latitude =
+                                                '${result.latLng.latitude}';
+                                                saveUserDetails.longitude =
+                                                '${result.latLng.longitude}';
+                                                saveUserDetails.exInt1 = 0;
+                                                saveUserDetails.exInt2 = 0;
+                                                saveUserDetails.exInt3 = 0;
+                                                saveUserDetails.exVar1 = "";
+                                                saveUserDetails.exVar2 = "";
+                                                saveUserDetails.exVar3 = "";
+                                                saveUserDetails.exFloat1 = 0;
+                                                saveUserDetails.exFloat2 = 0;
+                                                saveUserDetails.exFloat3 = 0;
+
+                                                FocusScope.of(context)
+                                                    .unfocus();
+                                                addLocationViewModel
+                                                    .saveUserDetails(
+                                                    saveUserDetails).then((
+                                                    value) =>
+                                                {
+
+                                                  if(value){
+
+                                                    Navigator
+                                                        .pushAndRemoveUntil(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (
+                                                                context) =>
+                                                                Dashboard()), (
+                                                        r) => false),
+                                                  } else
+                                                    {
+                                                      _showSnackbar(
+                                                          addLocationViewModel
+                                                              .msg, false),
+                                                    }
+                                                }).catchError((onError) {});
+                                              }
+                                            },
+                                              child: Text('Save', style: Theme
+                                                  .of(context)
+                                                  .textTheme
+                                                  .subtitle2
+                                                  .copyWith(
+                                                  color: Colors.white),),
+                                              color: Theme
+                                                  .of(context)
+                                                  .primaryColor,
+                                            ),
+                                          ),
+
+                                          addLocationViewModel.isLoading
+                                              ? Center(
+                                            child: CircularProgressIndicator(
+                                              valueColor: AlwaysStoppedAnimation<
+                                                  Color>(Theme
+                                                  .of(context)
+                                                  .primaryColor),
+                                            ),
+                                          )
+                                              : Container(),
+
+
+                                        ],
+                                      ),
+                                    ),
+                              ),
+                            ),
+
+
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                });
+          });
+    }
+  }
 
 
   @override
@@ -439,8 +767,12 @@ class _LocationScreenState extends State<LocationScreen> {
 
                         // FirebaseCrashlytics.instance.crash();
                         // Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
-                        askForPermission();
 
+                      if(isNetWorkAvailable) {
+                        launchFlutterMap();
+                      }else{
+                        _showSnackbar('Please check internet connection', false);
+                      }
 
                         // Navigator.push(context, MaterialPageRoute(builder: (context)=> MapUiPage()));
 
@@ -472,7 +804,15 @@ class _LocationScreenState extends State<LocationScreen> {
                   SizedBox(height: 20),
 
                   InkWell(
-                      onTap:(){ showImagePickerBottomSheet(context);},
+                      onTap:(){
+
+                        if(isNetWorkAvailable){
+                        showImagePickerBottomSheet(context);
+                        }else{
+                        _showSnackbar('Please check internet connection', false);
+                        }
+
+                        },
                       child: Text( 'Set your location manually', style:Theme.of(context).textTheme.button.copyWith(fontWeight: FontWeight.bold).copyWith(color:Theme.of(context).primaryColor))),
                   SizedBox(height: 16),
                   Row(
@@ -509,8 +849,12 @@ class _LocationScreenState extends State<LocationScreen> {
                     // height: 50.0,
                     child: InkWell(
                       onTap: () {
-
+if(isNetWorkAvailable){
                         openAddressedBottomSheet();
+    }else{
+    _showSnackbar('Please check internet connection', false);
+    }
+
                       },
                       child: Container(
                         padding: EdgeInsets.all(8),

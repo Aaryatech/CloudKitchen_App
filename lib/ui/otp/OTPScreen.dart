@@ -3,9 +3,12 @@ import 'dart:math';
 import 'package:cloud_kitchen/local/prefs.dart';
 import 'package:cloud_kitchen/ui/otp/OTPVerification.dart';
 import 'package:cloud_kitchen/ui/terms/terms.dart';
+import 'package:cloud_kitchen/viewmodel/con/internet.dart';
 import 'package:cloud_kitchen/viewmodel/otp/otpviewmodel.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
 import 'package:regexpattern/regexpattern.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
@@ -27,14 +30,40 @@ class _OTPScreenState extends State<OTPScreen> {
 
   final mobileController = TextEditingController();
 
-
+  bool isNetWorkAvailable=true;
+  ReactionDisposer _disposer;
+  ConnectivityStore connectivityStore=ConnectivityStore();
   @override
   void initState() {
+    // TODO: implement initState
+
+    _disposer = reaction(
+            (_) => connectivityStore.connectivityStream.value,
+            (result) {
+          if(result == ConnectivityResult.none){
+            setState((){
+
+              isNetWorkAvailable=false;
+
+            });
+          }else{
+            setState((){
+              isNetWorkAvailable=true;
+            });
+          }
+        });
+
     // TODO: implement initState
 myLocalPrefes=MyLocalPrefes();
     super.initState();
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _disposer();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,50 +118,8 @@ myLocalPrefes=MyLocalPrefes();
 
                       PhoneFieldHint(
                         controller: mobileController,
-                        // child:  TextField(
-                        //
-                        //   enableSuggestions: true,
-                        //     textAlign: TextAlign.start,
-                        //     keyboardType: TextInputType.phone,
-                        //     autofillHints: [AutofillHints.telephoneNumber],
-                        //     maxLength: maxLength,
-                        //     onChanged: (str){
-                        //
-                        //     if(!str.characters.startsWith(Characters('+'))){
-                        //                               setState(() {
-                        //                                 maxLength=10;
-                        //                               });
-                        //                             }
-                        //                             mobileno=str;
-                        //                 if(str.length==10){
-                        //                   setState(() {
-                        //                     errortext=null;
-                        //                   });
-                        //                 }else{
-                        //                   setState(() {
-                        //                     errortext="Please enter valid mobile number";
-                        //                   });
-                        //                 }
-                        //     },
-                        //
-                        //                           autofocus: false,
-                        //
-                        //     decoration: new InputDecoration(
-                        //       errorText: errortext,
-                        //       hintText: 'Enter Mobile Number',
-                        //       prefixIcon: Icon(Icons.phone_android),
-                        //       border: new OutlineInputBorder(
-                        //                 borderRadius: const BorderRadius.all(
-                        //                   const Radius.circular(2.0),
-                        //                 ),
-                        //                 borderSide: new BorderSide(
-                        //                   color: Colors.black,
-                        //                   width: 1.0,
-                        //                 ),
-                        //       ),
-                        //     ),
-                        //
-                        //   ),
+                        autofocus: true,
+
                       ),
 
 
@@ -144,34 +131,43 @@ myLocalPrefes=MyLocalPrefes();
       //height: 50.0,
       child: GestureDetector(
           onTap: ()  {
-                  if(!otpViewModel.isLoading)
-          {
 
-                  mobileno=mobileController.text;
-                  if(mobileController.text.length==10 ||mobileController.text.length==13  ||mobileController.text.length==11) {
-                    int otp=new Random().nextInt(888888) + 111111;
-                    print('*********$otp**********');
-                    otpViewModel.mobileVerification(mobileno, '$otp').then((
-                        value) async =>
-                    {
-                      if(value) {
-                       await myLocalPrefes.setCustPhone(mobileno),
-                        Navigator.push(context, MaterialPageRoute(
-                            builder: (context) =>
-                                OTPVerification('$otp', mobileno)))
-                      } else
-                        {
-                          _scaffoldKey.currentState.showSnackBar(SnackBar(
-                            content: Text("Something went wrong,Please try again."),
-                          ))
-                        }
-                    }).catchError((onError) {});
-                  }else{
-                    _scaffoldKey.currentState.showSnackBar(SnackBar(
-                      content: Text("Enter a valid mobile number"),
-                    ));
-                  }
-                  }
+
+            if(isNetWorkAvailable) {
+              if (!otpViewModel.isLoading) {
+                mobileno = mobileController.text;
+                if (mobileController.text.length == 10 ||
+                    mobileController.text.length == 13 ||
+                    mobileController.text.length == 11) {
+                  int otp = new Random().nextInt(888888) + 111111;
+                  print('*********$otp**********');
+                  otpViewModel.mobileVerification(mobileno, '$otp').then((
+                      value) async =>
+                  {
+                    if(value) {
+                      await myLocalPrefes.setCustPhone(mobileno),
+                      Navigator.push(context, MaterialPageRoute(
+                          builder: (context) =>
+                              OTPVerification('$otp', mobileno)))
+                    } else
+                      {
+                        _scaffoldKey.currentState.showSnackBar(SnackBar(
+                          content: Text(
+                              "Something went wrong,Please try again."),
+                        ))
+                      }
+                  }).catchError((onError) {});
+                } else {
+                  _scaffoldKey.currentState.showSnackBar(SnackBar(
+                    content: Text("Enter a valid mobile number"),
+                  ));
+                }
+              }
+            }else{
+              _scaffoldKey.currentState.showSnackBar(
+                  SnackBar(backgroundColor: Colors.red,content: Text("Network not available")));
+
+            }
           },
           child: Container(
                         decoration: BoxDecoration(

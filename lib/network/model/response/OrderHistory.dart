@@ -2,13 +2,13 @@ import 'package:cloud_kitchen/network/model/response/DetailList.dart';
 import 'package:cloud_kitchen/network/model/response/TrailList.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'OrderHistory.g.dart';
-
+//sds
 @JsonSerializable(nullable: true)
 class OrderHistory{
 
 final  List<OrderHistoryItem> orderList;
 
-  OrderHistory(this.orderList);
+OrderHistory(this.orderList);
 
 
 

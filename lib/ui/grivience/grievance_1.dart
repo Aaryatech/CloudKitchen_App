@@ -1,7 +1,10 @@
 import 'package:cloud_kitchen/network/model/response/GrievanceList.dart';
+import 'package:cloud_kitchen/viewmodel/con/internet.dart';
 import 'package:cloud_kitchen/viewmodel/grivience/greivanceViewModel.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
 
 GreivanceViewModel greivanceViewModel = GreivanceViewModel();
 class Greivance extends StatefulWidget {
@@ -11,14 +14,30 @@ class Greivance extends StatefulWidget {
 
 class _GreivanceState extends State<Greivance> {
 
-
+  bool isNetWorkAvailable=true;
+  ReactionDisposer _disposer;
+  ConnectivityStore connectivityStore=ConnectivityStore();
   @override
   void initState() {
     // TODO: implement initState
-  //  var  myLocalPrefes = MyLocalPrefes();
-  //  String phone = myLocalPrefes.getCustPhone();
-  //  print(phone);
+
+    _disposer = reaction(
+            (_) => connectivityStore.connectivityStream.value,
+            (result) {
+          if(result == ConnectivityResult.none){
+            setState((){
+
+              isNetWorkAvailable=false;
+
+            });
+          }else{
+            setState((){
+              isNetWorkAvailable=true;
+            });
+          }
+        });
     greivanceViewModel.getGrievanceList();
+    super.initState();
   }
 
   @override

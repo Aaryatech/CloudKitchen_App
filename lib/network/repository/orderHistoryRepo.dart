@@ -20,6 +20,7 @@ class OrderHistoryRepo{
 
 
     await httpClient.post('${endPoints.Auth().orderHistory}$param').then((responce){
+      print(responce);
       if(responce.statusCode==200){
         httpResponse.status=responce.statusCode;
         httpResponse.message='Successful';

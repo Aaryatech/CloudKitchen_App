@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_kitchen/local/staticUrls.dart';
 import 'package:cloud_kitchen/ui/cantact/contactUs_2.dart';
 import 'package:cloud_kitchen/ui/grivience/grievance_1.dart';
+import 'package:cloud_kitchen/ui/otp/OTPScreen.dart';
 import 'package:cloud_kitchen/ui/outlettypes/outlettypes.dart';
 import 'package:cloud_kitchen/ui/terms/terms.dart';
 import 'package:cloud_kitchen/ui/wallet/MadhviCreadits.dart';
@@ -11,6 +12,7 @@ import 'package:cloud_kitchen/ui/order/orderHistory.dart';
 import 'package:cloud_kitchen/viewmodel/franchisi/frviewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -52,85 +54,52 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                         height: 100,
                         color: Colors.amber,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: <Widget>[
+                        child: Container(
+                          color: Colors.white,
+                          width: MediaQuery.of(context).size.width,
+                          padding: EdgeInsets.all(16),
+                          child: Observer(
+                            builder:(_)=> Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
 
-                            // Expanded(
-                            //   flex: 1,
-                            //
-                            //   child:  Container(
-                            //     color: Colors.white,
-                            //     child: new Column(
-                            //       crossAxisAlignment: CrossAxisAlignment.center,
-                            //       mainAxisAlignment: MainAxisAlignment.center,
-                            //       children: <Widget>[
-                            //         new Container(
-                            //           child: CircleAvatar(
-                            //             radius: 30,
-                            //             backgroundImage: AssetImage('images/lo.jpg'),
-                            //           ),
-                            //         ),
-                            //         // new Text("John Doe",
-                            //         //     textScaleFactor: 1.5)
-                            //       ],
-                            //     ),
-                            //   ),
-                            //
-                            //   //  );
-                            //
-                            // ),
-                            Expanded(
-                                flex: 3,
+                                CircleAvatar(
+                                  maxRadius: 50,
+                                  backgroundImage:widget.allFrenchisiViewModel.getProUrl()==""? AssetImage('images/man.png'):NetworkImage('$profileImageUrl${widget.allFrenchisiViewModel.getProUrl()}')//:FileImage(_image) ,
+                                ),
 
-                                child: Container(
-                                  color: Colors.white,
-                                  padding: EdgeInsets.all(16),
-
-                                  child: Observer(
-                                    builder:(_)=> Row(
-                                      children: [
-
-                                        CircleAvatar(
-                                          maxRadius: 50,
-                                          backgroundImage:widget.allFrenchisiViewModel.getProUrl()==""? AssetImage('images/ic_launcher.png'):NetworkImage('$profileImageUrl${widget.allFrenchisiViewModel.getProUrl()}')//:FileImage(_image) ,
-                                        ),
-
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Text(
-                                              widget.allFrenchisiViewModel.custName??"",
-                                             style:Theme.of(context).textTheme.headline6.copyWith(color:Colors.black,fontFamily: 'Metropolis Semi Bold')),
-                                            SizedBox(height: 4,),
-
-                                                Text(
-                                                    widget.allFrenchisiViewModel.getCustMobile(),style:Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.grey,fontFamily: 'Metropolis')),
-                                                SizedBox(height: 4,),
-
-                                                InkWell(
-                                                  onTap: (){
-                                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> EditProfile(widget.allFrenchisiViewModel)));
-
-                                                  },
-                                                  child: Text(
-                                                      'Edit Profile',style:Theme.of(context).textTheme.bodyText1.copyWith(color:Theme.of(context).primaryColor)),
-                                                ),
-
-                                          ],
-                                        ),
-                                      ],
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    Container(
+                                      child: Text(
+                                        widget.allFrenchisiViewModel.custName??"",
+                                       style:Theme.of(context).textTheme.headline6.copyWith(color:Colors.black,fontFamily: 'Metropolis Semi Bold'),overflow: TextOverflow.ellipsis,),
+                                       width: MediaQuery.of(context).size.width*.5,
                                     ),
-                                  ),
+                                    SizedBox(height: 4,),
 
-                                )
+                                        Text(
+                                            widget.allFrenchisiViewModel.getCustMobile(),style:Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.grey,fontFamily: 'Metropolis')),
+                                        SizedBox(height: 4,),
 
+                                        InkWell(
+                                          onTap: (){
+                                            Navigator.push(context, MaterialPageRoute(builder: (context)=> EditProfile(widget.allFrenchisiViewModel)));
+
+                                          },
+                                          child: Text(
+                                              'Edit Profile',style:Theme.of(context).textTheme.bodyText1.copyWith(color:Theme.of(context).primaryColor)),
+                                        ),
+
+                                  ],
+                                ),
+                              ],
                             ),
+                          ),
 
-
-
-                          ],
                         ),
                       ),
 
@@ -339,7 +308,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           InkWell(
                             onTap: (){
 
-
+                              Share.share('Hey buddy! I just downloaded this madhvi food delivery mobile application. I recommend you to try this');
 
                             },
                             child: Padding(
@@ -388,8 +357,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           InkWell(
                             onTap: (){
 
-                              // launch('tel:8260060046');
-
+                              widget.allFrenchisiViewModel.logOut();
+                              Navigator.pushAndRemoveUntil(context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          OTPScreen()),(r) => false);
 
                             },
                             child: Padding(

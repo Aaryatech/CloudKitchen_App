@@ -21,38 +21,31 @@ class DeliveryInstruction extends StatefulWidget {
 
 
 class _DeliveryInstructionState extends State<DeliveryInstruction> {
-int selectedRadioTile,selectedRadio,selectedRadioTiles;
-var _valueC = false;
+
+
 @override
   void initState() {
     // TODO: implement initState
   diViewModel.getInstruction();
     super.initState();
-    selectedRadio = 1;
-  selectedRadioTile = 1;
-  selectedRadioTiles=2;
-
-  diViewModel.selected= widget.allFrenchisiViewModel.deliveryInstruction.instruId;
-  diViewModel.selectedReson= widget.allFrenchisiViewModel.deliveryInstruction.instructnCaption;
 
   }
 void onChecked(bool value) {
     setState(() {
-      _valueC = value;
+      widget.allFrenchisiViewModel.valueC = value;
       print('value: $value');
 
     });
-     widget.allFrenchisiViewModel.deliveryInstruction.instructnCaption=    '${widget.allFrenchisiViewModel.deliveryInstruction.instructnCaption}-Don\'t ring the bell';
   }
 setSelectedRadioTile(int val) {
   setState(() {
-    selectedRadioTile = val;
+    widget.allFrenchisiViewModel.selectedRadioTile = val;
   });
 
 }
  setSelectedRadioTiles(int val) {
   setState(() {
-    selectedRadioTiles = val;
+    widget.allFrenchisiViewModel.selectedRadioTiles = val;
   });
 }
 
@@ -130,7 +123,6 @@ Widget getLogo(String caption){
               diViewModel.setSelectedvalue(index);
               widget.allFrenchisiViewModel.setDeliveryInstruction(diViewModel.deliveryInstructionMain.deliveryInstruction[index]);
             });
-
           },
             title: Text(diViewModel.deliveryInstructionMain.deliveryInstruction[index].instructnCaption??"",style: Theme.of(context).textTheme.subtitle2.copyWith(fontFamily:"Metropolis Semi Bold"),),
             subtitle: Text(diViewModel.deliveryInstructionMain.deliveryInstruction[index].description??"",style: Theme.of(context).textTheme.caption.copyWith(fontFamily: 'Metropolis',color: Colors.black54),),
@@ -158,7 +150,7 @@ Widget getLogo(String caption){
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
 
-            new Checkbox(value: _valueC,
+            new Checkbox(value: widget.allFrenchisiViewModel.valueC,
                 onChanged: onChecked,
               activeColor: Theme.of(context).primaryColor,
                 ),
