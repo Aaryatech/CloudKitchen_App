@@ -6,9 +6,9 @@ part of 'OrderHistory.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-OrderHistory _$OrderHistoryFromJson(Map<String, dynamic> json) {
-  return OrderHistory(
-    (json['orderList'] as List)
+OrderHistoryModel _$OrderHistoryModelFromJson(Map<String, dynamic> json) {
+  return OrderHistoryModel(
+    orderList: (json['orderList'] as List)
         ?.map((e) => e == null
             ? null
             : OrderHistoryItem.fromJson(e as Map<String, dynamic>))
@@ -16,7 +16,7 @@ OrderHistory _$OrderHistoryFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$OrderHistoryToJson(OrderHistory instance) =>
+Map<String, dynamic> _$OrderHistoryModelToJson(OrderHistoryModel instance) =>
     <String, dynamic>{
       'orderList': instance.orderList,
     };

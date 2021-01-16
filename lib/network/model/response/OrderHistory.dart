@@ -4,18 +4,18 @@ import 'package:json_annotation/json_annotation.dart';
 part 'OrderHistory.g.dart';
 //sds
 @JsonSerializable(nullable: true)
-class OrderHistory{
+class OrderHistoryModel{
 
 final  List<OrderHistoryItem> orderList;
 
-OrderHistory(this.orderList);
+OrderHistoryModel({this.orderList});
 
 
 
-factory OrderHistory.fromJson(Map<String, dynamic> json) => _$OrderHistoryFromJson(json);
+factory OrderHistoryModel.fromJson(Map<String, dynamic> json) => _$OrderHistoryModelFromJson(json);
 
 
-Map<String, dynamic> toJson() => _$OrderHistoryToJson(this);
+Map<String, dynamic> toJson() => _$OrderHistoryModelToJson(this);
 
 }
 

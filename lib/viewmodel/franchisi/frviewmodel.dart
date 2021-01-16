@@ -164,7 +164,7 @@ abstract class _AllFrenchisiViewModel with Store {
 
 
   @observable
-  OrderHistory  orderHistory;
+  OrderHistoryModel  orderHistory;
 
 
   @observable

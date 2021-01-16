@@ -485,13 +485,13 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
   final _$orderHistoryAtom = Atom(name: '_AllFrenchisiViewModel.orderHistory');
 
   @override
-  OrderHistory get orderHistory {
+  OrderHistoryModel get orderHistory {
     _$orderHistoryAtom.reportRead();
     return super.orderHistory;
   }
 
   @override
-  set orderHistory(OrderHistory value) {
+  set orderHistory(OrderHistoryModel value) {
     _$orderHistoryAtom.reportWrite(value, super.orderHistory, () {
       super.orderHistory = value;
     });

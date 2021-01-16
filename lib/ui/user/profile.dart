@@ -8,7 +8,7 @@ import 'package:cloud_kitchen/ui/outlettypes/outlettypes.dart';
 import 'package:cloud_kitchen/ui/terms/terms.dart';
 import 'package:cloud_kitchen/ui/wallet/MadhviCreadits.dart';
 import 'package:cloud_kitchen/ui/user/editProfile.dart';
-import 'package:cloud_kitchen/ui/order/orderHistory.dart';
+import 'package:cloud_kitchen/ui/order/orderHistoryUI.dart';
 import 'package:cloud_kitchen/viewmodel/franchisi/frviewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';

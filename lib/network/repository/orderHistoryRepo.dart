@@ -24,7 +24,7 @@ class OrderHistoryRepo{
       if(responce.statusCode==200){
         httpResponse.status=responce.statusCode;
         httpResponse.message='Successful';
-          httpResponse.data=OrderHistory.fromJson(responce.data);
+          httpResponse.data=OrderHistoryModel.fromJson(responce.data);
 
 
       }else{
