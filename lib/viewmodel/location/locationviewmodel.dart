@@ -33,32 +33,39 @@ abstract class _AddLocationViewModel with Store {
   Future<bool> saveUserDetails(SaveAddress saveUserDetails) async {
     isLoading=true;
 
-    saveUserDetails.custId=myLocalPrefes.getCustId();
-    HttpResponse httpResponse=  await customerAddressRepo.gsaveCustomerAddresss(saveUserDetails);
-    if(httpResponse.status==200){
+    myLocalPrefes= MyLocalPrefes();
+
+    Future.delayed(Duration(seconds: 1)).then((value)  async{
+
+      saveUserDetails.custId= myLocalPrefes.getCustId();
+
+      HttpResponse httpResponse=  await customerAddressRepo.gsaveCustomerAddresss(saveUserDetails);
+      if(httpResponse.status==200){
         isLoading=false;
 
-      try {
-        await  myLocalPrefes.setSelectedAddress(saveUserDetails.landmark);
-        await myLocalPrefes.setCustLocationCapture(true);
-        await myLocalPrefes.setSelectedAddressCaption(saveUserDetails.addressCaption);
-        // await myLocalPrefes.setAddressId(saveUserDetails.custAddressId);
-        await myLocalPrefes.setUserLatitude(saveUserDetails.latitude);
-        await myLocalPrefes.setUserLongitude(saveUserDetails.longitude);
-        await myLocalPrefes.setdefFranchiseDairy(0);
-        await myLocalPrefes.setDefFranchiseRest(0);
-        await myLocalPrefes.setAddressId(int.parse(httpResponse.message));
-        return true;
+        try {
+         await myLocalPrefes.setSelectedAddress(saveUserDetails.landmark);
+         await myLocalPrefes.setCustLocationCapture(true);
+         await myLocalPrefes.setSelectedAddressCaption(saveUserDetails.addressCaption);
+          // await myLocalPrefes.setAddressId(saveUserDetails.custAddressId);
+         await myLocalPrefes.setUserLatitude(saveUserDetails.latitude);
+         await myLocalPrefes.setUserLongitude(saveUserDetails.longitude);
+         await myLocalPrefes.setdefFranchiseDairy(0);
+         await myLocalPrefes.setDefFranchiseRest(0);
+         await myLocalPrefes.setAddressId(int.parse(httpResponse.message));
+          return true;
 
-      }catch(onError){
+        }catch(onError){
+          isLoading=false;
+          return true;
+        }
+
+      }else if(httpResponse.status==500) {
         isLoading=false;
-        return true;
+        return false;
       }
 
-    }else if(httpResponse.status==500) {
-      isLoading=false;
-      return false;
-    }
+    });
 
   }
 

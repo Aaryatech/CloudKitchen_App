@@ -308,7 +308,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           InkWell(
                             onTap: (){
 
-                              Share.share('Hey buddy! I just downloaded this madhvi food delivery mobile application. I recommend you to try this');
+                              Share.share('Hey buddy! I just downloaded this madhvi food delivery mobile application. I recommend you to try this https://play.google.com/store/apps/details?id=com.madhvi.cloudkitchen');
 
                             },
                             child: Padding(

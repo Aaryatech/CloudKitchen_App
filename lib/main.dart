@@ -21,8 +21,8 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 /// Create a [AndroidNotificationChannel] for heads up notifications
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
-  'high_importance_channel', // id
-  'High Importance Notifications', // title
+  '1', // id
+  'general', // title
   'This channel is used for important notifications.', // description
   importance: Importance.high,
   enableVibration: true,
@@ -36,34 +36,34 @@ FlutterLocalNotificationsPlugin();
 
 void main() async{
 
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-
-  // Set the background messaging handler early on, as a named top-level function
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  // WidgetsFlutterBinding.ensureInitialized();
+  // await Firebase.initializeApp();
+  //
+   // Set the background messaging handler early on, as a named top-level function
+  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   /// Create an Android Notification Channel.
   ///
   /// We use this channel in the `AndroidManifest.xml` file to override the
   /// default FCM channel to enable heads up notifications.
-  await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<
-      AndroidFlutterLocalNotificationsPlugin>()
-      ?.createNotificationChannel(channel);
+  // await flutterLocalNotificationsPlugin
+  //     .resolvePlatformSpecificImplementation<
+  //     AndroidFlutterLocalNotificationsPlugin>()
+  //     ?.createNotificationChannel(channel);
 
   /// Update the iOS foreground notification presentation options to allow
   /// heads up notifications.
-  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-    alert: true,
-    badge: true,
-    sound: true,
-  );
+  // await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+  //   alert: true,
+  //   badge: true,
+  //   sound: true,
+  // );
 
-  runZonedGuarded(() {
+  // runZonedGuarded(() {
     runApp(MyApp());
-  }, (error, stackTrace) {
-    print('runZonedGuarded: Caught error in my root zone.');
-  });
+  // }, (error, stackTrace) {
+  //   print('runZonedGuarded: Caught error in my root zone.${error}');
+  // });
 
 
 }
@@ -81,45 +81,45 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    FirebaseMessaging.instance
-        .getInitialMessage()
-        .then((RemoteMessage message) {
-      if (message != null) {
-        Navigator.pushNamed(context, '/message',
-            arguments: MessageArguments(message, true));
-      }
-    });
-
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-
-      print('Receive notification whilst foreground');
-
-      RemoteNotification notification = message.notification;
-      AndroidNotification android = message.notification?.android;
-
-      if (notification != null && android != null) {
-        flutterLocalNotificationsPlugin.show(
-            notification.hashCode,
-            notification.title,
-            notification.body,
-            NotificationDetails(
-              android: AndroidNotificationDetails(
-                channel.id,
-                channel.name,
-                channel.description,
-                // TODO add a proper drawable resource to android, for now using
-                //      one that already exists in example app.
-                icon: 'launch_background',
-              ),
-            ));
-      }
-    });
-
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print('A new onMessageOpenedApp event was published!');
-      Navigator.pushNamed(context, '/message',
-          arguments: MessageArguments(message, true));
-    });
+    // FirebaseMessaging.instance
+    //     .getInitialMessage()
+    //     .then((RemoteMessage message) {
+    //   if (message != null) {
+    //     Navigator.pushNamed(context, '/message',
+    //         arguments: MessageArguments(message, true));
+    //   }
+    // });
+    //
+    // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    //
+    //   print('Receive notification whilst foreground');
+    //
+    //   RemoteNotification notification = message.notification;
+    //   AndroidNotification android = message.notification?.android;
+    //
+    //   if (notification != null && android != null) {
+    //     flutterLocalNotificationsPlugin.show(
+    //         notification.hashCode,
+    //         notification.title,
+    //         notification.body,
+    //         NotificationDetails(
+    //           android: AndroidNotificationDetails(
+    //             channel.id,
+    //             channel.name,
+    //             channel.description,
+    //             // TODO add a proper drawable resource to android, for now using
+    //             //      one that already exists in example app.
+    //             icon: 'launch_background',
+    //           ),
+    //         ));
+    //   }
+    // });
+    //
+    // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    //   print('A new onMessageOpenedApp event was published!');
+    //   Navigator.pushNamed(context, '/message',
+    //       arguments: MessageArguments(message, true));
+    // });
   }
 
 
@@ -175,7 +175,7 @@ class _MyAppState extends State<MyApp> {
       //  home: MyHomePage(title: 'Flutter Demo Home Page'),
       home: Scaffold(
         body: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+          padding: const EdgeInsets. symmetric(vertical: 0, horizontal: 0),
           child: SplashScreen(),
         ),
       ),

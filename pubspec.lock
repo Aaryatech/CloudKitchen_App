@@ -344,13 +344,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.4"
-  firebase_auth_ui:
-    dependency: "direct main"
-    description:
-      name: firebase_auth_ui
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.1"
   firebase_auth_web:
     dependency: transitive
     description:
@@ -432,7 +425,21 @@ packages:
       name: flutter_facebook_auth
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.3"
+    version: "2.0.0+1"
+  flutter_facebook_auth_platform_interface:
+    dependency: transitive
+    description:
+      name: flutter_facebook_auth_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
+  flutter_facebook_auth_web:
+    dependency: transitive
+    description:
+      name: flutter_facebook_auth_web
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.6"
   flutter_html:
     dependency: "direct main"
     description:

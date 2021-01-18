@@ -63,7 +63,7 @@ class _OrderHistoryState extends State<OrderHistory> {
   @override
   void dispose() {
     // TODO: implement dispose
-    _disposer();
+
     super.dispose();
   }
 
@@ -111,13 +111,16 @@ class _OrderHistoryState extends State<OrderHistory> {
                       style: Theme.of(context).textTheme.headline6,
                     ),
                   )
-                : ListView.builder(
-                    itemCount: widget
-                        .allFrenchisiViewModel.orderHistory.orderList.length,
+                :
+
+        ListView.builder(
+                    itemCount: (widget
+                        .allFrenchisiViewModel.orderHistory as OrderHistoryModel).orderList.length,
                     itemBuilder: (context, index) {
-                      OrderHistoryItem item = widget
-                          .allFrenchisiViewModel.orderHistory.orderList[index];
-                      return Padding(
+                      OrderHistoryItem item = (widget
+                          .allFrenchisiViewModel.orderHistory as OrderHistoryModel).orderList[index];
+                      return
+                        Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Card(
                           elevation: 1,
@@ -240,98 +243,98 @@ class _OrderHistoryState extends State<OrderHistory> {
                                   ],
                                 ),
 
-                                SizedBox(
-                                  height: 4,
-                                ),
-                                Divider(
-                                  color: Colors.grey[300],
-                                ),
-                                SizedBox(
-                                  height: 4,
-                                ),
-
-                                Text('Items',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyText2
-                                        .copyWith(fontWeight: FontWeight.normal)
-                                        .copyWith(color: Colors.grey)),
-                                SizedBox(
-                                  height: 4,
-                                ),
-                                // Text(,style:Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.bold).copyWith(color:Colors.black)),
-
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: getItems(item.detailList),
-                                ),
-
-                                SizedBox(
-                                  height: 10,
-                                ),
-
-                                Text('Ordered On',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyText2
-                                        .copyWith(color: Colors.grey)),
-                                SizedBox(
-                                  height: 4,
-                                ),
-                                Text('${item.insertDateTime}',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyText1
-                                        .copyWith(fontFamily: 'Metropolis')),
-
-                                SizedBox(
-                                  height: 10,
-                                ),
-
-                                Text('Total Amount',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyText2
-                                        .copyWith(color: Colors.grey)),
-                                SizedBox(
-                                  height: 4,
-                                ),
-                                Text('${item.totalAmt}',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyText1
-                                        .copyWith(fontFamily: 'Metropolis')),
-
-                                SizedBox(
-                                  height: 4,
-                                ),
-                                Divider(
-                                  color: Colors.grey[300],
-                                ),
-                                SizedBox(
-                                  height: 4,
-                                ),
-
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Text(getOrderStatus(item.orderStatus),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyText1),
-                                    item.orderStatus==1? InkWell(
-                                      onTap: () {
-                                        cancelOrder(item.orderId);
-                                      },
-                                      child: Text("Cancel Order",
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .button
-                                              .copyWith(color: Colors.red,fontFamily: 'Metropolis')),
-                                    ):Container(),
-                                  ],
-                                ),
+                                // SizedBox(
+                                //   height: 4,
+                                // ),
+                                // Divider(
+                                //   color: Colors.grey[300],
+                                // ),
+                                // SizedBox(
+                                //   height: 4,
+                                // ),
+                                //
+                                // Text('Items',
+                                //     style: Theme.of(context)
+                                //         .textTheme
+                                //         .bodyText2
+                                //         .copyWith(fontWeight: FontWeight.normal)
+                                //         .copyWith(color: Colors.grey)),
+                                // SizedBox(
+                                //   height: 4,
+                                // ),
+                                // // Text(,style:Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.bold).copyWith(color:Colors.black)),
+                                //
+                                // Column(
+                                //   crossAxisAlignment: CrossAxisAlignment.start,
+                                //   children: getItems(item.detailList),
+                                // ),
+                                //
+                                // SizedBox(
+                                //   height: 10,
+                                // ),
+                                //
+                                // Text('Ordered On',
+                                //     style: Theme.of(context)
+                                //         .textTheme
+                                //         .bodyText2
+                                //         .copyWith(color: Colors.grey)),
+                                // SizedBox(
+                                //   height: 4,
+                                // ),
+                                // Text('${item.insertDateTime}',
+                                //     style: Theme.of(context)
+                                //         .textTheme
+                                //         .bodyText1
+                                //         .copyWith(fontFamily: 'Metropolis')),
+                                //
+                                // SizedBox(
+                                //   height: 10,
+                                // ),
+                                //
+                                // Text('Total Amount',
+                                //     style: Theme.of(context)
+                                //         .textTheme
+                                //         .bodyText2
+                                //         .copyWith(color: Colors.grey)),
+                                // SizedBox(
+                                //   height: 4,
+                                // ),
+                                // Text('${item.totalAmt}',
+                                //     style: Theme.of(context)
+                                //         .textTheme
+                                //         .bodyText1
+                                //         .copyWith(fontFamily: 'Metropolis')),
+                                //
+                                // SizedBox(
+                                //   height: 4,
+                                // ),
+                                // Divider(
+                                //   color: Colors.grey[300],
+                                // ),
+                                // SizedBox(
+                                //   height: 4,
+                                // ),
+                                //
+                                // Row(
+                                //   mainAxisAlignment:
+                                //       MainAxisAlignment.spaceBetween,
+                                //   children: <Widget>[
+                                //     Text(getOrderStatus(item.orderStatus),
+                                //         style: Theme.of(context)
+                                //             .textTheme
+                                //             .bodyText1),
+                                //     item.orderStatus==1? InkWell(
+                                //       onTap: () {
+                                //         cancelOrder(item.orderId);
+                                //       },
+                                //       child: Text("Cancel Order",
+                                //           style: Theme.of(context)
+                                //               .textTheme
+                                //               .button
+                                //               .copyWith(color: Colors.red,fontFamily: 'Metropolis')),
+                                //     ):Container(),
+                                //   ],
+                                // ),
                               ],
                             ),
                           ),

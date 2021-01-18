@@ -80,23 +80,24 @@ class _AddressBookState extends State<AddressBook> {
     showModalBottomSheet(
         context: context,
         backgroundColor:Colors.white,
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        isScrollControlled: true,
+        enableDrag: true,
+        isDismissible: true,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
         ),
-
 
         builder: (BuildContext bc){
           return StatefulBuilder(
               builder: (context, setState) {
                 return SizedBox(
-                  height: MediaQuery.of(context).size.height*7,
+                  height: MediaQuery.of(context).size.height,
                   child: SingleChildScrollView(
                     child: Container(
-                      height: MediaQuery.of(context).size.height*7,
-
                       padding: EdgeInsets.only(left: 16,right: 16,bottom: 16,top: 8),
                       child: Column(
-                        mainAxisSize: MainAxisSize.min,
+                        mainAxisSize: MainAxisSize.max,
                         children: [
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -294,7 +295,7 @@ class _AddressBookState extends State<AddressBook> {
                   Navigator.pop(context),
 
                   }).catchError((onError){
-
+                   print('$onError');
                   });
                   }},
 

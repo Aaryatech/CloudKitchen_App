@@ -433,12 +433,13 @@ class _CartState extends State<Cart> {
                                   );
                                 },
                                child: Container(
+
                                  padding: EdgeInsets.fromLTRB(12,4,12,4),
                                    decoration: BoxDecoration(
                                        borderRadius: BorderRadius.circular(4),
                                        border: Border.all(color: Colors.white)
                                    ),
-                                   child: Text( getItemTotal()>= widget.allFrenchisiViewModel.offersMain.custWalletTotal.walletLimitRs?"Apply":'Add ${getItemTotal()- widget.allFrenchisiViewModel.offersMain.custWalletTotal.walletLimitRs} More',style: Theme.of(context).textTheme.bodyText1.copyWith(color:Colors.white))),
+                                   child: Text( getItemTotal()>= widget.allFrenchisiViewModel.offersMain.custWalletTotal.walletLimitRs?"Apply":'Add ${getItemTotal()- widget.allFrenchisiViewModel.offersMain.custWalletTotal.walletLimitRs} More',style: Theme.of(context).textTheme.subtitle1.copyWith(color:Colors.white))),
                               )
                             ],
                           ),
@@ -907,7 +908,9 @@ class _CartState extends State<Cart> {
                                       getDeliverCharges(),
                                       appliedDescunt,
                                       selecteddateTime,
-                                      gst).then((value) {
+                                      gst,
+                                    getWalletAmount()
+                                  ).then((value) {
                                     if (value.status == 200) {
                                       Scaffold.of(context).showSnackBar(
                                           SnackBar(

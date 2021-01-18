@@ -450,7 +450,7 @@ abstract class _AllFrenchisiViewModel with Store {
   DateTime currentDateTime = DateTime.now();
 
   @action
-  Future<HttpResponse> placeOrder(double itemTotal,int payMode,int offerId,double deliveryCharges,double descAmt,String dateTime,String gst)async{
+  Future<HttpResponse> placeOrder(double itemTotal,int payMode,int offerId,double deliveryCharges,double descAmt,String dateTime,String gst,double wallet)async{
     int id=0;
     if(myLocalPrefes.getSelectedOutletType()==1){
       id=myLocalPrefes.getdefFranchiseDairy();
@@ -485,7 +485,7 @@ abstract class _AllFrenchisiViewModel with Store {
       deliveryDate: '${dateTime.trim().split(' ')[0]}',
       deliveryTime: '${dateTime.trim().split(' ')[1].substring(0,7)}',
       frId:id,
-      wallet: 0,
+      wallet: wallet.toInt(),
       deliveryInstructionId: deliveryInstruction.instruId,
       deliveryInstructionText: deliveryInstruction.instructnCaption,
       deliveryType: selectedDelMode,
@@ -772,14 +772,8 @@ abstract class _AllFrenchisiViewModel with Store {
 
 
         print('******${httpResponse.message}');
-
-        try {
-          orderHistory= httpResponse.data;
-        } on Exception catch (e) {
-          print('on error with assigning  $e');
-        }
-
         isLoadingForHistory = false;
+        orderHistory= httpResponse.data;
 
       } else {
         print('******${httpResponse.message}');
@@ -788,7 +782,7 @@ abstract class _AllFrenchisiViewModel with Store {
         print('**error****${error}');
         isLoadingForHistory = false;
       }
-      return httpResponse;
+
     }
 
   }

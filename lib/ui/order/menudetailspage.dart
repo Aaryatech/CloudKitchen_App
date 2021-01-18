@@ -1715,7 +1715,7 @@ class _MenuDetailsState extends State<MenuDetails> {
                                           itemCount: 5,
                                           itemSize: 32,
                                           itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                                          ratingWidget:RatingWidget(empty: Icon(Icons.star,color: Colors.grey,size: 16,),full:Icon(Icons.star,color: Colors.yellow.shade800,size: 16,)),
+                                          ratingWidget:RatingWidget(empty: Icon(Icons.star,color: Colors.grey,size: 16,),full:Icon(Icons.star,color: Colors.yellow.shade800,size: 16,), half: Icon(Icons.star,color: Colors.yellow.shade800,size: 16,)),
                                           onRatingUpdate: (rate) {
                                             setState(() {
                                               rating=rate;
@@ -1749,6 +1749,8 @@ class _MenuDetailsState extends State<MenuDetails> {
                                               onPressed: (){
                                               widget.allFrenchisiViewModel.productRatings('${widget.itemData.itemId}', rating, reviewController.text).then((value) =>
                                               {
+
+                                                reviewController.text='',
 
                                               scaffoldState.currentState.showSnackBar(
                                               SnackBar(

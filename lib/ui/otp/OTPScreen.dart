@@ -36,7 +36,7 @@ class _OTPScreenState extends State<OTPScreen> {
   @override
   void initState() {
     // TODO: implement initState
-
+    myLocalPrefes=MyLocalPrefes();
     _disposer = reaction(
             (_) => connectivityStore.connectivityStream.value,
             (result) {
@@ -54,7 +54,7 @@ class _OTPScreenState extends State<OTPScreen> {
         });
 
     // TODO: implement initState
-myLocalPrefes=MyLocalPrefes();
+
     super.initState();
   }
 
@@ -144,6 +144,8 @@ myLocalPrefes=MyLocalPrefes();
                   otpViewModel.mobileVerification(mobileno, '$otp').then((
                       value) async =>
                   {
+
+                    print('$value'),
                     if(value) {
                       await myLocalPrefes.setCustPhone(mobileno),
                       Navigator.push(context, MaterialPageRoute(

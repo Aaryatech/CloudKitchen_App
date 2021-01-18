@@ -759,10 +759,17 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
       AsyncAction('_AllFrenchisiViewModel.placeOrder');
 
   @override
-  Future<HttpResponse> placeOrder(double itemTotal, int payMode, int offerId,
-      double deliveryCharges, double descAmt, String dateTime, String gst) {
-    return _$placeOrderAsyncAction.run(() => super.placeOrder(
-        itemTotal, payMode, offerId, deliveryCharges, descAmt, dateTime, gst));
+  Future<HttpResponse> placeOrder(
+      double itemTotal,
+      int payMode,
+      int offerId,
+      double deliveryCharges,
+      double descAmt,
+      String dateTime,
+      String gst,
+      double wallet) {
+    return _$placeOrderAsyncAction.run(() => super.placeOrder(itemTotal,
+        payMode, offerId, deliveryCharges, descAmt, dateTime, gst, wallet));
   }
 
   final _$getAddressAsyncAction =

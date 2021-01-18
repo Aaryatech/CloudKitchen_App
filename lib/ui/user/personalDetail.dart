@@ -249,7 +249,7 @@ void generateTocken()async{
         saveCustomer.whatsappNo = "";
         saveCustomer.profilePic = "";
         saveCustomer.gender = 1;
-        saveCustomer.custDob = "2020-10-10";
+        saveCustomer.custDob =personalDetailsViewModel.custDob??"2020-10-10";
         saveCustomer.ageGroup = "";
         saveCustomer.langId = 1;
         saveCustomer.compId = 1;

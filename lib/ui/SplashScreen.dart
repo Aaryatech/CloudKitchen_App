@@ -15,10 +15,11 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
 
-  MyLocalPrefes myLocalPrefes=MyLocalPrefes();
+  MyLocalPrefes myLocalPrefes;
   @override
   void initState() {
     startTime();
+    myLocalPrefes=MyLocalPrefes();
     // TODO: implement initState
     initializeFirebase();
     super.initState();

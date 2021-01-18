@@ -47,6 +47,10 @@ abstract class _PersonalDetailsViewModel with Store{
   String email="";
 
   @observable
+  String custDob="";
+
+
+  @observable
   SaveUser customerDetails;
 
   @observable
@@ -119,6 +123,8 @@ abstract class _PersonalDetailsViewModel with Store{
     username= result.user.displayName;
     email= result.user.email;
 
+
+
     isLoadingForLogin=false;
 
   }
@@ -128,11 +134,11 @@ abstract class _PersonalDetailsViewModel with Store{
     // Trigger the sign-in flow
     isLoadingForLogin=true;
 
-    final LoginResult loginresult = await FacebookAuth.instance.login(permissions: ['email','name']);
+    final  loginresult = await FacebookAuth.instance.login(permissions: ['email','name']);
 
     // Create a credential from the access token
     final AuthCredential facebookAuthCredential =
-    FacebookAuthProvider.credential(loginresult.accessToken.token);
+    FacebookAuthProvider.credential(loginresult.token);
 
     // Once signed in, return the UserCredential
     result  =  (await _auth.signInWithCredential(facebookAuthCredential));
@@ -175,6 +181,7 @@ abstract class _PersonalDetailsViewModel with Store{
           customerDetails = value.data;
           username = customerDetails.custName;
           email = customerDetails.emailId;
+          custDob=customerDetails.custDob;
         }
       }else if(value.status==500) {
         errorMessage=value.message;

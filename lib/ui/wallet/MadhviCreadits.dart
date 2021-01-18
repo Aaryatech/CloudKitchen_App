@@ -103,7 +103,7 @@ class _MadhviCreditsState extends State<MadhviCredits> {
 
                             return ListTile(
                               title: Text('${madhvi[index].orderDate}',style: Theme.of(context).textTheme.subtitle2,),
-                              subtitle:Text( 'Paid for order: ' + '${madhvi[index].billNo}',style: Theme.of(context).textTheme.subtitle2) ,
+                              subtitle:Text( 'Paid for order: ' + '${madhvi[index].orderNo}',style: Theme.of(context).textTheme.subtitle2) ,
                               trailing:Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [

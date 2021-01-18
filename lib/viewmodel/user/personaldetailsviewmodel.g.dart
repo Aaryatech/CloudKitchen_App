@@ -54,6 +54,21 @@ mixin _$PersonalDetailsViewModel on _PersonalDetailsViewModel, Store {
     });
   }
 
+  final _$custDobAtom = Atom(name: '_PersonalDetailsViewModel.custDob');
+
+  @override
+  String get custDob {
+    _$custDobAtom.reportRead();
+    return super.custDob;
+  }
+
+  @override
+  set custDob(String value) {
+    _$custDobAtom.reportWrite(value, super.custDob, () {
+      super.custDob = value;
+    });
+  }
+
   final _$customerDetailsAtom =
       Atom(name: '_PersonalDetailsViewModel.customerDetails');
 
@@ -193,6 +208,7 @@ mixin _$PersonalDetailsViewModel on _PersonalDetailsViewModel, Store {
 result: ${result},
 username: ${username},
 email: ${email},
+custDob: ${custDob},
 customerDetails: ${customerDetails},
 loginStatus: ${loginStatus},
 errorMessage: ${errorMessage},
