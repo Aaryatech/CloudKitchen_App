@@ -6,7 +6,8 @@ ThemeData _buildLightTheme() {
   final ThemeData base = ThemeData.light();
   return base.copyWith(
 
-    primaryColor: Color(0xffe23744),
+    // primaryColor: Color(0xffe23744),
+    primaryColor: Color(0xffE31E24),
     primaryColorDark: Color(0xffe23744),
     accentColor:  Color(0xFFfafafa),
     canvasColor: const Color(0xFFfafafa),

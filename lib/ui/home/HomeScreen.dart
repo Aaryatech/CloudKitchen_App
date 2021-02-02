@@ -401,33 +401,36 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Navigator.pop(context);
                                 },
                                 child: Text('Clear All',style: Theme.of(context).textTheme.subtitle2.copyWith(decorationStyle: TextDecorationStyle.dotted,decoration: TextDecoration.underline,color: Theme.of(context).primaryColor),)),
-                            RaisedButton(onPressed: (){
-                              if(isSortSelected){
-                                widget.allFrenchisiViewModel.getSortedFranchiseBySort(selectedSort);
-                              }else{
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width*.4,
+                              child: RaisedButton(onPressed: (){
+                                if(isSortSelected){
+                                  widget.allFrenchisiViewModel.getSortedFranchiseBySort(selectedSort);
+                                }else{
 
-                              String ratings='';
-                                if(selectedRating==1){
-                                  ratings='1,2,3,4,5';
-                                }else if(selectedRating==5){
-                                  ratings='5';
-                                }else if(selectedRating==4.5){
-                                  ratings='4.5,5';
-                                }else if(selectedRating==4){
-                                  ratings='4,4.5,5';
-                                }else if(selectedRating==3.5){
-                                  ratings='3.5,4,,4.5,5';
+                                String ratings='';
+                                  if(selectedRating==1){
+                                    ratings='1,2,3,4,5';
+                                  }else if(selectedRating==5){
+                                    ratings='5';
+                                  }else if(selectedRating==4.5){
+                                    ratings='4.5,5';
+                                  }else if(selectedRating==4){
+                                    ratings='4,4.5,5';
+                                  }else if(selectedRating==3.5){
+                                    ratings='3.5,4,,4.5,5';
+                                  }
+
+
+                                  widget.allFrenchisiViewModel
+                                      .getSortedFranchiseByRating(
+                                      ratings);
                                 }
-
-
-                                widget.allFrenchisiViewModel
-                                    .getSortedFranchiseByRating(
-                                    ratings);
-                              }
-                              Navigator.pop(context);
-                            },
-                              child: Text("Apply",style: Theme.of(context).textTheme.button.copyWith(color:Colors.white),),
-                              color: Theme.of(context).primaryColor,
+                                Navigator.pop(context);
+                              },
+                                child: Text("Apply",style: Theme.of(context).textTheme.button.copyWith(color:Colors.white),),
+                                color: Theme.of(context).primaryColor,
+                              ),
                             ),
                           ],
                         ),
@@ -520,15 +523,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       })
                                     ],
                                   ),
-                                  SizedBox(
-                                    height: 4,
-                                  ),
 
-                                  Container(
-                                    color: Colors.grey.withOpacity(0.5),
-                                    height: 1,
-                                    width: MediaQuery.of(context).size.width,
-                                  ),
                                   SizedBox(
                                     height: 8,
                                   ),
@@ -616,19 +611,20 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Widget> getSliderImages(){
     List<Widget> widgets=[];
     widget.allFrenchisiViewModel.frainchiseHomeData.offerData.forEach((element) {
+
       widgets.add(
 
           CachedNetworkImage(
-          placeholder: (context, url) =>Image.asset('images/bannerplaceholder.jpg', fit: BoxFit.cover,),
+          placeholder: (context, url) =>Image.asset('images/bannerplaceholder.jpg', fit: BoxFit.contain,),
       imageUrl: '${imageUrl}${element.imageList[0].imageName}',
-      fit: BoxFit.cover,
+      fit: BoxFit.contain,
       imageBuilder: (context, imageProvider) =>
           Container(
             width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8.0),
               image: DecorationImage(image: NetworkImage('${imageUrl}${element.imageList[0].imageName}'),
-                    fit: BoxFit.cover)
+                    fit: BoxFit.contain)
       ),),)
       );
     });
@@ -685,7 +681,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void deliveryDialog(){
     showDialog(context: context,
-      child: AlertDialog(
+        builder:(ctx)=> AlertDialog(
         title: new Text("Alert"),
         content: Text('We are currently not accepting home delivery order due to festival rush,Please use take away'),
         actions: [
@@ -701,34 +697,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
 
-  // void slider(){
-  //   Timer.periodic(Duration(seconds: 4), (Timer t)  {
-  //
-  //     try {
-  //       if (widget.allFrenchisiViewModel.frainchiseHomeData.offerData.length >= 1){
-  //           if (currentPage < widget.allFrenchisiViewModel.frainchiseHomeData.offerData.length) {
-  //
-  //             _controller.nextPage(
-  //                 duration: Duration(milliseconds: 700),
-  //                 curve: Curves.linearToEaseOut);
-  //             setState(() {
-  //               currentPage =currentPage+1;
-  //             });
-  //           } else {
-  //            setState(() {
-  //              currentPage = 0;
-  //            });
-  //
-  //
-  //             _controller.jumpToPage(0);
-  //           }
-  //       }
-  //     }catch(error){
-  //       print(error);
-  //
-  //     }
-  //   });
-  // }
 
   final ScrollController _scrollController=ScrollController();
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
@@ -752,7 +720,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 onPressed: () {
 
                   showDialog(context: context,
-                      child:
+                      builder:(ctx)=>
 
                       new AlertDialog(
 
@@ -776,12 +744,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                 itemBuilder: (context, index) {
                                   return ListTile(
                                     dense: true,
-                                    minVerticalPadding: 0,
+
                                     onTap: (){
                                      allFrenchisiViewModel.searchListByCategory(index);
                                       Navigator.pop(context);
                                     },
-                                    title: Text(index==0? "All": widget.allFrenchisiViewModel.frainchiseHomeData.subCategoryData[index-1].subCatName,style: Theme.of(context).textTheme.subtitle2,),
+                                    title: Text(index==0? "All": widget.allFrenchisiViewModel.frainchiseHomeData.subCategoryData[index-1].subCatName,style: Theme.of(context).textTheme.subtitle2.copyWith(fontWeight:allFrenchisiViewModel.localindex==index?FontWeight.bold:FontWeight.normal ),),
                                     trailing: Text(index==0? "": '${widget.allFrenchisiViewModel.frainchiseHomeData.subCategoryData[index-1].itemList.length}'),
                                   );
                                 },
@@ -812,7 +780,47 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Observer(
                             builder:(_)=> InkWell(
                               onTap: (){
-                                openAddressedBottomSheet();
+
+                                if(widget.allFrenchisiViewModel.itemsIds.isNotEmpty) {
+                                  showDialog(context: context,
+                                    builder: (ctx) =>
+                                        AlertDialog(
+                                          title: new Text("Replace cart item?", style: Theme
+                                              .of(context)
+                                              .textTheme
+                                              .headline6,),
+                                          content: Text(
+                                              'The cart will empty, Do you want to continue?'),
+                                          actions: [
+                                            FlatButton(onPressed: () {
+                                              Navigator.pop(context);
+                                              // initiateHelpCall();
+                                            }, child: Text("NO", style: Theme
+                                                .of(context)
+                                                .textTheme
+                                                .button
+                                                .copyWith(fontWeight: FontWeight.w600)),),
+
+                                            FlatButton(onPressed: () async {
+                                              Navigator.pop(context);
+                                              openAddressedBottomSheet();
+
+                                            }, child: Text("YES", style: Theme
+                                                .of(context)
+                                                .textTheme
+                                                .button
+                                                .copyWith(color: Theme
+                                                .of(context)
+                                                .primaryColor, fontWeight: FontWeight.w600))),
+                                          ],
+                                        ),
+                                  );
+                                }else {
+                                  openAddressedBottomSheet();
+                                }
+
+
+
                               },
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -837,7 +845,43 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 actions: [
                   IconButton(icon:Icon( Icons.arrow_drop_down), onPressed:(){
-                    openAddressedBottomSheet();
+                    if(widget.allFrenchisiViewModel.itemsIds.isNotEmpty) {
+                      showDialog(context: context,
+                        builder: (ctx) =>
+                            AlertDialog(
+                              title: new Text("Replace cart item?", style: Theme
+                                  .of(context)
+                                  .textTheme
+                                  .headline6,),
+                              content: Text(
+                                  'The cart will empty, Do you want to continue?'),
+                              actions: [
+                                FlatButton(onPressed: () {
+                                  Navigator.pop(context);
+                                  // initiateHelpCall();
+                                }, child: Text("NO", style: Theme
+                                    .of(context)
+                                    .textTheme
+                                    .button
+                                    .copyWith(fontWeight: FontWeight.w600)),),
+
+                                FlatButton(onPressed: () async {
+                                  Navigator.pop(context);
+                                  openAddressedBottomSheet();
+
+                                }, child: Text("YES", style: Theme
+                                    .of(context)
+                                    .textTheme
+                                    .button
+                                    .copyWith(color: Theme
+                                    .of(context)
+                                    .primaryColor, fontWeight: FontWeight.w600))),
+                              ],
+                            ),
+                      );
+                    }else {
+                      openAddressedBottomSheet();
+                    }
                   }),
 
                   IconButton(icon:Icon( Icons.notifications), onPressed:(){
@@ -1035,7 +1079,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                               }
                                             }else{
                                               showDialog(context: context,
-                                                child: AlertDialog(
+                                                builder:(ctx)=> AlertDialog(
                                                   title: new Text("Replace cart item?",style: Theme.of(context).textTheme.headline6,),
                                                   content: Text('The cart will empty, Do you want to continue?'),
                                                   actions: [
@@ -1123,7 +1167,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             }
                                             }else{
                                               showDialog(context: context,
-                                                child: AlertDialog(
+                                                builder:(ctx)=> AlertDialog(
                                                   title: new Text("Replace cart item?",style: Theme.of(context).textTheme.headline6,),
                                                   content: Text('The cart will empty, Do you want to continue?'),
 
@@ -1199,10 +1243,54 @@ class _HomeScreenState extends State<HomeScreen> {
 
                                     InkWell(
                                       onTap: (){
-                                        widget.allFrenchisiViewModel.setDelMode(2);
-                                        widget.allFrenchisiViewModel.myLocalPrefes.setDefFranchiseRest(0);
-                                        widget.allFrenchisiViewModel.myLocalPrefes.setdefFranchiseDairy(0);
-                                        widget.allFrenchisiViewModel.getAllFranchise();
+
+
+                                        if(widget.allFrenchisiViewModel.itemsIds.isNotEmpty) {
+                                          showDialog(context: context,
+                                            builder: (ctx) =>
+                                                AlertDialog(
+                                                  title: new Text("Replace cart item?", style: Theme
+                                                      .of(context)
+                                                      .textTheme
+                                                      .headline6,),
+                                                  content: Text(
+                                                      'The cart will empty, Do you want to continue?'),
+                                                  actions: [
+                                                    FlatButton(onPressed: () {
+                                                      Navigator.pop(context);
+                                                      // initiateHelpCall();
+                                                    }, child: Text("NO", style: Theme
+                                                        .of(context)
+                                                        .textTheme
+                                                        .button
+                                                        .copyWith(fontWeight: FontWeight.w600)),),
+
+                                                    FlatButton(onPressed: () async {
+                                                      widget.allFrenchisiViewModel.setDelMode(2);
+                                                      widget.allFrenchisiViewModel.myLocalPrefes.setDefFranchiseRest(0);
+                                                      widget.allFrenchisiViewModel.myLocalPrefes.setdefFranchiseDairy(0);
+                                                      widget.allFrenchisiViewModel.getAllFranchise();
+                                                      Navigator.pop(context);
+                                                    }, child: Text("YES", style: Theme
+                                                        .of(context)
+                                                        .textTheme
+                                                        .button
+                                                        .copyWith(color: Theme
+                                                        .of(context)
+                                                        .primaryColor, fontWeight: FontWeight.w600))),
+                                                  ],
+                                                ),
+                                          );
+                                        }else {
+                                          widget.allFrenchisiViewModel.setDelMode(2);
+                                          widget.allFrenchisiViewModel.myLocalPrefes.setDefFranchiseRest(0);
+                                          widget.allFrenchisiViewModel.myLocalPrefes.setdefFranchiseDairy(0);
+                                          widget.allFrenchisiViewModel.getAllFranchise();
+                                        }
+
+
+
+
                                         // deliveryDialog();
 
 
@@ -1213,10 +1301,49 @@ class _HomeScreenState extends State<HomeScreen> {
                                           Radio(
                                             activeColor: Theme.of(context).primaryColor,
                                             value: widget.allFrenchisiViewModel.selectedDelMode, groupValue: 2, onChanged: (flag){
-                                            widget.allFrenchisiViewModel.setDelMode(2);
-                                            widget.allFrenchisiViewModel.myLocalPrefes.setDefFranchiseRest(0);
-                                            widget.allFrenchisiViewModel.myLocalPrefes.setdefFranchiseDairy(0);
-                                            widget.allFrenchisiViewModel.getAllFranchise();
+                                            if(widget.allFrenchisiViewModel.itemsIds.isNotEmpty) {
+                                              showDialog(context: context,
+                                                builder: (ctx) =>
+                                                    AlertDialog(
+                                                      title: new Text("Replace cart item?", style: Theme
+                                                          .of(context)
+                                                          .textTheme
+                                                          .headline6,),
+                                                      content: Text(
+                                                          'The cart will empty, Do you want to continue?'),
+                                                      actions: [
+                                                        FlatButton(onPressed: () {
+                                                          Navigator.pop(context);
+                                                          // initiateHelpCall();
+                                                        }, child: Text("NO", style: Theme
+                                                            .of(context)
+                                                            .textTheme
+                                                            .button
+                                                            .copyWith(fontWeight: FontWeight.w600)),),
+
+                                                        FlatButton(onPressed: () async {
+                                                          widget.allFrenchisiViewModel.setDelMode(2);
+                                                          widget.allFrenchisiViewModel.myLocalPrefes.setDefFranchiseRest(0);
+                                                          widget.allFrenchisiViewModel.myLocalPrefes.setdefFranchiseDairy(0);
+                                                          widget.allFrenchisiViewModel.getAllFranchise();
+                                                          Navigator.pop(context);
+                                                        }, child: Text("YES", style: Theme
+                                                            .of(context)
+                                                            .textTheme
+                                                            .button
+                                                            .copyWith(color: Theme
+                                                            .of(context)
+                                                            .primaryColor, fontWeight: FontWeight.w600))),
+                                                      ],
+                                                    ),
+                                              );
+                                            }else {
+                                              widget.allFrenchisiViewModel.setDelMode(2);
+                                              widget.allFrenchisiViewModel.myLocalPrefes.setDefFranchiseRest(0);
+                                              widget.allFrenchisiViewModel.myLocalPrefes.setdefFranchiseDairy(0);
+                                              widget.allFrenchisiViewModel.getAllFranchise();
+                                            }
+
 
                                             // deliveryDialog();
 
@@ -1227,18 +1354,103 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                     InkWell(
                                       onTap: (){
-                                        widget.allFrenchisiViewModel.setDelMode(1);
-                                        Navigator.push(context, MaterialPageRoute(builder: (context)=> TakeAway(allFrenchisiViewModel: widget.allFrenchisiViewModel,)));
-                                      },
+                                        if(widget.allFrenchisiViewModel.itemsIds.isNotEmpty) {
+                                          showDialog(context: context,
+                                            builder: (ctx) =>
+                                                AlertDialog(
+                                                  title: new Text("Replace cart item?", style: Theme
+                                                      .of(context)
+                                                      .textTheme
+                                                      .headline6,),
+                                                  content: Text(
+                                                      'The cart will empty, Do you want to continue?'),
+                                                  actions: [
+                                                    FlatButton(onPressed: () {
+                                                      Navigator.pop(context);
+                                                      // initiateHelpCall();
+                                                    }, child: Text("NO", style: Theme
+                                                        .of(context)
+                                                        .textTheme
+                                                        .button
+                                                        .copyWith(fontWeight: FontWeight.w600)),),
+
+                                                    FlatButton(onPressed: () async {
+                                                      widget.allFrenchisiViewModel
+                                                          .frainchiseHomeData =
+                                                          FranchiseId();
+                                                      widget.allFrenchisiViewModel
+                                                          .getNearestFranchiseById();
+                                                      widget.allFrenchisiViewModel.setDelMode(1);
+                                                      Navigator.pop(context);
+                                                      Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                                                          TakeAway(allFrenchisiViewModel: widget.allFrenchisiViewModel,)));
+
+                                                    }, child: Text("YES", style: Theme
+                                                        .of(context)
+                                                        .textTheme
+                                                        .button
+                                                        .copyWith(color: Theme
+                                                        .of(context)
+                                                        .primaryColor, fontWeight: FontWeight.w600))),
+                                                  ],
+                                                ),
+                                          );
+                                        }else {
+                                          widget.allFrenchisiViewModel.setDelMode(1);
+                                          Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                                              TakeAway(allFrenchisiViewModel: widget.allFrenchisiViewModel,)));
+                                        } },
                                       child: Row(
                                         children: [
                                           Radio(
                                             activeColor: Theme.of(context).primaryColor,
                                             value: widget.allFrenchisiViewModel.selectedDelMode, groupValue: 1, onChanged: (flag){
+        if(widget.allFrenchisiViewModel.itemsIds.isNotEmpty) {
+          showDialog(context: context,
+            builder: (ctx) =>
+                AlertDialog(
+                  title: new Text("Replace cart item?", style: Theme
+                      .of(context)
+                      .textTheme
+                      .headline6,),
+                  content: Text(
+                      'The cart will empty, Do you want to continue?'),
+                  actions: [
+                    FlatButton(onPressed: () {
+                      Navigator.pop(context);
+                      // initiateHelpCall();
+                    }, child: Text("NO", style: Theme
+                        .of(context)
+                        .textTheme
+                        .button
+                        .copyWith(fontWeight: FontWeight.w600)),),
 
-                                            widget.allFrenchisiViewModel.setDelMode(1);
-                                            Navigator.push(context, MaterialPageRoute(builder: (context)=> TakeAway(allFrenchisiViewModel: widget.allFrenchisiViewModel,)));
+                    FlatButton(onPressed: () async {
+                      widget.allFrenchisiViewModel
+                          .frainchiseHomeData =
+                          FranchiseId();
+                      widget.allFrenchisiViewModel
+                          .getNearestFranchiseById();
+                      widget.allFrenchisiViewModel.setDelMode(1);
+                      Navigator.pop(context);
+                      Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                          TakeAway(allFrenchisiViewModel: widget.allFrenchisiViewModel,)));
 
+                    }, child: Text("YES", style: Theme
+                        .of(context)
+                        .textTheme
+                        .button
+                        .copyWith(color: Theme
+                        .of(context)
+                        .primaryColor, fontWeight: FontWeight.w600))),
+                  ],
+                ),
+          );
+        }else {
+          widget.allFrenchisiViewModel.setDelMode(1);
+          Navigator.push(context, MaterialPageRoute(builder: (context) =>
+              TakeAway(allFrenchisiViewModel: widget.allFrenchisiViewModel,)));
+        }
                                           }, ),
                                           Text('Takeaway',style: Theme.of(context).textTheme.bodyText2.copyWith(fontFamily: "Metropolis",color:widget.allFrenchisiViewModel.selectedDelMode==1?Theme.of(context).primaryColor :Colors.black,fontWeight: FontWeight.bold),),
                                         ],
@@ -1317,7 +1529,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               (!widget.allFrenchisiViewModel.isLoading&&!widget.allFrenchisiViewModel.isLoadingForFranchiseData)?
                               (!widget.allFrenchisiViewModel.isLoadingForFranchiseData && widget.allFrenchisiViewModel.frainchiseHomeData.subCategoryData.isEmpty )? NoServiceAvailable(widget.allFrenchisiViewModel.custAdrress):
                               Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+
                                   Column(
 
                                     children: allFrenchisiViewModel.isSerching? getSearchedList(): getChildViews(),
@@ -1327,15 +1541,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                   widget.allFrenchisiViewModel.frainchiseHomeData!=null?
 
                                   Padding(
-                                    padding: const EdgeInsets.only(top:8.0),
-                                    child: Row(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       mainAxisSize: MainAxisSize.max,
                                       children: [
                                         SizedBox(width: 16,),
-                                      Image.asset('images/fssai.png',height: 24,),
-                                        SizedBox(width: 8,),
-                                         Text('${widget.allFrenchisiViewModel.frainchiseHomeData?.franchise?.frCode.split("~")[1]??""}',style: Theme.of(context).textTheme.headline6.copyWith(color: Colors.grey),),
+                                      Image.asset('images/fssai.png',height: 20,color:Colors.grey),
+                                        SizedBox(height: 8,),
+                                         Text('Lic.No. ${widget.allFrenchisiViewModel.frainchiseHomeData?.franchise?.frCode.split("~")[1]??""}',style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.grey),),
                                       ],
                                     ),
                                   )
@@ -1400,7 +1615,7 @@ class _HomeScreenState extends State<HomeScreen> {
             shrinkWrap: true,
             // controller: controller,
             separatorBuilder: (context, index) => Divider(
-              color: Colors.black,
+              color: Colors.grey[300],
             ),
             physics: ScrollPhysics(),
             scrollDirection: Axis.vertical,

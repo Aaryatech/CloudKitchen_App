@@ -61,7 +61,10 @@ class _DairyMartState extends State<DairyMart> {
       child: Scaffold(
         key: _scaffoldKey,
       appBar:  AppBar(
-        title: Text('Dairy Mart',style: Theme.of(context).textTheme.headline6.copyWith(color: Colors.white),
+        title: Text('Dairy Mart', style: Theme.of(context)
+            .textTheme
+            .headline6
+            .copyWith(color: Colors.white),
           ),
       ),
         body: SingleChildScrollView(
@@ -173,7 +176,7 @@ class _DairyMartState extends State<DairyMart> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(Icons.call,color: Theme.of(context).primaryColor,size: 32,),
-                              Text(' 82600 60049',style: Theme.of(context).textTheme.headline6,)
+                              Text(' 82600 60049',style: Theme.of(context).textTheme.headline6.copyWith(fontFamily: 'Metropolis Semi Bold',color: Theme.of(context).primaryColor),)
                             ],
                           ),
                         ),

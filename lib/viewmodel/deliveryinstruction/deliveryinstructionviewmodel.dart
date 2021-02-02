@@ -6,71 +6,57 @@ import 'package:mobx/mobx.dart';
 
 part 'deliveryinstructionviewmodel.g.dart';
 
-class DIViewModel =_DIViewModel with _$DIViewModel;
+class DIViewModel = _DIViewModel with _$DIViewModel;
 
-
-abstract class _DIViewModel with Store{
-
+abstract class _DIViewModel with Store {
   DeliveryInstructionRepo deliveryInstructionRepo;
   MyLocalPrefes myLocalPrefes;
 
-  _DIViewModel(){
-
+  _DIViewModel() {
     myLocalPrefes = MyLocalPrefes();
     deliveryInstructionRepo = DeliveryInstructionRepo();
-
   }
-
 
   @observable
   DeliveryInstructionMain deliveryInstructionMain;
 
+  @observable
+  bool isLoading = true;
 
   @observable
-  bool isLoading=true;
-
-
-  @observable
-  int selected=0;
+  int selected = 0;
 
   @observable
-  String selectedReson='';
+  String selectedReson = '';
 
   @action
-  int getCusId(){
-    return myLocalPrefes.getCustId();
+  Future<int> getCusId() async {
+    return await myLocalPrefes.getCustId();
   }
 
-
   @action
-  setSelectedvalue(int selectedvalue){
-    selected=selectedvalue;
+  setSelectedvalue(int selectedvalue) {
+    selected = selectedvalue;
   }
 
   Future getInstruction() async {
-
-
     isLoading = true;
 
-      HttpResponse httpResponse = await deliveryInstructionRepo.deliveryinstruction();
+    HttpResponse httpResponse =
+        await deliveryInstructionRepo.deliveryinstruction();
 
+    print(httpResponse.data.toString());
 
-      print(httpResponse.data.toString());
+    if (httpResponse.status == 200) {
+      if (!httpResponse.info.error) {
+        deliveryInstructionMain = httpResponse.data;
 
-        if (httpResponse.status == 200) {
-          if (!httpResponse.info.error) {
-            deliveryInstructionMain = httpResponse.data;
-
-            if(selectedReson=='') {
-              selectedReson = deliveryInstructionMain.deliveryInstruction[0]
-                  .instructnCaption;
-            }
-          }
-        } else if (httpResponse.status == 500) {
+        if (selectedReson == '') {
+          selectedReson =
+              deliveryInstructionMain.deliveryInstruction[0].instructnCaption;
         }
-        isLoading = false;
-
-
+      }
+    } else if (httpResponse.status == 500) {}
+    isLoading = false;
   }
-
 }

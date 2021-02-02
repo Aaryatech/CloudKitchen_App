@@ -71,18 +71,14 @@ mixin _$DIViewModel on _DIViewModel, Store {
     });
   }
 
-  final _$_DIViewModelActionController = ActionController(name: '_DIViewModel');
+  final _$getCusIdAsyncAction = AsyncAction('_DIViewModel.getCusId');
 
   @override
-  int getCusId() {
-    final _$actionInfo = _$_DIViewModelActionController.startAction(
-        name: '_DIViewModel.getCusId');
-    try {
-      return super.getCusId();
-    } finally {
-      _$_DIViewModelActionController.endAction(_$actionInfo);
-    }
+  Future<int> getCusId() {
+    return _$getCusIdAsyncAction.run(() => super.getCusId());
   }
+
+  final _$_DIViewModelActionController = ActionController(name: '_DIViewModel');
 
   @override
   dynamic setSelectedvalue(int selectedvalue) {

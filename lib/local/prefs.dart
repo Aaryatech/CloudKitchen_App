@@ -7,7 +7,7 @@ class MyLocalPrefes{
   MyLocalPrefes() {
     init();
   }
-    Future init() async {
+  Future init() async {
     prefs= await SharedPreferences.getInstance();
   }
 
@@ -29,34 +29,44 @@ class MyLocalPrefes{
   String selectedAddressCaption='SelectedAddressCaption';
   String selectedOutletType="OutletType";
   String delType="DelType";
-  String profUrl="ProfUrl";
-  String gstNo="gstNo";
-
-
-  String getProUrl(){
-
-
-
-    return prefs.getString(profUrl)??"";
-  }
-
-
-  Future setProfUrl(String  url) async{
-    await prefs.setString(profUrl,url);
-  }
-
-
-  String getGSTNo(){
-    return prefs.getString(gstNo)??"";
-  }
-
-
-  Future setGSTNo(String  url) async{
-    await prefs.setString(gstNo,url);
-  }
+  String profUrl = "ProfUrl";
+  String restDistance = "RestDistance";
+  String dairyDistance = "DairyDistance";
 
   int getDefType(){
-    return prefs.getInt(delType)??2;
+    return prefs.getInt(delType)??1;
+  }
+
+  String getProUrl()  {
+
+    return prefs.getString(profUrl) ?? "";
+  }
+
+  Future setProfUrl(String url) async {
+
+    await prefs.setString(profUrl, url);
+  }
+
+  String getRestDist()  {
+
+    return prefs.getString(restDistance) ?? "";
+  }
+
+  Future setRestDist(String distance) async {
+
+    await prefs.setString(restDistance, distance);
+  }
+
+
+
+  String getDairyDist()  {
+
+    return prefs.getString(dairyDistance) ?? "";
+  }
+
+  Future setDairyDist(String distance) async {
+
+    await prefs.setString(dairyDistance, distance);
   }
 
   Future setDefType(int  type) async{
@@ -122,7 +132,7 @@ class MyLocalPrefes{
 
 
   int getDefFranchiseRest(){
-     return prefs.getInt(   defFranchise)??0;
+    return prefs.getInt(   defFranchise)??0;
   }
 
   Future setDefFranchiseRest(int frId) async{
@@ -130,7 +140,7 @@ class MyLocalPrefes{
   }
 
   int getdefFranchiseDairy(){
-     return prefs.getInt(defFranchiseDairy)??0;
+    return prefs.getInt(defFranchiseDairy)??0;
   }
 
   Future setdefFranchiseDairy(int frId) async{
@@ -168,6 +178,7 @@ class MyLocalPrefes{
   }
 
   Future setCustLogin(bool flag)async{
+
     return await prefs.setBool(isLogin, flag);
   }
 
@@ -181,11 +192,11 @@ class MyLocalPrefes{
 
 
   int getCustId(){
-  return  prefs.getInt(custId)??0;
+    return  prefs.getInt(custId)??0;
   }
 
   Future setCustId(int id)async{
-   return await prefs.setInt(custId, id);
+    return await prefs.setInt(custId, id);
   }
 
 
@@ -206,12 +217,12 @@ class MyLocalPrefes{
     return await prefs.setString(custPhone, phone);
   }
 
-    String getCustName(){
-      return prefs.getString(custname);
-    }
+  String getCustName(){
+    return prefs.getString(custname);
+  }
 
-    Future setCustName(String name)async{
-      return await prefs.setString(custname, name);
-    }
+  Future setCustName(String name)async{
+    return await prefs.setString(custname, name);
+  }
 
 }

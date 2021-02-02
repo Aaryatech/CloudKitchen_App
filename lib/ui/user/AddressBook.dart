@@ -62,6 +62,7 @@ class _AddressBookState extends State<AddressBook> {
 
   }
 
+ final pinCodeController=TextEditingController();
  final colpeteadrres=TextEditingController();
  final floor=TextEditingController();
  final howtoreach=TextEditingController();
@@ -72,6 +73,7 @@ class _AddressBookState extends State<AddressBook> {
     colpeteadrres.text=addressMain.address.trim().split('~')[0]??"";
     floor.text=addressMain.address.trim().split('~')[1]??"";
     howtoreach.text=addressMain.address.trim().split('~')[2]??"";
+    pinCodeController.text='${addressMain.exVar1}';
 
 
 
@@ -91,249 +93,273 @@ class _AddressBookState extends State<AddressBook> {
         builder: (BuildContext bc){
           return StatefulBuilder(
               builder: (context, setState) {
-                return SizedBox(
-                  height: MediaQuery.of(context).size.height,
-                  child: SingleChildScrollView(
-                    child: Container(
-                      padding: EdgeInsets.only(left: 16,right: 16,bottom: 16,top: 8),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text("Edit Address",style: Theme.of(context).textTheme.headline6,),
+                return SafeArea(
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height-100,
+                    child: SingleChildScrollView(
+                      child: Container(
+                        padding: EdgeInsets.only(left: 16,right: 16,bottom: 16,top: 8),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("Edit Address",style: Theme.of(context).textTheme.headline6,),
 
-                              IconButton(icon: Icon(Icons.close,), onPressed:(){
-                                Navigator.pop(context);
-                              })
-                            ],
-                          ),
-                          SizedBox(
-                            height: 4,
-                          ),
-
-                          Container(
-                            color: Colors.grey.withOpacity(0.5),
-                            height: 1,
-                            width: MediaQuery.of(context).size.width,
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-
-                          Text('TAG THIS LOCATION FOR LATER',style: Theme.of(context).textTheme.subtitle2.copyWith(color: Colors.grey),),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              FilterChip(
-                                shape: StadiumBorder(side: BorderSide(color: Colors.grey)),
-                                label: Text("HOME",style: Theme.of(context).textTheme.caption,),
-                                padding: EdgeInsets.only(left: 12,right: 12),
-                                labelStyle: TextStyle(letterSpacing: 2, color: Colors.black),
-
-                                selected: addressMain.addressCaption.toLowerCase()=="home",
-                                selectedColor: Colors.transparent,
-                                // backgroundColor: Theme.of(context).primaryColor,
-                                onSelected: (flag) {
-                                  if(flag){
-                                    setState(() {
-                            addressMain.addressCaption="HOME";
-                                    });}
-                                },
-                              ),
-
-                              FilterChip(
-                                shape: StadiumBorder(side: BorderSide(color: Colors.grey)),
-                                label: Text("WORK",style: Theme.of(context).textTheme.caption),
-                                labelStyle: TextStyle(letterSpacing: 2, color: Colors.black),
-                                padding: EdgeInsets.only(left: 12,right: 12),
-                                selected: addressMain.addressCaption.toLowerCase()=="work",
-                                selectedColor: Colors.transparent,
-                                // backgroundColor: Theme.of(context).primaryColor,
-                                onSelected: (flag) {
-                                  setState(() {
-                                    if(flag)
-                                    {
-                                      addressMain.addressCaption="WORK";
-                                    }
-                                  });
-                                },
-                              ),
-
-                              FilterChip(
-                                // avatar: Icon(Icons.close,color: Colors.black),
-                                shape: StadiumBorder(side: BorderSide(color: Colors.grey)),
-                                label: Text("OTHER",style: Theme.of(context).textTheme.caption),
-                                labelStyle: TextStyle(letterSpacing: 2, color: Colors.black),
-                                padding: EdgeInsets.only(left: 12,right: 12),
-                                selected:  addressMain.addressCaption=="OTHER",
-                                selectedColor: Colors.transparent,
-                                // backgroundColor: Theme.of(context).primaryColor,
-                                onSelected: (flag) {
-                                  setState(() {
-                                    addressMain.addressCaption="OTHER";
-                                  });
-                                },
-                              ),
-                            ],
-                          ),
-
-                          SizedBox(height:
-                          8,),
-
-
-                          Text(
-                            'landmark -${addressMain.landmark}'
-                          ),
-
-                          SizedBox(height:
-                          8,),
-
-                          TextFormField(
-                            controller:colpeteadrres,
-                            enabled: true,
-                            onChanged:(str) async{
-
-                            },
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-
-                              labelText: 'Complete Address',
-                              hintText: 'complete Address',
-                              filled: true,
-                              fillColor: Colors.white,
-
-                              isDense: true,
+                                IconButton(icon: Icon(Icons.close,), onPressed:(){
+                                  Navigator.pop(context);
+                                })
+                              ],
                             ),
-                          ),
-
-                          SizedBox(height:
-                          8,),
-
-                          TextFormField(
-                            enabled: true,
-                            controller: floor,
-                            onChanged:(str) async{
-                            },
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              labelText: 'Floor',
-                              hintText: 'Floor',
-                              filled: true,
-                              fillColor: Colors.white,
-
-                              isDense: true,
+                            SizedBox(
+                              height: 4,
                             ),
-                          ),
 
-                          SizedBox(height:
-                          8,),
-
-
-                          TextFormField(
-                            enabled: true,
-                            controller: howtoreach,
-                            onChanged:(str) async{
-
-                            },
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              hintText: 'How To Reach',
-                              labelText: 'How To Reach',
-                              filled: true,
-                              fillColor: Colors.white,
-
-                              isDense: true,
+                            Container(
+                              color: Colors.grey.withOpacity(0.5),
+                              height: 1,
+                              width: MediaQuery.of(context).size.width,
                             ),
-                          ),
+                            SizedBox(
+                              height: 20,
+                            ),
 
-                          SizedBox(height:
-                          8,),
+                            Text('TAG THIS LOCATION FOR LATER',style: Theme.of(context).textTheme.subtitle2.copyWith(color: Colors.grey),),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                FilterChip(
+                                  shape: StadiumBorder(side: BorderSide(color: Colors.grey)),
+                                  label: Text("HOME",style: Theme.of(context).textTheme.caption,),
+                                  padding: EdgeInsets.only(left: 12,right: 12),
+                                  labelStyle: TextStyle(letterSpacing: 2, color: Colors.black),
 
-                          InkWell(
-
-                            onTap: (){
-
-                              setState((){
-                                isLoading=true;
-                              });
-
-
-                  if(!addLocationViewModel.isLoading){
-                  SaveAddress saveUserDetails=SaveAddress();
-
-                  saveUserDetails.custAddressId= addressMain.custAddressId;
-
-                  saveUserDetails.addressCaption= addressMain.addressCaption;
-                  saveUserDetails.custId= addressMain.custId;
-                  saveUserDetails.address= "${colpeteadrres.text} ~ ${floor.text} ~ ${howtoreach.text}";
-                  saveUserDetails.areaId= 0;
-                  saveUserDetails.area= null;
-                  saveUserDetails.landmark= "${addressMain.landmark}";
-                  saveUserDetails.pincode= "";
-                  saveUserDetails.cityId= 1;
-                  saveUserDetails.langId=1;
-                  saveUserDetails.delStatus= 0;
-                  saveUserDetails.latitude= '${addressMain.latitude}';
-                  saveUserDetails.longitude= '${addressMain.longitude}';
-                  saveUserDetails.exInt1= 0;
-                  saveUserDetails.exInt2= 0;
-                  saveUserDetails.exInt3= 0;
-                  saveUserDetails.exVar1= "";
-                  saveUserDetails.exVar2= "";
-                  saveUserDetails.exVar3="";
-                  saveUserDetails.exFloat1=0;
-                  saveUserDetails.exFloat2= 0;
-                  saveUserDetails.exFloat3= 0;
-
-                  FocusScope.of(context).unfocus();
-                  addLocationViewModel.saveUserDetails(saveUserDetails).then((value) => {
-                  print(value),
-
-                  widget.allFrenchisiViewModel.getAddress(),
-                  Navigator.pop(context),
-
-                  }).catchError((onError){
-                   print('$onError');
-                  });
-                  }},
-
-                            child: Container(
-                              padding: EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: Theme.of(context).primaryColor,
-                                  style: BorderStyle.solid,
-                                  width: 1.0,
+                                  selected: addressMain.addressCaption.toLowerCase()=="home",
+                                  selectedColor: Colors.transparent,
+                                  // backgroundColor: Theme.of(context).primaryColor,
+                                  onSelected: (flag) {
+                                    if(flag){
+                                      setState(() {
+                              addressMain.addressCaption="HOME";
+                                      });}
+                                  },
                                 ),
-                                color: Theme.of(context).primaryColor,
-                                borderRadius: BorderRadius.circular(8.0),
 
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  SizedBox(height: 28,width: 4,),
-                                  Expanded(
-                                    child: Text( "Save",textAlign: TextAlign.center,
-                                        style:Theme.of(context).textTheme.button.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.white)),
-                                  )
-                                ],
+                                FilterChip(
+                                  shape: StadiumBorder(side: BorderSide(color: Colors.grey)),
+                                  label: Text("WORK",style: Theme.of(context).textTheme.caption),
+                                  labelStyle: TextStyle(letterSpacing: 2, color: Colors.black),
+                                  padding: EdgeInsets.only(left: 12,right: 12),
+                                  selected: addressMain.addressCaption.toLowerCase()=="work",
+                                  selectedColor: Colors.transparent,
+                                  // backgroundColor: Theme.of(context).primaryColor,
+                                  onSelected: (flag) {
+                                    setState(() {
+                                      if(flag)
+                                      {
+                                        addressMain.addressCaption="WORK";
+                                      }
+                                    });
+                                  },
+                                ),
+
+                                FilterChip(
+                                  // avatar: Icon(Icons.close,color: Colors.black),
+                                  shape: StadiumBorder(side: BorderSide(color: Colors.grey)),
+                                  label: Text("OTHER",style: Theme.of(context).textTheme.caption),
+                                  labelStyle: TextStyle(letterSpacing: 2, color: Colors.black),
+                                  padding: EdgeInsets.only(left: 12,right: 12),
+                                  selected:  addressMain.addressCaption=="OTHER",
+                                  selectedColor: Colors.transparent,
+                                  // backgroundColor: Theme.of(context).primaryColor,
+                                  onSelected: (flag) {
+                                    setState(() {
+                                      addressMain.addressCaption="OTHER";
+                                    });
+                                  },
+                                ),
+                              ],
+                            ),
+
+                            SizedBox(height:
+                            8,),
+
+
+                            Text(
+                              'landmark -${addressMain.landmark}'
+                            ),
+
+                            SizedBox(height:
+                            8,),
+
+                            TextFormField(
+                              controller:colpeteadrres,
+                              enabled: true,
+                              onChanged:(str) async{
+
+                              },
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+
+                                labelText: 'Complete Address',
+                                hintText: 'complete Address',
+                                filled: true,
+                                fillColor: Colors.white,
+
+                                isDense: true,
                               ),
                             ),
-                          ),
 
-                          SizedBox(height: 8,),
-                          isLoading?Container(
-                            child: Center(
-                              child: LinearProgressIndicator(
-                                valueColor:AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor) ,
+                            SizedBox(height:
+                            8,),
+
+                            TextFormField(
+                              enabled: true,
+                              controller: floor,
+                              onChanged:(str) async{
+                              },
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: 'Floor',
+                                hintText: 'Floor',
+                                filled: true,
+                                fillColor: Colors.white,
+
+                                isDense: true,
                               ),
                             ),
-                          ):Container(),
 
-                        ],
+                            SizedBox(height:
+                            8,),
+
+
+                            TextFormField(
+                              enabled: true,
+                              controller: howtoreach,
+                              onChanged:(str) async{
+
+                              },
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                hintText: 'How To Reach',
+                                labelText: 'How To Reach',
+                                filled: true,
+                                fillColor: Colors.white,
+
+                                isDense: true,
+                              ),
+                            ),
+
+                            SizedBox(height: 8,),
+
+                            TextFormField(
+                              controller:pinCodeController,
+                              enabled: true,
+                              keyboardType: TextInputType.number,
+                              maxLengthEnforced: true,
+                              maxLength: 6,
+                              onChanged:(str) async{
+
+                              },
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+
+                                labelText: 'Pincode',
+                                hintText: 'Pincode',
+                                filled: true,
+                                fillColor: Colors.white,
+
+                                isDense: true,
+                              ),
+                            ),
+
+                            SizedBox(height: 8,),
+
+                            InkWell(
+
+                              onTap: (){
+
+                                setState((){
+                                  isLoading=true;
+                                });
+
+
+                    if(!addLocationViewModel.isLoading){
+                    SaveAddress saveUserDetails=SaveAddress();
+
+                    saveUserDetails.custAddressId= addressMain.custAddressId;
+
+                    saveUserDetails.addressCaption= addressMain.addressCaption;
+                    saveUserDetails.custId= addressMain.custId;
+                    saveUserDetails.address= "${colpeteadrres.text} ~ ${floor.text} ~ ${howtoreach.text}";
+                    saveUserDetails.areaId= 0;
+                    saveUserDetails.area= null;
+                    saveUserDetails.landmark= "${addressMain.landmark}";
+                    saveUserDetails.pincode= "";
+                    saveUserDetails.cityId= 1;
+                    saveUserDetails.langId=1;
+                    saveUserDetails.delStatus= 0;
+                    saveUserDetails.latitude= '${addressMain.latitude}';
+                    saveUserDetails.longitude= '${addressMain.longitude}';
+                    saveUserDetails.exInt1= 0;
+                    saveUserDetails.exInt2= 0;
+                    saveUserDetails.exInt3= 0;
+                    saveUserDetails.exVar1= pinCodeController.text;
+                    saveUserDetails.exVar2= "";
+                    saveUserDetails.exVar3="";
+                    saveUserDetails.exFloat1=0;
+                    saveUserDetails.exFloat2= 0;
+                    saveUserDetails.exFloat3= 0;
+
+                    FocusScope.of(context).unfocus();
+                    addLocationViewModel.saveUserDetails(saveUserDetails).then((value) => {
+                    print(value),
+
+                    widget.allFrenchisiViewModel.getAddress(),
+                    Navigator.pop(context),
+
+                    }).catchError((onError){
+                     print('$onError');
+                    });
+                    }},
+
+                              child: Container(
+                                padding: EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Theme.of(context).primaryColor,
+                                    style: BorderStyle.solid,
+                                    width: 1.0,
+                                  ),
+                                  color: Theme.of(context).primaryColor,
+                                  borderRadius: BorderRadius.circular(8.0),
+
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    SizedBox(height: 28,width: 4,),
+                                    Expanded(
+                                      child: Text( "Save",textAlign: TextAlign.center,
+                                          style:Theme.of(context).textTheme.button.copyWith(fontWeight: FontWeight.normal).copyWith(color:Colors.white)),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+
+                            SizedBox(height: 8,),
+                            isLoading?Container(
+                              child: Center(
+                                child: LinearProgressIndicator(
+                                  valueColor:AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor) ,
+                                ),
+                              ),
+                            ):Container(),
+
+                          ],
+                        ),
                       ),
                     ),
                   ),

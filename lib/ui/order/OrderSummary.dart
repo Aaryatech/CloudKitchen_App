@@ -128,7 +128,7 @@ class _OrderSummaryState extends State<OrderSummary> {
         title: Text('Order Summary',style: Theme.of(context).textTheme.headline6.copyWith(color: Colors.white),),
         actions: [
           TextButton(
-            child: Text('Support', style: Theme.of(context)
+            child: Text('Add Grievance', style: Theme.of(context)
                 .textTheme
                 .bodyText1
                 .copyWith(color: Colors.white),),

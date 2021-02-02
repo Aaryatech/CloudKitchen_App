@@ -6,24 +6,20 @@ import 'package:cloud_kitchen/network/model/request/SaveCustomer.dart';
 import 'package:cloud_kitchen/network/model/response/SaveUser.dart';
 import 'package:dio/dio.dart';
 import 'package:cloud_kitchen/network/base/endPoint.dart' as endPoints;
-import 'package:flutter/material.dart';
 
-
-class SaveUserRepo{
+class SaveUserRepo {
   HttpClient httpClient;
 
-SaveUserRepo(){
-  httpClient=HttpClient();
-}
+  SaveUserRepo() {
+    httpClient = HttpClient();
+  }
 
- 
- Future<HttpResponse> saveUser(SaveCustomer saveUser) async {
-   HttpResponse httpResponse = HttpResponse();
+  Future<HttpResponse> saveUser(SaveCustomer saveUser) async {
+    HttpResponse httpResponse = HttpResponse();
 
-
-   await httpClient.post(endPoints.Auth().saveUser, body: {
+    await httpClient.post(endPoints.Auth().saveUser, body: {
       "custId": saveUser.custId,
-      "custName":'${saveUser.custName}',
+      "custName": '${saveUser.custName}',
       "phoneNumber": saveUser.phoneNumber,
       "whatsappNo": saveUser.whatsappNo,
       "emailId": saveUser.emailId,
@@ -34,7 +30,7 @@ SaveUserRepo(){
       "compId": saveUser.compId,
       "cityId": saveUser.cityId,
       "frId": saveUser.frId,
-     "langId":1,
+      "langId": 1,
       "isBuissHead": saveUser.isBuissHead,
       "companyName": saveUser.companyName,
       "gstNo": saveUser.gstNo,
@@ -62,14 +58,13 @@ SaveUserRepo(){
       "exFloat4": saveUser.exFloat4,
       "exFloat5": saveUser.exFloat5
     }).then((responce) {
-
       print(responce);
       if (responce.statusCode == 200) {
         httpResponse.status = responce.statusCode;
         httpResponse.message = 'Successful';
-        httpResponse.info=Info.fromJson(responce.data['info']);
+        httpResponse.info = Info.fromJson(responce.data['info']);
 
-        if(!httpResponse.info.error){
+        if (!httpResponse.info.error) {
           httpResponse.data = SaveUser.fromJson(responce.data['customer']);
         }
       } else {
@@ -87,21 +82,19 @@ SaveUserRepo(){
     return httpResponse;
   }
 
-
-
-  Future<HttpResponse> getUserDetails(String  mobile) async {
+  Future<HttpResponse> getUserDetails(String mobile) async {
     HttpResponse httpResponse = HttpResponse();
 
-
-    await httpClient.post('${endPoints.Auth().mobileVerification}?mobileNo=$mobile').then((responce) {
-
+    await httpClient
+        .post('${endPoints.Auth().mobileVerification}?mobileNo=$mobile')
+        .then((responce) {
       print(responce);
       if (responce.statusCode == 200) {
         httpResponse.status = responce.statusCode;
         httpResponse.message = 'Successful';
-        httpResponse.info=Info.fromJson(responce.data['info']);
+        httpResponse.info = Info.fromJson(responce.data['info']);
 
-        if(!httpResponse.info.error) {
+        if (!httpResponse.info.error) {
           try {
             httpResponse.data =
                 SaveUser.fromJson(responce.data['customerDisplay']);
@@ -125,25 +118,25 @@ SaveUserRepo(){
     return httpResponse;
   }
 
-
-  Future<HttpResponse> updateUserProfile(File image,int custId) async {
+  Future<HttpResponse> updateUserProfile(File image, int custId) async {
     HttpResponse httpResponse = HttpResponse();
     String fileName = image.path.split('/').last;
 
-    await httpClient.post('${endPoints.Auth().profileUpload}',body: FormData.fromMap(
-        {
-          "file": await MultipartFile.fromFile(image.path, filename: fileName),
-          "custId":custId
-        }
-    )).then((responce) {
-
+    await httpClient
+        .post('${endPoints.Auth().profileUpload}',
+            body: FormData.fromMap({
+              "file":
+                  await MultipartFile.fromFile(image.path, filename: fileName),
+              "custId": custId
+            }))
+        .then((responce) {
       print(responce);
       if (responce.statusCode == 200) {
         httpResponse.status = responce.statusCode;
         httpResponse.message = 'Successful';
-        httpResponse.info=Info.fromJson(responce.data['info']);
+        httpResponse.info = Info.fromJson(responce.data['info']);
 
-        if(!httpResponse.info.error) {
+        if (!httpResponse.info.error) {
           try {
             httpResponse.data =
                 SaveUser.fromJson(responce.data['customerDisplay']);
@@ -166,22 +159,22 @@ SaveUserRepo(){
 
     return httpResponse;
   }
-
 
   Future<HttpResponse> saveContactUs(SaveCustomer saveUser) async {
     HttpResponse httpResponse = HttpResponse();
 
-
-    String params='?name=${saveUser.custName}&number=${saveUser.phoneNumber}&email=${saveUser.emailId}&msg=${saveUser.msg}';
-    await httpClient.post(
-      '${endPoints.Auth().saveContactUs}$params',).then((responce) {
-
+    String params =
+        '?name=${saveUser.custName}&number=${saveUser.phoneNumber}&email=${saveUser.emailId}&msg=${saveUser.msg}';
+    await httpClient
+        .post(
+      '${endPoints.Auth().saveContactUs}$params',
+    )
+        .then((responce) {
       print(responce);
       if (responce.statusCode == 200) {
         httpResponse.status = responce.statusCode;
         httpResponse.message = responce.data['message'];
-        httpResponse.info= Info.fromJson(responce.data) ;
-
+        httpResponse.info = Info.fromJson(responce.data);
       } else {
         httpResponse.status = 500;
         httpResponse.message = 'Something went wrong';
@@ -196,9 +189,4 @@ SaveUserRepo(){
 
     return httpResponse;
   }
-
-
-
-
-
 }

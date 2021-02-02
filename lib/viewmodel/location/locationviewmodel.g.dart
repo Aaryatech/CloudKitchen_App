@@ -48,18 +48,11 @@ mixin _$AddLocationViewModel on _AddLocationViewModel, Store {
         .run(() => super.saveUserDetails(saveUserDetails));
   }
 
-  final _$_AddLocationViewModelActionController =
-      ActionController(name: '_AddLocationViewModel');
+  final _$getCustIdAsyncAction = AsyncAction('_AddLocationViewModel.getCustId');
 
   @override
-  int getCustId() {
-    final _$actionInfo = _$_AddLocationViewModelActionController.startAction(
-        name: '_AddLocationViewModel.getCustId');
-    try {
-      return super.getCustId();
-    } finally {
-      _$_AddLocationViewModelActionController.endAction(_$actionInfo);
-    }
+  Future<int> getCustId() {
+    return _$getCustIdAsyncAction.run(() => super.getCustId());
   }
 
   @override

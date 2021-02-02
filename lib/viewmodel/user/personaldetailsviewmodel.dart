@@ -6,90 +6,74 @@ import 'package:cloud_kitchen/network/repository/saveuserrepo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+// import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mobx/mobx.dart';
 import 'package:regexpattern/regexpattern.dart';
 part 'personaldetailsviewmodel.g.dart';
 
-class PersonalDetailsViewModel =_PersonalDetailsViewModel with _$PersonalDetailsViewModel;
+class PersonalDetailsViewModel = _PersonalDetailsViewModel
+    with _$PersonalDetailsViewModel;
 
-
-abstract class _PersonalDetailsViewModel with Store{
-
-
-  final PersonalDetailsErrorState personalDetailsErrorState=PersonalDetailsErrorState();
+abstract class _PersonalDetailsViewModel with Store {
+  final PersonalDetailsErrorState personalDetailsErrorState =
+      PersonalDetailsErrorState();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
 
   SaveUserRepo saveUserRepo;
   MyLocalPrefes myLocalPrefes;
 
-  _PersonalDetailsViewModel(){
-
-    myLocalPrefes=MyLocalPrefes();
-    saveUserRepo=SaveUserRepo();
-
+  _PersonalDetailsViewModel() {
+    myLocalPrefes = MyLocalPrefes();
+    saveUserRepo = SaveUserRepo();
   }
-
-
-
 
   @observable
   UserCredential result;
 
+  @observable
+  String username = "";
 
   @observable
-  String username="";
-
-
-  @observable
-  String email="";
+  String email = "";
 
   @observable
-  String custDob="";
-
+  String custDob = "";
 
   @observable
   SaveUser customerDetails;
 
   @observable
-  bool loginStatus=false;
-
-
-  @observable
-  String errorMessage='';
-
-
+  bool loginStatus = false;
 
   @observable
-  bool isLoadingForLogin=false;
-
+  String errorMessage = '';
 
   @observable
-  bool isLoading=false;
+  bool isLoadingForLogin = false;
+
+  @observable
+  bool isLoading = false;
 
   List<ReactionDisposer> _disposers;
 
   void setupValidations() {
-
     _disposers = [
       reaction((_) => username, validateUsername),
       reaction((_) => email, validatePassword)
     ];
   }
 
-
-
   @action
   setUserName(String usename) {
     username = usename;
   }
-  @action
-  setemial(String emial){
-    email=emial;
-  }
 
+  @action
+  setemial(String emial) {
+    email = emial;
+  }
 
   @action
   validateUsername(String text) {
@@ -100,113 +84,108 @@ abstract class _PersonalDetailsViewModel with Store{
 
   @action
   validatePassword(String text) {
-    return text.isEmpty||!text.isEmail()
+    return text.isEmpty || !text.isEmail()
         ? personalDetailsErrorState.email = 'Please enter valies Email'
         : personalDetailsErrorState.email = null;
   }
 
   @action
   Future signInWithGoogle() async {
-    isLoadingForLogin=true;
+    isLoadingForLogin = true;
     await Firebase.initializeApp();
 
     final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
-    final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount.authentication;
+    final GoogleSignInAuthentication googleSignInAuthentication =
+        await googleSignInAccount.authentication;
 
     final AuthCredential credential = GoogleAuthProvider.credential(
       accessToken: googleSignInAuthentication.accessToken,
       idToken: googleSignInAuthentication.idToken,
     );
 
-    result= await _auth.signInWithCredential(credential);
+    result = await _auth.signInWithCredential(credential);
 
-    username= result.user.displayName;
-    email= result.user.email;
+    username = result.user.displayName;
+    email = result.user.email;
 
-
-
-    isLoadingForLogin=false;
-
+    isLoadingForLogin = false;
   }
 
-
-  Future<UserCredential> signInWithFacebook() async {
+  Future signInWithFacebook() async {
     // Trigger the sign-in flow
-    isLoadingForLogin=true;
+    isLoadingForLogin = true;
 
-    final  loginresult = await FacebookAuth.instance.login(permissions: ['email','name']);
-
-    // Create a credential from the access token
-    final AuthCredential facebookAuthCredential =
-    FacebookAuthProvider.credential(loginresult.token);
-
-    // Once signed in, return the UserCredential
-    result  =  (await _auth.signInWithCredential(facebookAuthCredential));
-    username= result.user.displayName;
-    email= result.user.email;
-    isLoadingForLogin=true;
+    final loginresult =
+    //     await FacebookAuth.instance.login(permissions: ['email', 'name']);
+    //
+    // // Create a credential from the access token
+    // final AuthCredential facebookAuthCredential =
+    //     FacebookAuthProvider.credential(loginresult.token);
+    //
+    // // Once signed in, return the UserCredential
+    // result = (await _auth.signInWithCredential(facebookAuthCredential));
+    // username = result.user.displayName;
+    // email = result.user.email;
+    isLoadingForLogin = false;
   }
 
   Future<bool> saveUserDetails(SaveCustomer saveUserDetails) async {
-    isLoading=true;
-    HttpResponse httpResponse=  await saveUserRepo.saveUser(saveUserDetails);
-    if(httpResponse.status==200){
-
-      if(!httpResponse.info.error)
-      {
-        customerDetails=httpResponse.data;
+    isLoading = true;
+    HttpResponse httpResponse = await saveUserRepo.saveUser(saveUserDetails);
+    if (httpResponse.status == 200) {
+      if (!httpResponse.info.error) {
+        customerDetails = httpResponse.data;
         print(customerDetails.custName);
-        myLocalPrefes.setCustId(customerDetails.custId);
-        myLocalPrefes.setCustDetails(true);
-        myLocalPrefes.setCustName(customerDetails.custName);
+      await  myLocalPrefes.setCustId(customerDetails.custId);
+      await  myLocalPrefes.setCustDetails(true);
+      await  myLocalPrefes.setCustName(customerDetails.custName);
+      print('######${customerDetails.profilePic}');
+      await  myLocalPrefes.setProfUrl(customerDetails.profilePic);
         return true;
       }
-
-    }else if(httpResponse.status==500) {
-      errorMessage=httpResponse.message;
+    } else if (httpResponse.status == 500) {
+      errorMessage = httpResponse.message;
       return false;
     }
-    isLoading=false;
+    isLoading = false;
   }
+ Future saveLoginStatus()async{
+    await myLocalPrefes.setCustLogin(true);
+ }
 
-  void getUserDetailsIfExist(String mobile){
-
-    isLoading=true;
-    saveUserRepo.getUserDetails(mobile).then((value)
-    {
-      isLoading=false;
-      if(value.status==200){
-
-        if(!value.info.error) {
+  void getUserDetailsIfExist(String mobile) {
+    isLoading = true;
+    saveUserRepo.getUserDetails(mobile).then((value) {
+      isLoading = false;
+      if (value.status == 200) {
+        if (!value.info.error) {
           customerDetails = value.data;
+
+          print(value.data);
           username = customerDetails.custName;
           email = customerDetails.emailId;
-          custDob=customerDetails.custDob;
+          custDob = customerDetails.custDob;
+          myLocalPrefes.setProfUrl(customerDetails.profilePic);
         }
-      }else if(value.status==500) {
-        errorMessage=value.message;
+      } else if (value.status == 500) {
+        errorMessage = value.message;
       }
-
-    } ).catchError((onError){
-      isLoading=false;
-
+    }).catchError((onError) {
+      isLoading = false;
     });
-
   }
-
-
-
 }
 
-class PersonalDetailsErrorState = _PersonalDetailsErrorState with _$PersonalDetailsErrorState;
+class PersonalDetailsErrorState = _PersonalDetailsErrorState
+    with _$PersonalDetailsErrorState;
 
 abstract class _PersonalDetailsErrorState with Store {
   @observable
-  String username = null;
+  String username;
 
   @observable
-  String email = null;
+  String email;
 
   @computed
-  bool get hasErrors => username!= null || email != null;
+  bool get hasErrors => username != null || email != null;
 }

@@ -1,10 +1,10 @@
+import 'dart:io';
 
 import 'package:cloud_kitchen/local/prefs.dart';
 import 'package:cloud_kitchen/network/model/httpresponce.dart';
 import 'package:cloud_kitchen/network/model/request/PlaceOrder/OrderDetailList.dart';
 import 'package:cloud_kitchen/network/model/request/PlaceOrder/PlaceOrder.dart';
 import 'package:cloud_kitchen/network/model/request/purchase/cartitem.dart';
-import 'package:cloud_kitchen/network/model/response/AddressBookModel.dart';
 import 'package:cloud_kitchen/network/model/response/CustomerAddress.dart';
 import 'package:cloud_kitchen/network/model/response/DeliveryInstruction.dart';
 import 'package:cloud_kitchen/network/model/response/Franchise.dart';
@@ -25,19 +25,15 @@ import 'package:cloud_kitchen/network/repository/grievanceListRepo.dart';
 import 'package:cloud_kitchen/network/repository/notification/notificationrepo.dart';
 import 'package:cloud_kitchen/network/repository/order/orderrepo.dart';
 import 'package:cloud_kitchen/network/repository/orderHistoryRepo.dart';
-import 'package:flutter/material.dart';
+import 'package:cloud_kitchen/network/repository/saveuserrepo.dart';
 import 'package:in_app_review/in_app_review.dart';
-import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
 part 'frviewmodel.g.dart';
 
-
-class AllFrenchisiViewModel = _AllFrenchisiViewModel with _$AllFrenchisiViewModel;
-
+class AllFrenchisiViewModel = _AllFrenchisiViewModel
+    with _$AllFrenchisiViewModel;
 
 abstract class _AllFrenchisiViewModel with Store {
-
-
   OrderHistoryRepo orderHistoryRepo;
   GrievanceListRepo grievanceListRepo;
   AllFranchiseRepo allFranchiseRepo;
@@ -47,23 +43,20 @@ abstract class _AllFrenchisiViewModel with Store {
   NotificaionRepo notificaionRepo;
   AdditionalChargesAndOffersRepo additionalChargesAndOffersRepo;
 
-
   @observable
   bool isFirstTime = true;
-
 
   @observable
   List<CartItem> items = [];
 
   @observable
- int  selectedRadio = 1;
+  int selectedRadio = 1;
 
   @observable
- int selectedRadioTile = 1;
-
+  int selectedRadioTile = 1;
 
   @observable
- int selectedRadioTiles=2;
+  int selectedRadioTiles = 2;
 
   @observable
   String selectedAddress = '';
@@ -71,38 +64,28 @@ abstract class _AllFrenchisiViewModel with Store {
   @observable
   var valueC = false;
 
-
-
-
   @observable
   List<ItemData> filterList = [];
-
 
   @observable
   bool isSerching = false;
 
- @observable
+  @observable
   bool isUpdateAvailable = false;
-
 
   @observable
   bool isAddressLoading = false;
 
-
   @observable
   DeliveryInstruction deliveryInstruction = DeliveryInstruction(
       instruId: 1,
-      instructnCaption: 'Leave outside my door (contact-less delivery)'
-  );
-
+      instructnCaption: 'Leave outside my door (contact-less delivery)');
 
   @observable
   bool isPlaceingOrder = false;
 
-
   @observable
   bool iPaymetnLading = false;
-
 
   @observable
   bool isChagesdataAvailable = false;
@@ -110,18 +93,14 @@ abstract class _AllFrenchisiViewModel with Store {
   @observable
   CustomerAddressMain adressesMain;
 
-
   @observable
   int selectedOutlet = 1;
-
 
   @observable
   int selectedDelMode = 2;
 
-
   @observable
   bool cartValueMin = true;
-
 
   @observable
   int currentIndex = 0;
@@ -129,25 +108,20 @@ abstract class _AllFrenchisiViewModel with Store {
   @observable
   List<int> itemsIds = [];
 
-
   @observable
   bool isLoading = false;
 
-
-   @observable
+  @observable
   bool isLoadingForType = false;
 
   @observable
   bool isLoadingForHistory = true;
 
-
   @observable
   bool isNoDataAvailable = false;
 
-
   @observable
   bool isLoadingForFranchiseData = true;
-
 
   @observable
   bool isLoadingForOffers = true;
@@ -158,26 +132,20 @@ abstract class _AllFrenchisiViewModel with Store {
   @observable
   PlaceOrderModel placeOrderModel;
 
-
   @observable
   List<GrievanceType> grievanceTypeListMain;
 
+  @observable
+  OrderHistoryModel orderHistory;
 
   @observable
-  OrderHistoryModel  orderHistory;
-
-
-  @observable
-  Frainchise  selectedFranchise;
-
+  Frainchise selectedFranchise;
 
   @observable
   String loadingMessage = '';
 
-
   @observable
   int outletType = 1;
-
 
   @observable
   List<Frainchise> frainchise;
@@ -188,10 +156,8 @@ abstract class _AllFrenchisiViewModel with Store {
   @observable
   FranchiseId frainchiseHomeData;
 
-
   @observable
   DistanceMatrix distanceMatrix;
-
 
   @observable
   FranchiseMain frainchiseMain;
@@ -200,240 +166,233 @@ abstract class _AllFrenchisiViewModel with Store {
   String error;
 
   @observable
-  String custAdrress="";
-
+  String custAdrress = "";
 
   @observable
   String custName;
 
+
   @observable
-  String custAdrressCaption="";
+  String url;
+
+  @observable
+  String mobile;
+
+  @observable
+  String custAdrressCaption = "";
 
   @observable
   OffersMain offersMain;
 
-
   @observable
-  String searchString='';
-
+  String searchString = '';
 
   @observable
   List<String> selected;
 
-
   @action
-  Future searchList(String seacrh) {
-    searchString=seacrh;
+  searchList(String seacrh) {
+    searchString = seacrh;
     List<ItemData> tempItems = [];
-    if (seacrh
-        .trim()
-        .isEmpty || seacrh.trim() == "") {
+    if (seacrh.trim().isEmpty || seacrh.trim() == "") {
       isSerching = false;
     } else {
       if (!(isLoading && isLoadingForFranchiseData)) {
         frainchiseHomeData.itemData.forEach((element) {
-          if (element.itemName.toLowerCase().contains(seacrh.toLowerCase()) || element.subCatName.toLowerCase().contains(seacrh.toLowerCase()) || element.catName.toLowerCase().contains(seacrh.toLowerCase())) {
-            if(!tempItems.contains(element))
-              tempItems.add(element);
+          if (element.itemName.toLowerCase().contains(seacrh.toLowerCase()) ||
+              element.subCatName.toLowerCase().contains(seacrh.toLowerCase())) {
+            if (!tempItems.contains(element)) tempItems.add(element);
           }
 
-            element.tagList.forEach((ele) {
-              if(ele.tagName.toLowerCase().contains(seacrh.toLowerCase())) {
-               if(!tempItems.contains(element))
-                tempItems.add(element);
-              }
-            });
-
-        }
-        );
+          element.tagList.forEach((ele) {
+            if (ele.tagName.toLowerCase().contains(seacrh.toLowerCase())) {
+              if (!tempItems.contains(element)) tempItems.add(element);
+            }
+          });
+        });
         filterList = tempItems;
         isSerching = true;
       }
     }
   }
 
+  @observable
+  int localindex=0;
 
   @action
-  Future searchListByCategory(int index) {
+  searchListByCategory(int index) {
     List<ItemData> tempItems = [];
-    if (index==0) {
+    localindex=index;
+    if (index == 0) {
+
       isSerching = false;
     } else {
       if (!(isLoading && isLoadingForFranchiseData)) {
-        tempItems = frainchiseHomeData.subCategoryData[index-1].itemList;
+        tempItems = frainchiseHomeData.subCategoryData[index - 1].itemList;
       }
-        filterList = tempItems;
-        isSerching = true;
+      filterList = tempItems;
+      isSerching = true;
     }
   }
 
-
   @action
-  setDeliveryInstruction(DeliveryInstruction deliveryInstructiona){
-    deliveryInstruction=deliveryInstructiona;
+  setDeliveryInstruction(DeliveryInstruction deliveryInstructiona) {
+    deliveryInstruction = deliveryInstructiona;
   }
 
   OrderRepo orderRepo;
-
+  SaveUserRepo saveUserRepo;
   _AllFrenchisiViewModel() {
     allFranchiseRepo = AllFranchiseRepo();
     distancematrixRepo = DistancematrixRepo();
     orderRepo = OrderRepo();
+    saveUserRepo = SaveUserRepo();
     myLocalPrefes = MyLocalPrefes();
-    orderHistoryRepo=OrderHistoryRepo();
+    orderHistoryRepo = OrderHistoryRepo();
     customerAddressRepo = CustomerAddressRepo();
     additionalChargesAndOffersRepo = AdditionalChargesAndOffersRepo();
-    notificaionRepo=NotificaionRepo();
-    grievanceListRepo=GrievanceListRepo();
+    notificaionRepo = NotificaionRepo();
+    grievanceListRepo = GrievanceListRepo();
   }
 
-
-
   @action
-  void setPage(int){
-    currentIndex=int;
+  void setPage(int) {
+    currentIndex = int;
   }
 
-
   @action
-  Future getAllNotifications()async{
-    isLoading=true;
-    HttpResponse httpResponse= await notificaionRepo.getNotificaions();
+  Future getAllNotifications() async {
+    isLoading = true;
+    HttpResponse httpResponse = await notificaionRepo.getNotificaions();
 
-    if(httpResponse.status==200){
-      notifications=httpResponse.data;
-      isLoading=false;
-    }else {
+    if (httpResponse.status == 200) {
+      notifications = httpResponse.data;
+      isLoading = false;
+    } else {
       error = httpResponse.message;
       isLoading = false;
     }
   }
 
 
+
+
   @action
-  Future setGstNo(String gst){
-    return myLocalPrefes.setGSTNo(gst);
+  String getProUrl()  {
+    url=myLocalPrefes.getProUrl();
+    return  url;
   }
 
   @action
-  String gstNo(){
-    return myLocalPrefes.getGSTNo();
+  Future<bool> setProUrl(String urls) async{
+    await myLocalPrefes.setProfUrl(urls);
+    url=urls;
+    return true;
   }
+
+
+
+
 
   @action
-  String getProUrl(){
-    return myLocalPrefes.getProUrl();
+  Future<bool> saveUserProfileImage(File image) async {
+    isLoading = true;
+    HttpResponse httpResponse =
+    await saveUserRepo.updateUserProfile(image,myLocalPrefes.getCustId());
+    if (httpResponse.status == 200) {
+      if (!httpResponse.info.error) {
+        isLoading = false;
+        await setProUrl(httpResponse.data['fileName']);
+        return true;
+      }
+    } else if (httpResponse.status == 500) {
+
+      isLoading = false;
+
+      return false;
+    }
+    isLoading = false;
   }
 
-  @action
-  Future setProUrl(String url){
-    return myLocalPrefes.setProfUrl(url);
-  }
+  bool addAllItemsInCart(OrderHistoryItem orderHistoryItem) {
+    List<CartItem> tempItems = [];
+    List<int> tempIds = [];
 
-  Future<bool> addAllItemsInCart(OrderHistoryItem orderHistoryItem){
-    final future =Future((){
-
-      List<CartItem> tempItems=[];
-      List<int> tempIds=[];
-
-      orderHistoryItem.detailList.forEach((element) {
-
-        tempIds.add(element.orderId);
-        tempItems.add(
-            CartItem(
-                element.itemId,
-                element.exFloat2,
-                element.exInt1,
-                element.itemName,
-                element.mrp,
-                "${element.exVar1}"));
-
-      });
-
-      items=tempItems;
-      itemsIds=tempIds;
-      return true;
+    orderHistoryItem.detailList.forEach((element) {
+      tempIds.add(element.orderId);
+      tempItems.add(CartItem(element.itemId, element.exFloat2, element.exInt1,
+          element.itemName, element.mrp, "${element.exVar1}"));
     });
+
+    items = tempItems;
+    itemsIds = tempIds;
+    return true;
   }
 
   Future<String> fetchUserOrder() {
     Future.delayed(Duration(milliseconds: 1000), () {
-
       getCustAddress();
       getCustAddressCaption();
       getSelectedOutlet();
       getSelectedDelMode();
       getCustName();
       getCustMobile();
+      getProUrl();
       // outletType=myLocalPrefes.getSelectedOutletType();
 
       return 'Large Latte';
+    });
+  }
+
+  @action
+  setCartValue(bool flag) {
+    cartValueMin = flag;
+  }
+
+  @action
+  getSelectedOutlet() async {
+    outletType = await myLocalPrefes.getSelectedOutletType();
+  }
+
+  @action
+  getSelectedDelMode() async {
+    selectedDelMode = await myLocalPrefes.getDefType();
+  }
+
+  @action
+  setDelMode(int mode) async {
+    selectedDelMode = mode;
+    await myLocalPrefes.setDefType(mode);
+  }
+
+  @action
+  inAppReview() {
+    if (isUpdateAvailable) {
+      Future.delayed(Duration(seconds: 3)).then((value) {
+        InAppReview.instance.requestReview();
+      });
     }
-    );
   }
-
-
-  @action setCartValue(bool flag){
-    cartValueMin=flag;
-  }
-
-
-  @action getSelectedOutlet(){
-    outletType=myLocalPrefes.getSelectedOutletType();
-  }
-
-
-  @action getSelectedDelMode(){
-    selectedDelMode=myLocalPrefes.getDefType();
-  }
-
-  @action setDelMode(int mode){
-    selectedDelMode=mode;
-    myLocalPrefes.setDefType(mode);
-  }
-
-
-
-  @action inAppReview(){
-    if(isUpdateAvailable)
-      {
-
-        Future.delayed(Duration(seconds: 3)).then((value) {
-          InAppReview.instance.requestReview();
-        });
-
-      }
-
-
-  }
-
-
-
-
-
 
   @action
- Future setOutletType(int type)async{
+  Future setOutletType(int type) async {
     await myLocalPrefes.setSelectedOutletType(type);
-    outletType=type;
+    outletType = type;
   }
 
-
-
   @action
-  setDefAddress(String adress,String caption){
-    custAdrress=adress;
-    custAdrressCaption=caption;
-    myLocalPrefes.setSelectedAddress(adress);
-    myLocalPrefes.setSelectedAddressCaption(caption);
+  setDefAddress(String adress, String caption) async {
+    custAdrress = adress;
+    custAdrressCaption = caption;
+    await myLocalPrefes.setSelectedAddress(adress);
+    await myLocalPrefes.setSelectedAddressCaption(caption);
   }
 
-
   @action
-  changeDefAddress(CustomerAddress customerAddress) async{
-    custAdrress=customerAddress.landmark;
-    custAdrressCaption=customerAddress.addressCaption;
-    frainchiseMain=null;
+  changeDefAddress(CustomerAddress customerAddress) async {
+    custAdrress = customerAddress.landmark;
+    custAdrressCaption = customerAddress.addressCaption;
+    frainchiseMain = null;
     await myLocalPrefes.setdefFranchiseDairy(0);
     await myLocalPrefes.setSelectedAddress(custAdrress);
     await myLocalPrefes.setSelectedAddressCaption(custAdrressCaption);
@@ -445,46 +404,50 @@ abstract class _AllFrenchisiViewModel with Store {
     getAllFranchise();
   }
 
-
-
   DateTime currentDateTime = DateTime.now();
 
   @action
-  Future<HttpResponse> placeOrder(double itemTotal,int payMode,int offerId,double deliveryCharges,double descAmt,String dateTime,String gst,double wallet)async{
-    int id=0;
-    if(myLocalPrefes.getSelectedOutletType()==1){
-      id=myLocalPrefes.getdefFranchiseDairy();
-    }else{
-      id=myLocalPrefes.getDefFranchiseRest();
+  Future<HttpResponse> placeOrder(
+      double itemTotal,
+      int payMode,
+      int offerId,
+      double deliveryCharges,
+      double descAmt,
+      String dateTime,
+      String gst,
+      double wallet) async {
+    int id = 0;
+    if (await myLocalPrefes.getSelectedOutletType() == 1) {
+      id = await myLocalPrefes.getdefFranchiseDairy();
+    } else {
+      id = await myLocalPrefes.getDefFranchiseRest();
     }
 
-    print('${dateTime.trim().split(' ')[1].substring(0,7)} -- ${dateTime.trim().split(' ')[0]}');
+    print(
+        '${dateTime.trim().split(' ')[1].substring(0, 7)} -- ${dateTime.trim().split(' ')[0]}');
 
-
-    isPlaceingOrder=true;
-  cartValueMin=true;
-    List<OrderDetailList> orderDetailedList=[];
+    isPlaceingOrder = true;
+    cartValueMin = true;
+    List<OrderDetailList> orderDetailedList = [];
     items.forEach((element) {
       orderDetailedList.add(OrderDetailList(
           itemId: element.itemId,
           qty: element.qty,
-          selectedQty: element.selectedQty
-      ));
+          selectedQty: element.selectedQty));
     });
 
-
-    PlaceOrder placeOrder=  PlaceOrder(
+    PlaceOrder placeOrder = PlaceOrder(
       orderDetailParamList: orderDetailedList,
-      addressId: myLocalPrefes.getAddressId(), //,
+      addressId: await myLocalPrefes.getAddressId(), //,
       applicableFor: 2,
-      custId: myLocalPrefes.getCustId(),
+      custId: await myLocalPrefes.getCustId(),
       deliveryCharges: deliveryCharges,
-      discAmt: descAmt??0,
+      discAmt: descAmt ?? 0,
       gst: gst,
       itemTotal: itemTotal,
       deliveryDate: '${dateTime.trim().split(' ')[0]}',
-      deliveryTime: '${dateTime.trim().split(' ')[1].substring(0,7)}',
-      frId:id,
+      deliveryTime: '${dateTime.trim().split(' ')[1].substring(0, 7)}',
+      frId: id,
       wallet: wallet.toInt(),
       deliveryInstructionId: deliveryInstruction.instruId,
       deliveryInstructionText: deliveryInstruction.instructnCaption,
@@ -492,34 +455,35 @@ abstract class _AllFrenchisiViewModel with Store {
       km: 5,
       offerId: offerId,
       orderPlatform: 2,
-      orderStatus:1,
-      payMode: payMode,);
+      orderStatus: 1,
+      payMode: payMode,
+    );
 
     HttpResponse httpResponse = await orderRepo.placeOredr(placeOrder);
-    isPlaceingOrder=false;
-    if(httpResponse.status==200){
+    isPlaceingOrder = false;
+    if (httpResponse.status == 200) {
       placeOrderModel = httpResponse.data;
-      initiatePayment=true;
-      if(payMode!=2){
+      initiatePayment = true;
+      if (payMode != 2) {
         inAppReview();
       }
-
+      getOffersandAdditionalCharge();
     }
     return httpResponse;
   }
-
 
   @action
   addCartItem(CartItem item) {
     // getOffersandAdditionalCharge();
 
-    bool itemAvailbele=false;
+    bool itemAvailbele = false;
     items.forEach((element) {
-      if (element.itemId == item.itemId && element.selectedQty==item.selectedQty) {
+      if (element.itemId == item.itemId &&
+          element.selectedQty == item.selectedQty) {
         itemAvailbele = true;
       }
     });
-    if(!itemAvailbele) {
+    if (!itemAvailbele) {
       List<int> tempitemsids = itemsIds;
       List<CartItem> tempitems = items;
       tempitemsids.add(item.itemId);
@@ -527,109 +491,102 @@ abstract class _AllFrenchisiViewModel with Store {
       itemsIds = tempitemsids;
       items = tempitems;
     }
+
+    if(offersMain==null){
+      getOffersandAdditionalCharge();
+    }
+
   }
 
   @action
-  emtyCart(){
-    itemsIds=[];
-    items=[];
+  emtyCart() {
+    itemsIds = [];
+    items = [];
   }
 
   @action
-  String getQuantityData(double decimal,int itemIdcurrent){
-    int qty=1;
+  String getQuantityData(double decimal, int itemIdcurrent) {
+    int qty = 1;
     items.forEach((element) {
-      if(element.itemId==itemIdcurrent && element.selectedQty==decimal){
-        qty= element.qty;
+      if (element.itemId == itemIdcurrent && element.selectedQty == decimal) {
+        qty = element.qty;
       }
     });
     return '$qty';
   }
 
-
-
   @action
-  String getQuantity(int itemIdcurrent){
-    String qty='1';
+  String getQuantity(int itemIdcurrent) {
+    String qty = '1';
     items.forEach((element) {
-      if(element.itemId==itemIdcurrent){
-        qty= '${element.qty}';
+      if (element.itemId == itemIdcurrent) {
+        qty = '${element.qty}';
       }
     });
 
     return qty;
   }
 
-
   @action
-  removeItem(CartItem item){
+  removeItem(CartItem item) {
     // getOffersandAdditionalCharge();
-    List<CartItem> tempList=items;
-    List<int> tampitemsIds=itemsIds;
+    List<CartItem> tempList = items;
+    List<int> tampitemsIds = itemsIds;
     tempList.remove(item);
     tampitemsIds.remove(item.itemId);
-    items=tempList;
-    tampitemsIds=                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    itemsIds;
+    items = tempList;
+    tampitemsIds = itemsIds;
   }
 
-
   @action
-  logOut(){
-    myLocalPrefes.setCustLogin(false);
-    myLocalPrefes.setFrSelected(false);
-    myLocalPrefes.setCustLocationCapture(false);
-    myLocalPrefes.setCustDetails(false);
+  logOut() async {
+    await myLocalPrefes.setCustLogin(false);
+    await myLocalPrefes.setFrSelected(false);
+    await myLocalPrefes.setCustLocationCapture(false);
+    await myLocalPrefes.setCustDetails(false);
   }
 
-
   @action
-  String increseQuentity(int itemIdcurrent){
+  increseQuentity(int itemIdcurrent) {
     // getOffersandAdditionalCharge();
 
     items.forEach((element) {
-      if(element.itemId==itemIdcurrent){
+      if (element.itemId == itemIdcurrent) {
         element.qty++;
-
       }
     });
   }
 
-
   @action
-  String increseQuentityForDecimal(int itemIdcurrent,double decimal){
+  increseQuentityForDecimal(int itemIdcurrent, double decimal) {
     // getOffersandAdditionalCharge();
-    bool itemNotFound=false;
+    bool itemNotFound = false;
     items.forEach((element) {
-      if(element.itemId==itemIdcurrent && element.selectedQty==decimal){
+      if (element.itemId == itemIdcurrent && element.selectedQty == decimal) {
         element.qty++;
-        itemNotFound=true;
+        itemNotFound = true;
       }
     });
 
-    if(!itemNotFound){
-
+    if (!itemNotFound) {
       frainchiseHomeData.itemData.forEach((element) {
-        if(element.itemId==itemIdcurrent)
-        {
-          addCartItem(CartItem(itemIdcurrent, decimal, 2, element.itemName, element.spRateAmt, element.itemUom));
+        if (element.itemId == itemIdcurrent) {
+          addCartItem(CartItem(itemIdcurrent, decimal, 2, element.itemName,
+              element.spRateAmt, element.itemUom));
         }
-
       });
-
-
     }
-
   }
 
   @action
-  String decreaseQuentityForDecimal(int itemIdcurrent,double decimal){
+  decreaseQuentityForDecimal(int itemIdcurrent, double decimal) {
     // getOffersandAdditionalCharge();
 
     items.forEach((element) {
-      if(element.itemId==itemIdcurrent && element.selectedQty==decimal){
-        if(element.qty>1) {
+      if (element.itemId == itemIdcurrent && element.selectedQty == decimal) {
+        if (element.qty > 1) {
           element.qty--;
-        }else{
+        } else {
           removeItem(element);
         }
       }
@@ -637,194 +594,185 @@ abstract class _AllFrenchisiViewModel with Store {
   }
 
   @action
-  String decreseQuentity(int itemIdcurrent){
+  decreseQuentity(int itemIdcurrent) {
     items.forEach((element) {
-      if(element.itemId==itemIdcurrent){
-        if(element.qty>1)
-        {
+      if (element.itemId == itemIdcurrent) {
+        if (element.qty > 1) {
           element.qty--;
         }
-
       }
     });
     // getOffersandAdditionalCharge();
   }
 
-
   @action
-  Future getAddress()async{
-    await fetchUserOrder();
-    isAddressLoading=true;
-    HttpResponse httpResponse= await customerAddressRepo.getCustomerAddresss(myLocalPrefes.getCustId());
-    isAddressLoading=false;
-    if(httpResponse.status==200){
-      adressesMain=httpResponse.data;
-    }else {
+  Future getAddress() async {
+    isAddressLoading = true;
+   await fetchUserOrder();
+    HttpResponse httpResponse = await customerAddressRepo
+        .getCustomerAddresss(await myLocalPrefes.getCustId());
+    isAddressLoading = false;
+    if (httpResponse.status == 200) {
+      adressesMain = httpResponse.data;
+    } else {
       error = httpResponse.message;
       isAddressLoading = false;
     }
   }
 
   @action
-  Future deleteAddressId(int id)async{
-    await fetchUserOrder();
-    isAddressLoading=true;
-    HttpResponse httpResponse= await customerAddressRepo.deleteCustomerAddresss(id);
-    isAddressLoading=false;
-    if(httpResponse.status==200){
+  Future deleteAddressId(int id) async {
+    isAddressLoading = true;
+    HttpResponse httpResponse =
+        await customerAddressRepo.deleteCustomerAddresss(id);
+    isAddressLoading = false;
+    if (httpResponse.status == 200) {
       // adressesMain=httpResponse.data;
-    }else {
+    } else {
       error = httpResponse.message;
       // isAddressLoading = false;
     }
   }
 
-
   @action
-  Future<HttpResponse> postPaymentService(String orderId,String status,String paid,dynamic txStatus)async{
-    iPaymetnLading=true;
-    HttpResponse httpResponse= await orderRepo.updatePaymentStatus(orderId,status,paid,txStatus);
-    iPaymetnLading=false;
-    if(httpResponse.status==200){
+  Future<HttpResponse> postPaymentService(
+      String orderId, String status, String paid, dynamic txStatus) async {
+    iPaymetnLading = true;
+    HttpResponse httpResponse =
+        await orderRepo.updatePaymentStatus(orderId, status, paid, txStatus);
+    iPaymetnLading = false;
+    if (httpResponse.status == 200) {
       return httpResponse;
     }
+    return httpResponse;
   }
-
 
   @action
-  Future<HttpResponse> productRatings(String itemId,double value,String review)async{
-    HttpResponse httpResponse= await orderRepo.productReview('${myLocalPrefes.getCustId()}',itemId,value,review);
-    if(httpResponse.status==200){
+  Future<HttpResponse> productRatings(
+      String itemId, double value, String review) async {
+    HttpResponse httpResponse = await orderRepo.productReview(
+        '${await myLocalPrefes.getCustId()}', itemId, value, review);
+    if (httpResponse.status == 200) {
       return httpResponse;
     }
+    return httpResponse;
   }
-
 
   @action
-  Future<HttpResponse> cancelOrder(String orderId)async{
-
-    HttpResponse httpResponse= await orderRepo.cancelorder(orderId,'${myLocalPrefes.getCustId()}');
-    if(httpResponse.status==200){
+  Future<HttpResponse> cancelOrder(String orderId) async {
+    HttpResponse httpResponse =
+        await orderRepo.cancelorder(orderId, '${myLocalPrefes.getCustId()}');
+    if (httpResponse.status == 200) {
       return httpResponse;
     }
+    return httpResponse;
   }
 
+  @action
+  Future<String> getCustAddress() async {
+    custAdrress = await myLocalPrefes.getSelectedAddress();
 
-
-  @action String getCustAddress(){
-
-    custAdrress=myLocalPrefes.getSelectedAddress();
-
-    return custAdrress??"";
+    return custAdrress ?? "";
   }
 
-
-  @action String getCustMobile(){
-    return myLocalPrefes.getCustPhone();
+  @action
+  String getCustMobile()  {
+    mobile =  myLocalPrefes.getCustPhone();
+  return mobile;
   }
 
-  @action String getCustName(){
-    custName=myLocalPrefes.getCustName();
+  @action
+  String getCustName()  {
+    custName =  myLocalPrefes.getCustName();
 
     return custName;
   }
 
-  @action setCustName(String name)async{
+  @action
+  setCustName(String name) async {
     await myLocalPrefes.setCustName(name);
 
-    custName=name;
-
+    custName = name;
   }
 
-
-  @action setCustNumber(String name)async{
+  @action
+  setCustNumber(String name) async {
     await myLocalPrefes.setCustPhone(name);
   }
 
-
-  @action String getCustAddressCaption(){
-    custAdrressCaption=myLocalPrefes.getSelectedAddressCaption();
-
-    return custAdrressCaption??"";
+  @action
+  String getCustAddressCaption()  {
+    custAdrressCaption =  myLocalPrefes.getSelectedAddressCaption();
+    return custAdrressCaption ?? "";
   }
-
-
-  @action String getFrAddress(){
-    return myLocalPrefes.getdefFranchiseAddrress();
-  }
-
-  @action String getFrName(){
-    return myLocalPrefes.getdefFranchiseName();
-  }
-
-
 
   @action
-  Future getOrderHistory()async{
+String getFrAddress()  {
+    return  myLocalPrefes.getdefFranchiseAddrress();
+  }
+
+  @action
+  String getFrName()  {
+    return  myLocalPrefes.getdefFranchiseName();
+  }
+
+  @action
+  Future getOrderHistory() async {
     await fetchUserOrder();
-    if(myLocalPrefes.getCustId()!=0) {
+    if (await myLocalPrefes.getCustId() != 0) {
       isLoadingForHistory = true;
       loadingMessage = 'Fetching nearest franchise';
-      HttpResponse httpResponse = await orderHistoryRepo.orderHistory('${myLocalPrefes.getCustId()}');
+      HttpResponse httpResponse = await orderHistoryRepo
+          .orderHistory('${await myLocalPrefes.getCustId()}');
 
       print(httpResponse.data);
       if (httpResponse.status == 200) {
-
-
         print('******${httpResponse.message}');
         isLoadingForHistory = false;
-        orderHistory= httpResponse.data;
-
+        orderHistory = httpResponse.data;
       } else {
         print('******${httpResponse.message}');
 
         error = httpResponse.message;
-        print('**error****${error}');
+        print('**error****$error');
         isLoadingForHistory = false;
       }
-
     }
-
   }
 
-
   @action
-  Future<HttpResponse> addGrievance(int orderId,int typeId,int id)async{
-    await fetchUserOrder();
-
-      isLoadingForHistory = true;
-      HttpResponse httpResponse = await grievanceListRepo.addGreivance(orderId,typeId,"",myLocalPrefes.getCustId(),id);
-      if (httpResponse.status == 200) {
-        isLoadingForHistory = false;
-      } else {
-        error = httpResponse.message;
-        isLoadingForHistory = false;
-      }
-      return httpResponse;
-
+  Future<HttpResponse> addGrievance(int orderId, int typeId, int id) async {
+    isLoadingForHistory = true;
+    HttpResponse httpResponse = await grievanceListRepo.addGreivance(
+        orderId, typeId, "", await myLocalPrefes.getCustId(), id);
+    if (httpResponse.status == 200) {
+      isLoadingForHistory = false;
+    } else {
+      error = httpResponse.message;
+      isLoadingForHistory = false;
+    }
+    return httpResponse;
   }
 
-
   @action
-  Future getGetGrievanceTypes()async{
-    // await fetchUserOrder();
-    isLoadingForType=true;
-      HttpResponse httpResponse = await grievanceListRepo.getGreivanceTypes();
-      if (httpResponse.status == 200) {
-
-    grievanceTypeListMain = httpResponse.data;
-        isLoadingForType=false;
-      } else {
-        error = httpResponse.message;
-        isLoadingForType=false;
-      }
-      return httpResponse;
+  Future getGetGrievanceTypes() async {
+     await fetchUserOrder();
+    isLoadingForType = true;
+    HttpResponse httpResponse = await grievanceListRepo.getGreivanceTypes();
+    if (httpResponse.status == 200) {
+      grievanceTypeListMain = httpResponse.data;
+      isLoadingForType = false;
+    } else {
+      error = httpResponse.message;
+      isLoadingForType = false;
     }
+    return httpResponse;
+  }
 
   @action
-  Future getAllFranchise()async{
+  Future getAllFranchise() async {
     await fetchUserOrder();
-    if(myLocalPrefes.getdefFranchiseDairy()==0) {
+    if (await myLocalPrefes.getdefFranchiseDairy() == 0) {
       isLoading = true;
       loadingMessage = 'Fetching nearest franchise';
       HttpResponse httpResponse = await allFranchiseRepo.allFranchise();
@@ -846,29 +794,22 @@ abstract class _AllFrenchisiViewModel with Store {
         error = httpResponse.message;
         isLoading = false;
       }
-    }else{
+    } else {
       getNearestFranchiseById();
     }
-
   }
 
-
-
   @action
-  Future sortFranchiseByKm()async{
+  Future sortFranchiseByKm() async {
+    StringBuffer buffer = StringBuffer();
 
-    List<String> locations=[];
-    StringBuffer buffer=StringBuffer();
-
-    bool bar=false;
+    bool bar = false;
     frainchise.forEach((element) {
-      if (bar)
-      {
+      if (bar) {
         buffer.write('|${element.fromLatitude},${element.fromLongitude}');
-      } else
-      {
+      } else {
         buffer.write('${element.fromLatitude},${element.fromLongitude}');
-        bar=true;
+        bar = true;
       }
       // ('${element.fromLatitude},${element.fromLongitude}|');
     });
@@ -876,299 +817,356 @@ abstract class _AllFrenchisiViewModel with Store {
     // myLocalPrefes.setFrSelected(true);
 
     isLoading = true;
-    loadingMessage='Fetching nearest franchise';
+    loadingMessage = 'Fetching nearest franchise';
 
-    HttpResponse httpResponse= await  distancematrixRepo.DistanceMatrixApi('${myLocalPrefes.getUserLatitude()} ,${myLocalPrefes.getUserLongitude()}', buffer.toString());
-    distanceMatrix=httpResponse.data;
+    HttpResponse httpResponse = await distancematrixRepo.DistanceMatrixApi(
+        '${await myLocalPrefes.getUserLatitude()} ,${await myLocalPrefes.getUserLongitude()}',
+        buffer.toString());
+    distanceMatrix = httpResponse.data;
     isLoading = false;
     lookforNearestFranchise();
-
-
   }
 
-  int selectedDistanceRest=9999999,selectedDistanceDairy=9999999;
-  int selectedFranchiseId=0;
+  int selectedDistanceRest = 9999999, selectedDistanceDairy = 9999999;
+  int selectedFranchiseId = 0;
 
   @action
-  lookforNearestFranchise() async{
-
-    selectedDistanceRest=999999;
-    selectedDistanceDairy=9999999;
+  lookforNearestFranchise() async {
+    selectedDistanceRest = 999999;
+    selectedDistanceDairy = 9999999;
 
     isLoading = true;
-    isNoDataAvailable=false;
-    bool isSelected=false;
-    if(distanceMatrix.status=="OK"){
-      for(int index=0;index < distanceMatrix.elements.length;index++) {
+    isNoDataAvailable = false;
+    bool isSelected = false;
+    if (distanceMatrix.status == "OK") {
+      for (int index = 0; index < distanceMatrix.elements.length; index++) {
+        if (distanceMatrix.elements[index].status == "OK") {
+          if (frainchise[index].frType == 1) {
+            if (selectedDistanceDairy >
+                distanceMatrix.elements[index].distance.value) {
+              selectedDistanceDairy =
+                  distanceMatrix.elements[index].distance.value;
 
-
-        if(distanceMatrix.elements[index].status=="OK"){
-          if(frainchise[index].frType==1){
-
-            if(selectedDistanceDairy>distanceMatrix.elements[index].distance.value) {
-              selectedDistanceDairy = distanceMatrix.elements[index].distance.value;
-
-              if (((frainchise[index].kmAreaCovered)*1000 )>=
+              if (((frainchise[index].kmAreaCovered) * 1000) >=
                   distanceMatrix.elements[index].distance.value) {
                 selectedFranchiseId = frainchise[index].frId;
-                isSelected=true;
+                isSelected = true;
                 print('selected dairy $selectedDistanceDairy');
-                await  myLocalPrefes.setdefFranchiseDairy(frainchise[index].frId);
-                await  myLocalPrefes.setdefFranchiseAddrress(frainchise[index].frAddress);
-                await    myLocalPrefes.setdefFranchiseName(frainchise[index].frName);
+                await myLocalPrefes
+                    .setdefFranchiseDairy(frainchise[index].frId);
+                await myLocalPrefes
+                    .setdefFranchiseAddrress(frainchise[index].frAddress);
+                await myLocalPrefes
+                    .setdefFranchiseName(frainchise[index].frName);
               }
             }
-
           }
-          if(frainchise[index].frType==2) {
+          if (frainchise[index].frType == 2) {
             if (selectedDistanceRest >
                 distanceMatrix.elements[index].distance.value) {
-              if (((frainchise[index].kmAreaCovered)*1000 ) >=
+              if (((frainchise[index].kmAreaCovered) * 1000) >=
                   distanceMatrix.elements[index].distance.value) {
-                isSelected=true;
+                isSelected = true;
 
                 selectedDistanceRest =
                     distanceMatrix.elements[index].distance.value;
                 selectedFranchiseId = frainchise[index].frId;
                 print('selected restaurent $selectedDistanceRest');
+                print('selected restaurent distance ${distanceMatrix.elements[index].distance.value/1000}');
+                await myLocalPrefes.setRestDist('${distanceMatrix.elements[index].distance.value/1000}');
+                await myLocalPrefes.setDairyDist('${distanceMatrix.elements[index].distance.value/1000}');
                 await myLocalPrefes.setDefFranchiseRest(frainchise[index].frId);
-                await myLocalPrefes.setdefFranchiseAddrress(frainchise[index].frAddress);
-                await myLocalPrefes.setdefFranchiseName(frainchise[index].frName);
+                await myLocalPrefes
+                    .setdefFranchiseAddrress(frainchise[index].frAddress);
+                await myLocalPrefes
+                    .setdefFranchiseName(frainchise[index].frName);
               }
             }
           }
-          if(frainchise[index].frType==3) {
+          if (frainchise[index].frType == 3) {
             if (selectedDistanceRest >
                 distanceMatrix.elements[index].distance.value) {
-              if (((frainchise[index].kmAreaCovered)*1000) >=
+              if (((frainchise[index].kmAreaCovered) * 1000) >=
                   distanceMatrix.elements[index].distance.value) {
-
-                isSelected=true;
+                isSelected = true;
                 selectedDistanceRest =
                     distanceMatrix.elements[index].distance.value;
                 selectedFranchiseId = frainchise[index].frId;
                 print('selected restaurent $selectedDistanceRest');
-                await  myLocalPrefes.setDefFranchiseRest(frainchise[index].frId);
-                await   myLocalPrefes.setdefFranchiseAddrress(frainchise[index].frAddress);
-                await myLocalPrefes.setdefFranchiseName(frainchise[index].frName);
+                print('selected restaurent distance ${distanceMatrix.elements[index].distance.value/1000}');
+                await myLocalPrefes.setRestDist('${distanceMatrix.elements[index].distance.value/1000}');
+
+                await myLocalPrefes.setDefFranchiseRest(frainchise[index].frId);
+                await myLocalPrefes
+                    .setdefFranchiseAddrress(frainchise[index].frAddress);
+                await myLocalPrefes
+                    .setdefFranchiseName(frainchise[index].frName);
               }
               if (selectedDistanceDairy >
                   distanceMatrix.elements[index].distance.value) {
-                if (((frainchise[index].kmAreaCovered)*1000) >=
+                if (((frainchise[index].kmAreaCovered) * 1000) >=
                     distanceMatrix.elements[index].distance.value) {
                   selectedDistanceDairy =
                       distanceMatrix.elements[index].distance.value;
                   selectedFranchiseId = frainchise[index].frId;
-                  isSelected=true;
+                  isSelected = true;
                   print('selected dairy $selectedDistanceDairy');
-                  await myLocalPrefes.setdefFranchiseDairy(frainchise[index].frId);
-                  await myLocalPrefes.setdefFranchiseAddrress(frainchise[index].frAddress);
-                  await myLocalPrefes.setdefFranchiseName(frainchise[index].frName);
+                  print('selected dairy distance ${distanceMatrix.elements[index].distance.value/1000}');
+                  await myLocalPrefes.setDairyDist('${distanceMatrix.elements[index].distance.value/1000}');
+                  await myLocalPrefes
+                      .setdefFranchiseDairy(frainchise[index].frId);
+                  await myLocalPrefes
+                      .setdefFranchiseAddrress(frainchise[index].frAddress);
+                  await myLocalPrefes
+                      .setdefFranchiseName(frainchise[index].frName);
                 }
               }
             }
           }
         }
 
-        if(!isSelected){
-          isNoDataAvailable=true;
+        if (!isSelected) {
+          isNoDataAvailable = true;
         }
-
-
       }
 
       isLoading = false;
       getNearestFranchiseById();
-
-
     }
   }
 
-
-
-
   @action
-  changeOutlet(Frainchise frainchise)async{
-
+  changeOutlet(Frainchise frainchise) async {
     selectedFranchiseId = frainchise.frId;
 
-    if(frainchise.frType==1){
-      await  myLocalPrefes.setdefFranchiseDairy(frainchise.frId);
-    }else if(frainchise.frType==2){
-      await  myLocalPrefes.setDefFranchiseRest(frainchise.frId);
-
-    }else{
-      await  myLocalPrefes.setdefFranchiseDairy(frainchise.frId);
-      await  myLocalPrefes.setDefFranchiseRest(frainchise.frId);
+    if (frainchise.frType == 1) {
+      await myLocalPrefes.setdefFranchiseDairy(frainchise.frId);
+    } else if (frainchise.frType == 2) {
+      await myLocalPrefes.setDefFranchiseRest(frainchise.frId);
+    } else {
+      await myLocalPrefes.setdefFranchiseDairy(frainchise.frId);
+      await myLocalPrefes.setDefFranchiseRest(frainchise.frId);
     }
 
-    await  myLocalPrefes.setdefFranchiseAddrress(frainchise.frAddress);
-    await  myLocalPrefes.setdefFranchiseName(frainchise.frName);
-    await fetchUserOrder();
+    await myLocalPrefes.setdefFranchiseAddrress(frainchise.frAddress);
+    await myLocalPrefes.setdefFranchiseName(frainchise.frName);
+
     getNearestFranchiseById();
-
   }
 
+  getNearestFranchiseById() async {
+    isSerching = false;
+    isLoadingForFranchiseData = true;
+    itemsIds = [];
+    items = [];
 
-
-  getNearestFranchiseById() async{
-    await fetchUserOrder();
-    isSerching=false;
-    isLoadingForFranchiseData=true;
-    itemsIds=[];
-    items=[];
-
-    loadingMessage="Getting frinchise data";
-    int id=0;
-    if(myLocalPrefes.getSelectedOutletType()==1){
-      id=myLocalPrefes.getdefFranchiseDairy();
-    }else{
-      id=myLocalPrefes.getDefFranchiseRest();
+    loadingMessage = "Getting frinchise data";
+    int id = 0;
+    if (await myLocalPrefes.getSelectedOutletType() == 1) {
+      id = await myLocalPrefes.getdefFranchiseDairy();
+    } else {
+      id = await myLocalPrefes.getDefFranchiseRest();
     }
 
+    allFranchiseRepo
+        .getFranchiseDetailsById('$id')
+        .then((value) => {
+              print("slecetd franchisi data $id  ${value.data.toString()}"),
+              if (value.status == 200)
+                {
+                  frainchiseHomeData = value.data,
+                  print('${frainchiseHomeData.itemData[1].tagName}'),
 
-    allFranchiseRepo.getFranchiseDetailsById('$id').then((value) =>
-    {
-      print("slecetd franchisi data $id  ${value.data.toString()}"),
+                  // myLocalPrefes.setdefFranchiseName(frainchiseHomeData)
 
-
-
-      if(value.status==200){
-        frainchiseHomeData=value.data,
-        print('${frainchiseHomeData.itemData[1].tagName}'),
-
-        // myLocalPrefes.setdefFranchiseName(frainchiseHomeData)
-
-        if(frainchiseHomeData==null){
-          isNoDataAvailable=true,
-        }
-      },
-      isLoadingForFranchiseData=false,
-    }).catchError((onError){
-      isLoadingForFranchiseData=false;
-
-
-
-    });
-  }
-
-
-  @action
-  getSortedFranchiseBySort(int sort){
-    isLoadingForFranchiseData=true;
-    loadingMessage="Getting frinchise data";
-
-    int id=0;
-    if(myLocalPrefes.getSelectedOutletType()==1){
-      id=myLocalPrefes.getdefFranchiseDairy();
-    }else{
-      id=myLocalPrefes.getDefFranchiseRest();
-    }
-
-    allFranchiseRepo.getFranchiseDetailsSorted(id,sort).then((value) =>
-    {
-      print("slecetd franchisi data ${value.data.toString()}"),
-
-      if(value.status==200){
-        frainchiseHomeData=value.data,
-        print('${frainchiseHomeData.itemData[1].tagName}'),
-      },
-
-      isLoadingForFranchiseData=false,
-    }).catchError((onError){
-      isLoadingForFranchiseData=false;
-
-
+                  if (frainchiseHomeData == null)
+                    {
+                      isNoDataAvailable = true,
+                    }
+                },
+              isLoadingForFranchiseData = false,
+            })
+        .catchError((onError) {
+      isLoadingForFranchiseData = false;
     });
   }
 
   @action
-  getSortedFranchiseByRating(String rating){
-    isLoadingForFranchiseData=true;
-    loadingMessage="Getting frinchise data $rating";
-    int id=0;
-    if(myLocalPrefes.getSelectedOutletType()==1){
-      id=myLocalPrefes.getdefFranchiseDairy();
-    }else{
-      id=myLocalPrefes.getDefFranchiseRest();
+  getSortedFranchiseBySort(int sort) async {
+    isLoadingForFranchiseData = true;
+    loadingMessage = "Getting frinchise data";
+
+    int id = 0;
+    if (await myLocalPrefes.getSelectedOutletType() == 1) {
+      id = await myLocalPrefes.getdefFranchiseDairy();
+    } else {
+      id = await myLocalPrefes.getDefFranchiseRest();
     }
-    allFranchiseRepo.getFranchiseDetailsRating(id,rating).then((value) =>
-    {
-      print("slecetd franchisi data ${value.data.toString()}"),
 
-      if(value.status==200){
-        frainchiseHomeData=value.data,
-        print('${frainchiseHomeData.itemData[1].tagName}'),
-      },
-      isLoadingForFranchiseData=false,
-    }).catchError((onError){
-      isLoadingForFranchiseData=false;
-
-
+    allFranchiseRepo
+        .getFranchiseDetailsSorted(id, sort)
+        .then((value) => {
+              print("slecetd franchisi data ${value.data.toString()}"),
+              if (value.status == 200)
+                {
+                  frainchiseHomeData=null,
+                  frainchiseHomeData = value.data,
+                  print('${frainchiseHomeData.itemData[1].tagName}'),
+                },
+              isLoadingForFranchiseData = false,
+            })
+        .catchError((onError) {
+      isLoadingForFranchiseData = false;
     });
   }
 
   @action
-  Future getOffersandAdditionalCharge() async{
-    int id=0;
-    if(myLocalPrefes.getSelectedOutletType()==1){
-      id=myLocalPrefes.getdefFranchiseDairy();
-    }else{
-      id=myLocalPrefes.getDefFranchiseRest();
+  getSortedFranchiseByRating(String rating) async {
+    isLoadingForFranchiseData = true;
+    loadingMessage = "Getting frinchise data $rating";
+    int id = 0;
+    if (await myLocalPrefes.getSelectedOutletType() == 1) {
+      id = await myLocalPrefes.getdefFranchiseDairy();
+    } else {
+      id = await myLocalPrefes.getDefFranchiseRest();
     }
-    isLoadingForOffers=true;
-    HttpResponse httpResponse= await additionalChargesAndOffersRepo.getAdditionChargesAnadOffers('$id',myLocalPrefes.getCustId() , 2);
-    isLoadingForOffers=false;
-    offersMain=httpResponse.data;
-
+    allFranchiseRepo
+        .getFranchiseDetailsRating(id, rating)
+        .then((value) => {
+              print("slecetd franchisi data ${value.data.toString()}"),
+              if (value.status == 200)
+                {
+                  frainchiseHomeData=null,
+                  frainchiseHomeData = value.data,
+                  print('${frainchiseHomeData.itemData[1].tagName}'),
+                },
+              isLoadingForFranchiseData = false,
+            })
+        .catchError((onError) {
+      isLoadingForFranchiseData = false;
+    });
   }
 
+  @action
+  Future getOffersandAdditionalCharge() async {
+    int id = 0;
+    if ( myLocalPrefes.getSelectedOutletType() == 1) {
+      id =  myLocalPrefes.getdefFranchiseDairy();
+    } else {
+      id =  myLocalPrefes.getDefFranchiseRest();
+    }
+    isLoadingForOffers = true;
+    HttpResponse httpResponse =
+        await additionalChargesAndOffersRepo.getAdditionChargesAnadOffers(
+            '$id',  myLocalPrefes.getCustId(), 2);
 
+    offersMain = httpResponse.data;
+      double value=0.0;
+      items.forEach((element) {
+        value=value+element.prize;
+      });
 
-  getSelectedFranchise(){
-
-    frainchise.forEach((element) {
-      int id=0;
-      if(myLocalPrefes.getSelectedOutletType()==1){
-        id=myLocalPrefes.getdefFranchiseDairy();
-      }else{
-        id=myLocalPrefes.getDefFranchiseRest();
+      if(value>offersMain?.deliveryCharges?.minAmt){
+        cartValueMin = false;
       }
-      if(element.frId==id){
-
-        selectedFranchise=element;
-
-      }
-
-    });
-
-
+    isLoadingForOffers = false;
   }
 
 
+  double getDeliverCharges() {
+    if (isLoadingForOffers) {
+      return 0.0;
+    } else {
+      print(offersMain.additionalCharges.toJson());
 
-  Future<List<Frainchise>>  getFranchise()async{
-    List<Frainchise> filterid=[];
+      double amount = offersMain.additionalCharges.handlingChg +
+         offersMain.additionalCharges.packingChg +
+          offersMain.additionalCharges.surchargeFee +
+          offersMain.additionalCharges.extraChg +
+         offersMain.additionalCharges.roundOffAmt;
+
+      print('*********$amount********');
+
+      if ((offersMain.deliveryCharges.minAmt ??
+          0) <=
+          getItemTotal() &&
+          (offersMain.deliveryCharges
+              .freeDelvLimit ??
+              9999) >=
+              getItemTotal()) {
+        print(
+            'if less${offersMain.deliveryCharges.amt1 + amount}');
+
+        return (offersMain.deliveryCharges.amt1 +
+            amount);
+      } else if ((offersMain.deliveryCharges
+          .freeDelvLimit ??
+          9999) <
+          getItemTotal()) {
+        print(
+            ' if more${offersMain.deliveryCharges.amt2 + amount}');
+        return (offersMain.deliveryCharges.amt2 +
+            amount);
+      }
+    }
+    return 0.0;
+  }
+
+
+  double getItemTotal() {
+    double prise = 0;
+    items.forEach((element) {
+      prise = (element.qty * (element.prize * element.selectedQty)) + prise;
+    });
+
+    if (!isLoadingForOffers) {
+      if (prise >=
+          offersMain.deliveryCharges?.minAmt ??
+          0) {
+        setCartValue(false);
+      } else {
+        setCartValue(true);
+      }
+    } else {
+     setCartValue(true);
+    }
+    return prise;
+  }
+
+  getSelectedFranchise() async {
+    frainchise.forEach((element) async {
+      int id = 0;
+      if (await myLocalPrefes.getSelectedOutletType() == 1) {
+        id = await myLocalPrefes.getdefFranchiseDairy();
+      } else {
+        id = await myLocalPrefes.getDefFranchiseRest();
+      }
+      if (element.frId == id) {
+        selectedFranchise = element;
+      }
+    });
+  }
+
+  Future<List<Frainchise>> getFranchise() async {
+    List<Frainchise> filterid = [];
     await getAllFranchiseForTackAway();
 
-
     frainchise.forEach((element) {
-      if(element.frType==outletType || element.frType==3){
+      if (element.frType == outletType || element.frType == 3) {
         filterid.add(element);
       }
     });
     filterid.sort((a, b) => a.distance.compareTo(b.distance));
-    isLoading=false;
+    isLoading = false;
     return filterid;
   }
 
   @action
-  Future getAllFranchiseForTackAway()async{
+  Future getAllFranchiseForTackAway() async {
     isLoading = true;
-    await fetchUserOrder();
+
     loadingMessage = 'Fetching nearest franchise';
     HttpResponse httpResponse = await allFranchiseRepo.allFranchise();
-
 
     if (httpResponse.status == 200) {
       if (httpResponse.info.error) {
@@ -1190,38 +1188,31 @@ abstract class _AllFrenchisiViewModel with Store {
     }
   }
 
-
   @action
   List<Frainchise> getDairys(int outletType) {
-    List<Frainchise> list=[];
+    List<Frainchise> list = [];
     list.clear();
     getAllFranchiseForTackAway();
 
-      frainchise.forEach((element) {
-        if (element.frType == outletType || element.frType == 3) {
-          list.add(element);
-        }
-      });
+    frainchise.forEach((element) {
+      if (element.frType == outletType || element.frType == 3) {
+        list.add(element);
+      }
+    });
     return list;
   }
 
-
-
   @action
-  Future sortFranchiseByKmForTakeAway()async{
+  Future sortFranchiseByKmForTakeAway() async {
+    StringBuffer buffer = StringBuffer();
 
-    List<String> locations=[];
-    StringBuffer buffer=StringBuffer();
-
-    bool bar=false;
+    bool bar = false;
     frainchise.forEach((element) {
-      if (bar)
-      {
+      if (bar) {
         buffer.write('|${element.fromLatitude},${element.fromLongitude}');
-      } else
-      {
+      } else {
         buffer.write('${element.fromLatitude},${element.fromLongitude}');
-        bar=true;
+        bar = true;
       }
       // ('${element.fromLatitude},${element.fromLongitude}|');
     });
@@ -1229,22 +1220,21 @@ abstract class _AllFrenchisiViewModel with Store {
     // myLocalPrefes.setFrSelected(true);
 
     isLoading = true;
-    loadingMessage='Fetching nearest franchise';
+    loadingMessage = 'Fetching nearest franchise';
 
-    HttpResponse httpResponse= await  distancematrixRepo.DistanceMatrixApi('${myLocalPrefes.getUserLatitude()} ,${myLocalPrefes.getUserLongitude()}', buffer.toString());
-    distanceMatrix=httpResponse.data;
+    HttpResponse httpResponse = await distancematrixRepo.DistanceMatrixApi(
+        '${await myLocalPrefes.getUserLatitude()} ,${await myLocalPrefes.getUserLongitude()}',
+        buffer.toString());
+    distanceMatrix = httpResponse.data;
     isLoading = false;
     lookforNearestFranchiseForTakAway();
-
-
   }
-
 
   @action
   lookforNearestFranchiseForTakAway() {
     isLoading = true;
     isNoDataAvailable = false;
-    bool isSelected = false;
+
     if (distanceMatrix.status == "OK") {
       for (int index = 0; index < distanceMatrix.elements.length; index++) {
         if (distanceMatrix.elements[index].status == "OK") {
@@ -1254,15 +1244,10 @@ abstract class _AllFrenchisiViewModel with Store {
               distanceMatrix.elements[index].duration.text;
         }
 
-
         isLoading = false;
         // getNearestFranchiseById();
-
 
       }
     }
   }
-
-
-
 }

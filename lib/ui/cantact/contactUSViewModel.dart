@@ -3,53 +3,36 @@ import 'dart:async';
 import 'package:cloud_kitchen/local/prefs.dart';
 import 'package:cloud_kitchen/network/model/httpresponce.dart';
 import 'package:cloud_kitchen/network/model/request/SaveCustomer.dart';
-import 'package:cloud_kitchen/network/model/response/SaveUser.dart';
-// import 'package:cloud_kitchen/network/model/response/distancematrics/distancematricsone.dart';
 import 'package:cloud_kitchen/network/repository/saveuserrepo.dart';
 import 'package:cloud_kitchen/ui/cantact/ContactUs.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mobx/mobx.dart';
 import 'package:regexpattern/regexpattern.dart';
 part 'contactUSViewModel.g.dart';
 
-class ContactUSViewModel =_ContactUSViewModel with _$ContactUSViewModel;
+class ContactUSViewModel = _ContactUSViewModel with _$ContactUSViewModel;
 
-
-abstract class _ContactUSViewModel with Store{
-
-
-  final ContactUSErrorState contactUSErrorState=ContactUSErrorState();
+abstract class _ContactUSViewModel with Store {
+  final ContactUSErrorState contactUSErrorState = ContactUSErrorState();
   // final FirebaseAuth _auth = FirebaseAuth.instance;
   // final GoogleSignIn googleSignIn = GoogleSignIn();
 
   SaveUserRepo saveUserRepo;
   MyLocalPrefes myLocalPrefes;
 
-  _ContactUSViewModel(){
-
-    myLocalPrefes=MyLocalPrefes();
-    saveUserRepo=SaveUserRepo();
-
+  _ContactUSViewModel() {
+    myLocalPrefes = MyLocalPrefes();
+    saveUserRepo = SaveUserRepo();
   }
-
-
-
 
   @observable
   UserCredential result;
 
-
   @observable
-  HttpResponse httpResponseMian=HttpResponse();
-
+  HttpResponse httpResponseMian = HttpResponse();
 
   @observable
   String error;
-
 
   // @observable
   // int gender;
@@ -58,42 +41,21 @@ abstract class _ContactUSViewModel with Store{
   ContactUs customerDetails;
 
   @observable
-  bool loginStatus=false;
-
-
-  @observable
-  String errorMessage='';
-
-
-
+  bool loginStatus = false;
 
   @observable
-  bool isLoadingForLogin=false;
-
+  String errorMessage = '';
 
   @observable
-  bool isLoading=false;
+  bool isLoadingForLogin = false;
 
-  List<ReactionDisposer> _disposers;
-
-  void setupValidations() {
-
-    _disposers = [
-      // reaction((_) => username, validateUsername),
-      // reaction((_) => email, validateEmail),
-      // reaction((_) => phoneNumber, validatePhone),
-      // reaction((_) => message, validateMessage)
-    ];
-  }
+  @observable
+  bool isLoading = false;
 
   @action
-  String getCusPhone(){
-    return myLocalPrefes.getCustPhone();
+  Future<String> getCusPhone() async {
+    return await myLocalPrefes.getCustPhone();
   }
-
-
-
-
 
   @action
   validateUsername(String text) {
@@ -109,17 +71,16 @@ abstract class _ContactUSViewModel with Store{
         : contactUSErrorState.username = null;
   }
 
-
   @action
   validateEmail(String text) {
-    return text.isEmpty|| !text.isEmail()
+    return text.isEmpty || !text.isEmail()
         ? contactUSErrorState.email = 'Enter Valid Email Id'
         : contactUSErrorState.email = null;
   }
 
   @action
   validatePhone(String text) {
-    return text.isEmpty|| !text.isPhone()
+    return text.isEmpty || !text.isPhone()
         ? contactUSErrorState.email = 'Enter Valid Phone Number'
         : contactUSErrorState.email = null;
   }
@@ -146,7 +107,6 @@ abstract class _ContactUSViewModel with Store{
 
 //  }
 
-
   // Future<UserCredential> signInWithFacebook() async {
   //   // Trigger the sign-in flow
   //   isLoadingForLogin=true;
@@ -165,31 +125,25 @@ abstract class _ContactUSViewModel with Store{
   // }
 
   Future saveContactUS(SaveCustomer saveUserDetails) async {
-    isLoading=true;
+    isLoading = true;
 
-   HttpResponse httpResponse=  await saveUserRepo.saveContactUs(saveUserDetails);
-      if(httpResponse.status==200){
-
-        if(!httpResponse.info.error)
-        {
-          httpResponseMian = httpResponse;
-
-        }
-
-      }else if(httpResponse.status==500) {
-        errorMessage=httpResponse.message;
-
+    HttpResponse httpResponse =
+        await saveUserRepo.saveContactUs(saveUserDetails);
+    if (httpResponse.status == 200) {
+      if (!httpResponse.info.error) {
+        httpResponseMian = httpResponse;
       }
-      isLoading=false;
-
-
+    } else if (httpResponse.status == 500) {
+      errorMessage = httpResponse.message;
+    }
+    isLoading = false;
   }
 
 //   void getUserDetailsIfExist(){
 //     String mobile;
 //     // Timer(Duration(milliseconds: 700), (){
 //     //   mobile = myLocalPrefes.getCustPhone();
-    
+
 //     // });
 
 //     // mobile = getCusPhone();
@@ -216,11 +170,8 @@ abstract class _ContactUSViewModel with Store{
 //       isLoading=false;
 
 //     });
-    
 
 //   }
-
-
 
 }
 
@@ -228,20 +179,20 @@ class ContactUSErrorState = _ContactUSErrorState with _$ContactUSErrorState;
 
 abstract class _ContactUSErrorState with Store {
   @observable
-  String username = null;
+  String username;
 
   @observable
-  String email = null;
+  String email;
 
   @observable
-  String phoneNumber = null;
+  String phoneNumber;
 
   @observable
-  String message = null;
+  String message;
 
   // @observable
   // int gender = null;
 
   @computed
-  bool get hasErrors => username!= null || email != null;
+  bool get hasErrors => username != null || email != null;
 }

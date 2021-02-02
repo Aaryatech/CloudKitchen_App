@@ -668,6 +668,36 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
     });
   }
 
+  final _$urlAtom = Atom(name: '_AllFrenchisiViewModel.url');
+
+  @override
+  String get url {
+    _$urlAtom.reportRead();
+    return super.url;
+  }
+
+  @override
+  set url(String value) {
+    _$urlAtom.reportWrite(value, super.url, () {
+      super.url = value;
+    });
+  }
+
+  final _$mobileAtom = Atom(name: '_AllFrenchisiViewModel.mobile');
+
+  @override
+  String get mobile {
+    _$mobileAtom.reportRead();
+    return super.mobile;
+  }
+
+  @override
+  set mobile(String value) {
+    _$mobileAtom.reportWrite(value, super.mobile, () {
+      super.mobile = value;
+    });
+  }
+
   final _$custAdrressCaptionAtom =
       Atom(name: '_AllFrenchisiViewModel.custAdrressCaption');
 
@@ -729,6 +759,21 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
     });
   }
 
+  final _$localindexAtom = Atom(name: '_AllFrenchisiViewModel.localindex');
+
+  @override
+  int get localindex {
+    _$localindexAtom.reportRead();
+    return super.localindex;
+  }
+
+  @override
+  set localindex(int value) {
+    _$localindexAtom.reportWrite(value, super.localindex, () {
+      super.localindex = value;
+    });
+  }
+
   final _$getAllNotificationsAsyncAction =
       AsyncAction('_AllFrenchisiViewModel.getAllNotifications');
 
@@ -738,12 +783,63 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
         .run(() => super.getAllNotifications());
   }
 
+  final _$setProUrlAsyncAction =
+      AsyncAction('_AllFrenchisiViewModel.setProUrl');
+
+  @override
+  Future<bool> setProUrl(String urls) {
+    return _$setProUrlAsyncAction.run(() => super.setProUrl(urls));
+  }
+
+  final _$saveUserProfileImageAsyncAction =
+      AsyncAction('_AllFrenchisiViewModel.saveUserProfileImage');
+
+  @override
+  Future<bool> saveUserProfileImage(File image) {
+    return _$saveUserProfileImageAsyncAction
+        .run(() => super.saveUserProfileImage(image));
+  }
+
+  final _$getSelectedOutletAsyncAction =
+      AsyncAction('_AllFrenchisiViewModel.getSelectedOutlet');
+
+  @override
+  Future getSelectedOutlet() {
+    return _$getSelectedOutletAsyncAction.run(() => super.getSelectedOutlet());
+  }
+
+  final _$getSelectedDelModeAsyncAction =
+      AsyncAction('_AllFrenchisiViewModel.getSelectedDelMode');
+
+  @override
+  Future getSelectedDelMode() {
+    return _$getSelectedDelModeAsyncAction
+        .run(() => super.getSelectedDelMode());
+  }
+
+  final _$setDelModeAsyncAction =
+      AsyncAction('_AllFrenchisiViewModel.setDelMode');
+
+  @override
+  Future setDelMode(int mode) {
+    return _$setDelModeAsyncAction.run(() => super.setDelMode(mode));
+  }
+
   final _$setOutletTypeAsyncAction =
       AsyncAction('_AllFrenchisiViewModel.setOutletType');
 
   @override
   Future<dynamic> setOutletType(int type) {
     return _$setOutletTypeAsyncAction.run(() => super.setOutletType(type));
+  }
+
+  final _$setDefAddressAsyncAction =
+      AsyncAction('_AllFrenchisiViewModel.setDefAddress');
+
+  @override
+  Future setDefAddress(String adress, String caption) {
+    return _$setDefAddressAsyncAction
+        .run(() => super.setDefAddress(adress, caption));
   }
 
   final _$changeDefAddressAsyncAction =
@@ -770,6 +866,13 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
       double wallet) {
     return _$placeOrderAsyncAction.run(() => super.placeOrder(itemTotal,
         payMode, offerId, deliveryCharges, descAmt, dateTime, gst, wallet));
+  }
+
+  final _$logOutAsyncAction = AsyncAction('_AllFrenchisiViewModel.logOut');
+
+  @override
+  Future logOut() {
+    return _$logOutAsyncAction.run(() => super.logOut());
   }
 
   final _$getAddressAsyncAction =
@@ -814,6 +917,14 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
   @override
   Future<HttpResponse> cancelOrder(String orderId) {
     return _$cancelOrderAsyncAction.run(() => super.cancelOrder(orderId));
+  }
+
+  final _$getCustAddressAsyncAction =
+      AsyncAction('_AllFrenchisiViewModel.getCustAddress');
+
+  @override
+  Future<String> getCustAddress() {
+    return _$getCustAddressAsyncAction.run(() => super.getCustAddress());
   }
 
   final _$setCustNameAsyncAction =
@@ -891,6 +1002,24 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
     return _$changeOutletAsyncAction.run(() => super.changeOutlet(frainchise));
   }
 
+  final _$getSortedFranchiseBySortAsyncAction =
+      AsyncAction('_AllFrenchisiViewModel.getSortedFranchiseBySort');
+
+  @override
+  Future getSortedFranchiseBySort(int sort) {
+    return _$getSortedFranchiseBySortAsyncAction
+        .run(() => super.getSortedFranchiseBySort(sort));
+  }
+
+  final _$getSortedFranchiseByRatingAsyncAction =
+      AsyncAction('_AllFrenchisiViewModel.getSortedFranchiseByRating');
+
+  @override
+  Future getSortedFranchiseByRating(String rating) {
+    return _$getSortedFranchiseByRatingAsyncAction
+        .run(() => super.getSortedFranchiseByRating(rating));
+  }
+
   final _$getOffersandAdditionalChargeAsyncAction =
       AsyncAction('_AllFrenchisiViewModel.getOffersandAdditionalCharge');
 
@@ -922,7 +1051,7 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
       ActionController(name: '_AllFrenchisiViewModel');
 
   @override
-  Future<dynamic> searchList(String seacrh) {
+  dynamic searchList(String seacrh) {
     final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
         name: '_AllFrenchisiViewModel.searchList');
     try {
@@ -933,7 +1062,7 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
   }
 
   @override
-  Future<dynamic> searchListByCategory(int index) {
+  dynamic searchListByCategory(int index) {
     final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
         name: '_AllFrenchisiViewModel.searchListByCategory');
     try {
@@ -966,44 +1095,11 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
   }
 
   @override
-  Future<dynamic> setGstNo(String gst) {
-    final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
-        name: '_AllFrenchisiViewModel.setGstNo');
-    try {
-      return super.setGstNo(gst);
-    } finally {
-      _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  String gstNo() {
-    final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
-        name: '_AllFrenchisiViewModel.gstNo');
-    try {
-      return super.gstNo();
-    } finally {
-      _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   String getProUrl() {
     final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
         name: '_AllFrenchisiViewModel.getProUrl');
     try {
       return super.getProUrl();
-    } finally {
-      _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  Future<dynamic> setProUrl(String url) {
-    final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
-        name: '_AllFrenchisiViewModel.setProUrl');
-    try {
-      return super.setProUrl(url);
     } finally {
       _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
     }
@@ -1021,55 +1117,11 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
   }
 
   @override
-  dynamic getSelectedOutlet() {
-    final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
-        name: '_AllFrenchisiViewModel.getSelectedOutlet');
-    try {
-      return super.getSelectedOutlet();
-    } finally {
-      _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  dynamic getSelectedDelMode() {
-    final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
-        name: '_AllFrenchisiViewModel.getSelectedDelMode');
-    try {
-      return super.getSelectedDelMode();
-    } finally {
-      _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  dynamic setDelMode(int mode) {
-    final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
-        name: '_AllFrenchisiViewModel.setDelMode');
-    try {
-      return super.setDelMode(mode);
-    } finally {
-      _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   dynamic inAppReview() {
     final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
         name: '_AllFrenchisiViewModel.inAppReview');
     try {
       return super.inAppReview();
-    } finally {
-      _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  dynamic setDefAddress(String adress, String caption) {
-    final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
-        name: '_AllFrenchisiViewModel.setDefAddress');
-    try {
-      return super.setDefAddress(adress, caption);
     } finally {
       _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
     }
@@ -1131,18 +1183,7 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
   }
 
   @override
-  dynamic logOut() {
-    final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
-        name: '_AllFrenchisiViewModel.logOut');
-    try {
-      return super.logOut();
-    } finally {
-      _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  String increseQuentity(int itemIdcurrent) {
+  dynamic increseQuentity(int itemIdcurrent) {
     final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
         name: '_AllFrenchisiViewModel.increseQuentity');
     try {
@@ -1153,7 +1194,7 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
   }
 
   @override
-  String increseQuentityForDecimal(int itemIdcurrent, double decimal) {
+  dynamic increseQuentityForDecimal(int itemIdcurrent, double decimal) {
     final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
         name: '_AllFrenchisiViewModel.increseQuentityForDecimal');
     try {
@@ -1164,7 +1205,7 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
   }
 
   @override
-  String decreaseQuentityForDecimal(int itemIdcurrent, double decimal) {
+  dynamic decreaseQuentityForDecimal(int itemIdcurrent, double decimal) {
     final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
         name: '_AllFrenchisiViewModel.decreaseQuentityForDecimal');
     try {
@@ -1175,22 +1216,11 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
   }
 
   @override
-  String decreseQuentity(int itemIdcurrent) {
+  dynamic decreseQuentity(int itemIdcurrent) {
     final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
         name: '_AllFrenchisiViewModel.decreseQuentity');
     try {
       return super.decreseQuentity(itemIdcurrent);
-    } finally {
-      _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  String getCustAddress() {
-    final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
-        name: '_AllFrenchisiViewModel.getCustAddress');
-    try {
-      return super.getCustAddress();
     } finally {
       _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
     }
@@ -1246,28 +1276,6 @@ mixin _$AllFrenchisiViewModel on _AllFrenchisiViewModel, Store {
         name: '_AllFrenchisiViewModel.getFrName');
     try {
       return super.getFrName();
-    } finally {
-      _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  dynamic getSortedFranchiseBySort(int sort) {
-    final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
-        name: '_AllFrenchisiViewModel.getSortedFranchiseBySort');
-    try {
-      return super.getSortedFranchiseBySort(sort);
-    } finally {
-      _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  dynamic getSortedFranchiseByRating(String rating) {
-    final _$actionInfo = _$_AllFrenchisiViewModelActionController.startAction(
-        name: '_AllFrenchisiViewModel.getSortedFranchiseByRating');
-    try {
-      return super.getSortedFranchiseByRating(rating);
     } finally {
       _$_AllFrenchisiViewModelActionController.endAction(_$actionInfo);
     }
@@ -1340,10 +1348,13 @@ frainchiseMain: ${frainchiseMain},
 error: ${error},
 custAdrress: ${custAdrress},
 custName: ${custName},
+url: ${url},
+mobile: ${mobile},
 custAdrressCaption: ${custAdrressCaption},
 offersMain: ${offersMain},
 searchString: ${searchString},
-selected: ${selected}
+selected: ${selected},
+localindex: ${localindex}
     ''';
   }
 }

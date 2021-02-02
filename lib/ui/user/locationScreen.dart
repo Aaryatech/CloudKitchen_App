@@ -9,12 +9,13 @@ import 'package:connectivity/connectivity.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:google_map_location_picker/google_map_location_picker.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platform_interface.dart';
+import 'package:google_maps_place_picker/google_maps_place_picker.dart';
 import 'package:google_maps_webservice/geocoding.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:location_permissions/location_permissions.dart';
-import 'package:location/location.dart' as loc;
+// import 'package:location/location.dart' as loc;
 import 'package:mobx/mobx.dart';
 
 AddLocationViewModel addLocationViewModel=AddLocationViewModel();
@@ -26,11 +27,11 @@ class LocationScreen extends StatefulWidget {
 class _LocationScreenState extends State<LocationScreen> {
   final scaffoldState = GlobalKey<ScaffoldState>();
 
-  loc.Location location = new loc.Location();
+  // loc.Location location = new loc.Location();
   final places = new GoogleMapsPlaces(apiKey: "AIzaSyBahlnISPYhetj3q50ADqVE6SECypRGe4A");
 
 
-  String completeaddress='',floor='',howtoreach='',selected="Home";
+  String completeaddress='',floor='',howtoreach='',selected="Home",pincode='';
 
   void showImagePickerBottomSheet(BuildContext context){
 
@@ -142,79 +143,136 @@ class _LocationScreenState extends State<LocationScreen> {
                                       );
                                     }
                                 ):Observer(
-                                  builder:(_)=> Container(
+                                  builder:(_)=>  Container(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment
+                                          .start,
                                       children: [
 
-                                        Text('Selected address ${selectedResult.formattedAddress}',style: Theme.of(context).textTheme.subtitle2),
+                                        Text('Selected address ${selectedResult
+                                            .formattedAddress}', style: Theme
+                                            .of(context)
+                                            .textTheme
+                                            .subtitle2),
 
 
                                         TextFormField(
                                           onChanged: (str) {
-                                            completeaddress=str;
+                                            setState((){
+                                              completeaddress = str;
+                                            });
                                           },
                                           decoration: InputDecoration(
-                                            hintText: 'Complete Address *',
+                                            hintText: 'Complete Address',
+                                            errorText: completeaddress.isEmpty?'Please Enter Complete Address':null,
                                           ),
                                         ),
 
                                         TextFormField(
                                           onChanged: (str) {
-                                            floor=str;
+
+                                            setState((){
+                                              floor = str;
+                                            });
                                           },
 
                                           decoration: InputDecoration(
-                                            hintText: 'Floor(Optional)',
+                                            hintText: 'Floor',
+                                            errorText: floor.isEmpty?'Please Enter Floor':null,
                                           ),
                                         ),
 
                                         TextFormField(
                                           onChanged: (str) {
-                                            howtoreach=str;
+
+                                            setState((){
+                                              howtoreach = str;
+                                            });
                                           },
                                           decoration: InputDecoration(
 
 
-                                            hintText: 'How to reach(Optional)',
+                                            hintText: 'How to reach',
+                                            errorText: howtoreach.isEmpty?'Please Enter How to reach':null,
                                           ),
                                         ),
 
+
+                                        TextFormField(
+                                          onChanged: (str) {
+                                            setState((){
+                                              pincode = str;
+                                            });
+
+                                          },
+
+                                          maxLengthEnforced: true,
+                                          maxLength: 6,
+                                          keyboardType: TextInputType.number,
+                                          decoration: InputDecoration(
+                                            hintText: 'Pincode',
+                                            errorText: pincode.isEmpty?'Please Enter Pincode':null,
+                                          ),
+                                        ),
                                         SizedBox(height: 16,),
-                                        Text('TAG THIS LOCATION FOR LATER',style: Theme.of(context).textTheme.subtitle2.copyWith(color: Colors.grey),),
+                                        Text('TAG THIS LOCATION FOR LATER',
+                                          style: Theme
+                                              .of(context)
+                                              .textTheme
+                                              .subtitle2
+                                              .copyWith(color: Colors.grey),),
                                         Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                          mainAxisAlignment: MainAxisAlignment
+                                              .spaceEvenly,
                                           children: [
                                             FilterChip(
-                                              shape: StadiumBorder(side: BorderSide(color: Colors.grey)),
-                                              label: Text("Home",style: Theme.of(context).textTheme.caption,),
-                                              padding: EdgeInsets.only(left: 12,right: 12),
-                                              labelStyle: TextStyle(letterSpacing: 2, color: Colors.black),
+                                              shape: StadiumBorder(
+                                                  side: BorderSide(
+                                                      color: Colors.grey)),
+                                              label: Text("Home", style: Theme
+                                                  .of(context)
+                                                  .textTheme
+                                                  .caption,),
+                                              padding: EdgeInsets.only(
+                                                  left: 12, right: 12),
+                                              labelStyle: TextStyle(
+                                                  letterSpacing: 2,
+                                                  color: Colors.black),
 
-                                              selected: selected=="Home",
-                                              selectedColor: Colors.transparent,
+                                              selected: selected == "Home",
+                                              selectedColor: Colors
+                                                  .transparent,
                                               // backgroundColor: Theme.of(context).primaryColor,
                                               onSelected: (flag) {
-                                                if(flag){
+                                                if (flag) {
                                                   setState(() {
-                                                    selected="Home";
-                                                  });}
+                                                    selected = "Home";
+                                                  });
+                                                }
                                               },
                                             ),
 
                                             FilterChip(
-                                              shape: StadiumBorder(side: BorderSide(color: Colors.grey)),
-                                              label: Text("Work",style: Theme.of(context).textTheme.caption),
-                                              labelStyle: TextStyle(letterSpacing: 2, color: Colors.black),
-                                              padding: EdgeInsets.only(left: 12,right: 12),
-                                              selected: selected=="Work",
-                                              selectedColor: Colors.transparent,
+                                              shape: StadiumBorder(
+                                                  side: BorderSide(
+                                                      color: Colors.grey)),
+                                              label: Text("Work", style: Theme
+                                                  .of(context)
+                                                  .textTheme
+                                                  .caption),
+                                              labelStyle: TextStyle(
+                                                  letterSpacing: 2,
+                                                  color: Colors.black),
+                                              padding: EdgeInsets.only(
+                                                  left: 12, right: 12),
+                                              selected: selected == "Work",
+                                              selectedColor: Colors
+                                                  .transparent,
                                               // backgroundColor: Theme.of(context).primaryColor,
                                               onSelected: (flag) {
                                                 setState(() {
-                                                  if(flag)
-                                                  {
-                                                    selected="Work";
+                                                  if (flag) {
+                                                    selected = "Work";
                                                   }
                                                 });
                                               },
@@ -222,16 +280,26 @@ class _LocationScreenState extends State<LocationScreen> {
 
                                             FilterChip(
                                               // avatar: Icon(Icons.close,color: Colors.black),
-                                              shape: StadiumBorder(side: BorderSide(color: Colors.grey)),
-                                              label: Text("Other",style: Theme.of(context).textTheme.caption),
-                                              labelStyle: TextStyle(letterSpacing: 2, color: Colors.black),
-                                              padding: EdgeInsets.only(left: 12,right: 12),
-                                              selected: selected=="Other",
-                                              selectedColor: Colors.transparent,
+                                              shape: StadiumBorder(
+                                                  side: BorderSide(
+                                                      color: Colors.grey)),
+                                              label: Text(
+                                                  "Other", style: Theme
+                                                  .of(context)
+                                                  .textTheme
+                                                  .caption),
+                                              labelStyle: TextStyle(
+                                                  letterSpacing: 2,
+                                                  color: Colors.black),
+                                              padding: EdgeInsets.only(
+                                                  left: 12, right: 12),
+                                              selected: selected == "Other",
+                                              selectedColor: Colors
+                                                  .transparent,
                                               // backgroundColor: Theme.of(context).primaryColor,
                                               onSelected: (flag) {
                                                 setState(() {
-                                                  selected="Other";
+                                                  selected = "Other";
                                                 });
                                               },
                                             ),
@@ -240,59 +308,120 @@ class _LocationScreenState extends State<LocationScreen> {
 
                                         Align(
                                           alignment: Alignment.center,
-                                          child: RaisedButton(onPressed: (){
+                                          child: RaisedButton(onPressed: () {
+                                            if (!addLocationViewModel
+                                                .isLoading) {
+                                              if (pincode.isNotEmpty && floor.isNotEmpty && howtoreach.isNotEmpty && completeaddress.isNotEmpty) {
+                                                SaveAddress saveUserDetails = SaveAddress();
 
-                                            if(!addLocationViewModel.isLoading){
-                                              SaveAddress saveUserDetails=SaveAddress();
+                                                saveUserDetails
+                                                    .custAddressId =
+                                                0;
 
-                                              saveUserDetails.custAddressId= 0;
+                                                saveUserDetails
+                                                    .addressCaption =
+                                                    selected;
+                                                saveUserDetails
+                                                    .address =
+                                                "${completeaddress} ~ ${floor} ~ ${howtoreach}";
+                                                saveUserDetails
+                                                    .areaId = 0;
+                                                saveUserDetails.area =
+                                                null;
+                                                saveUserDetails
+                                                    .landmark =
+                                                "${selectedResult
+                                                    .formattedAddress}";
+                                                saveUserDetails
+                                                    .pincode = "";
+                                                saveUserDetails
+                                                    .cityId = 1;
+                                                saveUserDetails
+                                                    .langId = 1;
+                                                saveUserDetails
+                                                    .delStatus = 0;
+                                                saveUserDetails
+                                                    .latitude =
+                                                '${selectedResult.geometry
+                                                    .location.lat}';
+                                                saveUserDetails
+                                                    .longitude =
+                                                '${selectedResult.geometry
+                                                    .location.lng}';
+                                                saveUserDetails
+                                                    .exInt1 = int.parse(pincode);
+                                                saveUserDetails
+                                                    .exInt2 = 0;
+                                                saveUserDetails
+                                                    .exInt3 = 0;
+                                                saveUserDetails
+                                                    .exVar1 = pincode;
+                                                saveUserDetails
+                                                    .exVar2 = "";
+                                                saveUserDetails
+                                                    .exVar3 = "";
+                                                saveUserDetails
+                                                    .exFloat1 = 0;
+                                                saveUserDetails
+                                                    .exFloat2 = 0;
+                                                saveUserDetails
+                                                    .exFloat3 = 0;
 
-                                              saveUserDetails.addressCaption= selected;
-                                              saveUserDetails.address= "${completeaddress} ~ ${floor} ~ ${howtoreach}";
-                                              saveUserDetails.areaId= 0;
-                                              saveUserDetails.area= null;
-                                              saveUserDetails.landmark= "${selectedResult.formattedAddress}";
-                                              saveUserDetails.pincode= "";
-                                              saveUserDetails.cityId= 1;
-                                              saveUserDetails.langId=1;
-                                              saveUserDetails.delStatus= 0;
-                                              saveUserDetails.latitude= '${selectedResult.geometry.location.lat}';
-                                              saveUserDetails.longitude= '${selectedResult.geometry.location.lng}';
-                                              saveUserDetails.exInt1= 0;
-                                              saveUserDetails.exInt2= 0;
-                                              saveUserDetails.exInt3= 0;
-                                              saveUserDetails.exVar1= "";
-                                              saveUserDetails.exVar2= "";
-                                              saveUserDetails.exVar3="";
-                                              saveUserDetails.exFloat1=0;
-                                              saveUserDetails.exFloat2= 0;
-                                              saveUserDetails.exFloat3= 0;
+                                                FocusScope.of(context)
+                                                    .unfocus();
+                                                addLocationViewModel
+                                                    .saveUserDetails(
+                                                    saveUserDetails)
+                                                    .then((value) =>
+                                                {
 
-                                              FocusScope.of(context).unfocus();
-                                              addLocationViewModel.saveUserDetails(saveUserDetails).then((value) => {
-
-                                                if(value){
-
-                                                  Navigator.pushAndRemoveUntil(context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              Dashboard()),(r) => false),
-                                                }else{
-                                                  _showSnackbar(addLocationViewModel.msg, false),
-                                                }
-                                              }).catchError((onError){
-                                              });
-                                            }},
-                                            child: Text('Save',style: Theme.of(context).textTheme.subtitle2.copyWith(color: Colors.white),),
-                                            color: Theme.of(context).primaryColor,
+                                                  print(
+                                                      '#######$value######'),
+                                                  if(value){
+                                                    Navigator.pop(
+                                                        context),
+                                                    Navigator
+                                                        .pushAndRemoveUntil(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (
+                                                                context) =>
+                                                                Dashboard()), (
+                                                        r) => false),
+                                                  } else
+                                                    {
+                                                      _showSnackbar(
+                                                          addLocationViewModel
+                                                              .msg,
+                                                          false),
+                                                    }
+                                                }).catchError((
+                                                    onError) {});
+                                              }
+                                            }
+                                          },
+                                            child: Text('Save', style: Theme
+                                                .of(context)
+                                                .textTheme
+                                                .subtitle2
+                                                .copyWith(
+                                                color: Colors.white),),
+                                            color: Theme
+                                                .of(context)
+                                                .primaryColor,
                                           ),
                                         ),
 
-                                        addLocationViewModel.isLoading?Center(
+                                        addLocationViewModel.isLoading
+                                            ? Center(
                                           child: CircularProgressIndicator(
-                                            valueColor:AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor) ,
+                                            valueColor: AlwaysStoppedAnimation<
+                                                Color>(Theme
+                                                .of(context)
+                                                .primaryColor),
                                           ),
-                                        ):Container(),
+                                        )
+                                            : Container(),
 
 
                                       ],
@@ -398,35 +527,35 @@ class _LocationScreenState extends State<LocationScreen> {
 
   Future<void> _requestService() async {
     if (_serviceEnabled == null || !_serviceEnabled) {
-      final bool serviceRequestedResult = await location.requestService();
-      setState(() {
-        _serviceEnabled = serviceRequestedResult;
-      });
-      if (!serviceRequestedResult) {
-        return;
-      }else{
-        // Navigator.push(context, MaterialPageRoute(builder: (context)=> LocationPickerUI()));
-      }
+      // final bool serviceRequestedResult = await location.requestService();
+      // setState(() {
+      //   _serviceEnabled = serviceRequestedResult;
+      // });
+      // if (!serviceRequestedResult) {
+      //   return;
+      // }else{
+      //   // Navigator.push(context, MaterialPageRoute(builder: (context)=> LocationPickerUI()));
+      // }
     }
   }
 
-  void askForPermission()async{
-    PermissionStatus status= await LocationPermissions().requestPermissions();
+  void askForPermission()async {
+    PermissionStatus status = await LocationPermissions().requestPermissions();
 
-    if(status==loc.PermissionStatus.denied || status==loc.PermissionStatus.denied){
+    // if(status==loc.PermissionStatus.denied || status==loc.PermissionStatus.denied){
+    //
+    // }else{
+    //   checkifGpsActive().then((status) {
+    //     if(status==ServiceStatus.enabled){
+    //       // Navigator.push(context, MaterialPageRoute(builder: (context)=> LocationPickerUI()));
+    //     }else{
+    //       _requestService();
+    //     }
+    //
+    //   });
+  // }
 
-    }else{
-      checkifGpsActive().then((status) {
-        if(status==ServiceStatus.enabled){
-          // Navigator.push(context, MaterialPageRoute(builder: (context)=> LocationPickerUI()));
-        }else{
-          _requestService();
-        }
-
-      });
-
-
-    }
+    // }
     checkLocationPermisionStatus();
   }
 
@@ -441,295 +570,432 @@ class _LocationScreenState extends State<LocationScreen> {
 
 
   void launchFlutterMap()async {
-    LocationResult result = await showLocationPicker(
-      context, "AIzaSyBahlnISPYhetj3q50ADqVE6SECypRGe4A",
-     automaticallyAnimateToCurrentLocation: true,
-      hintText: '',
-      searchBarBoxDecoration: BoxDecoration(
 
+
+    PickResult results;
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PlacePicker(
+
+          apiKey: 'AIzaSyBa6Uh5fdUu0AsPWoJcPrpxrvoLVMiaNw0',
+          // Put YOUR OWN KEY here.
+            selectedPlaceWidgetBuilder: (_, selectedPlace, state, isSearchBarFocused) {
+              return isSearchBarFocused
+                  ? Container() :FloatingCard(
+                bottomPosition: 0.0,    // MediaQuery.of(context) will cause rebuild. See MediaQuery document for the information.
+                leftPosition: 0.0,
+                rightPosition: 0.0,
+                width: 500,
+                borderRadius: BorderRadius.circular(12.0),
+                child: state == SearchingState.Searching ?
+                Center(child: CircularProgressIndicator()) :
+                // RaisedButton( child: Text('Pick'), onPressed: () { print("do something with [selectedPlace] data"); },),
+                Container(
+                  //  height: 50.0,
+                  child: Column(
+                    children: [
+
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(selectedPlace.formattedAddress,style: Theme.of(context).textTheme.bodyText2,),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+
+                          print(selectedPlace.formattedAddress);
+                          results=selectedPlace;
+                          if (results != null) {
+                            showModalBottomSheet(
+                                context: context,
+                                backgroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                enableDrag: true,
+                                isScrollControlled: true,
+
+                                builder: (BuildContext bc) {
+                                  return StatefulBuilder(
+                                      builder: (context, setState) {
+                                        return SafeArea(
+                                          child: Container(
+
+                                            padding: EdgeInsets.only(
+                                                left: 16, right: 16, bottom: 16, top: 24),
+                                            child: SingleChildScrollView(
+                                              child: Stack(
+                                                children: [
+                                                  Container(
+                                                    color: Colors.white,
+                                                    height: MediaQuery
+                                                        .of(context)
+                                                        .size
+                                                        .height * .8,
+                                                    child: Observer(
+                                                      builder: (_) =>
+                                                          Container(
+                                                            child: Column(
+                                                              crossAxisAlignment: CrossAxisAlignment
+                                                                  .start,
+                                                              children: [
+
+                                                                Text('Selected address ${results
+                                                                    .formattedAddress}', style: Theme
+                                                                    .of(context)
+                                                                    .textTheme
+                                                                    .subtitle2),
+
+
+                                                                TextFormField(
+                                                                  onChanged: (str) {
+                                                                    setState((){
+                                                                      completeaddress = str;
+                                                                    });
+                                                                  },
+                                                                  decoration: InputDecoration(
+                                                                    hintText: 'Complete Address',
+                                                                    errorText: completeaddress.isEmpty?'Please Enter Complete adreess':null,
+                                                                  ),
+                                                                ),
+
+                                                                TextFormField(
+                                                                  onChanged: (str) {
+
+                                                                    setState((){
+                                                                      floor = str;
+                                                                    });
+                                                                  },
+
+                                                                  decoration: InputDecoration(
+                                                                    hintText: 'Floor',
+                                                                    errorText: floor.isEmpty?'Please Enter Floor':null,
+                                                                  ),
+                                                                ),
+
+                                                                TextFormField(
+                                                                  onChanged: (str) {
+
+                                                                    setState((){
+                                                                      howtoreach = str;
+                                                                    });
+                                                                  },
+                                                                  decoration: InputDecoration(
+
+
+                                                                    hintText: 'How to reach',
+                                                                    errorText: howtoreach.isEmpty?'Please Enter How to reach':null,
+                                                                  ),
+                                                                ),
+
+
+                                                                TextFormField(
+                                                                  onChanged: (str) {
+                                                                    setState((){
+                                                                      pincode = str;
+                                                                    });
+
+                                                                  },
+
+                                                                  maxLengthEnforced: true,
+                                                                  maxLength: 6,
+                                                                  keyboardType: TextInputType.number,
+                                                                  decoration: InputDecoration(
+                                                                    hintText: 'Pincode',
+                                                                    errorText: pincode.isEmpty?'Please Enter Pincode':null,
+                                                                  ),
+                                                                ),
+                                                                SizedBox(height: 16,),
+                                                                Text('TAG THIS LOCATION FOR LATER',
+                                                                  style: Theme
+                                                                      .of(context)
+                                                                      .textTheme
+                                                                      .subtitle2
+                                                                      .copyWith(color: Colors.grey),),
+                                                                Row(
+                                                                  mainAxisAlignment: MainAxisAlignment
+                                                                      .spaceEvenly,
+                                                                  children: [
+                                                                    FilterChip(
+                                                                      shape: StadiumBorder(
+                                                                          side: BorderSide(
+                                                                              color: Colors.grey)),
+                                                                      label: Text("Home", style: Theme
+                                                                          .of(context)
+                                                                          .textTheme
+                                                                          .caption,),
+                                                                      padding: EdgeInsets.only(
+                                                                          left: 12, right: 12),
+                                                                      labelStyle: TextStyle(
+                                                                          letterSpacing: 2,
+                                                                          color: Colors.black),
+
+                                                                      selected: selected == "Home",
+                                                                      selectedColor: Colors
+                                                                          .transparent,
+                                                                      // backgroundColor: Theme.of(context).primaryColor,
+                                                                      onSelected: (flag) {
+                                                                        if (flag) {
+                                                                          setState(() {
+                                                                            selected = "Home";
+                                                                          });
+                                                                        }
+                                                                      },
+                                                                    ),
+
+                                                                    FilterChip(
+                                                                      shape: StadiumBorder(
+                                                                          side: BorderSide(
+                                                                              color: Colors.grey)),
+                                                                      label: Text("Work", style: Theme
+                                                                          .of(context)
+                                                                          .textTheme
+                                                                          .caption),
+                                                                      labelStyle: TextStyle(
+                                                                          letterSpacing: 2,
+                                                                          color: Colors.black),
+                                                                      padding: EdgeInsets.only(
+                                                                          left: 12, right: 12),
+                                                                      selected: selected == "Work",
+                                                                      selectedColor: Colors
+                                                                          .transparent,
+                                                                      // backgroundColor: Theme.of(context).primaryColor,
+                                                                      onSelected: (flag) {
+                                                                        setState(() {
+                                                                          if (flag) {
+                                                                            selected = "Work";
+                                                                          }
+                                                                        });
+                                                                      },
+                                                                    ),
+
+                                                                    FilterChip(
+                                                                      // avatar: Icon(Icons.close,color: Colors.black),
+                                                                      shape: StadiumBorder(
+                                                                          side: BorderSide(
+                                                                              color: Colors.grey)),
+                                                                      label: Text(
+                                                                          "Other", style: Theme
+                                                                          .of(context)
+                                                                          .textTheme
+                                                                          .caption),
+                                                                      labelStyle: TextStyle(
+                                                                          letterSpacing: 2,
+                                                                          color: Colors.black),
+                                                                      padding: EdgeInsets.only(
+                                                                          left: 12, right: 12),
+                                                                      selected: selected == "Other",
+                                                                      selectedColor: Colors
+                                                                          .transparent,
+                                                                      // backgroundColor: Theme.of(context).primaryColor,
+                                                                      onSelected: (flag) {
+                                                                        setState(() {
+                                                                          selected = "Other";
+                                                                        });
+                                                                      },
+                                                                    ),
+                                                                  ],
+                                                                ),
+
+                                                                Align(
+                                                                  alignment: Alignment.center,
+                                                                  child: RaisedButton(onPressed: () {
+                                                                    if (!addLocationViewModel
+                                                                        .isLoading) {
+                                                                      if (pincode.isNotEmpty && floor.isNotEmpty && howtoreach.isNotEmpty && completeaddress.isNotEmpty) {
+                                                                        SaveAddress saveUserDetails = SaveAddress();
+
+                                                                        saveUserDetails
+                                                                            .custAddressId =
+                                                                        0;
+
+                                                                        saveUserDetails
+                                                                            .addressCaption =
+                                                                            selected;
+                                                                        saveUserDetails
+                                                                            .address =
+                                                                        "${completeaddress} ~ ${floor} ~ ${howtoreach}";
+                                                                        saveUserDetails
+                                                                            .areaId = 0;
+                                                                        saveUserDetails.area =
+                                                                        null;
+                                                                        saveUserDetails
+                                                                            .landmark =
+                                                                        "${results
+                                                                            .formattedAddress}";
+                                                                        saveUserDetails
+                                                                            .pincode = "";
+                                                                        saveUserDetails
+                                                                            .cityId = 1;
+                                                                        saveUserDetails
+                                                                            .langId = 1;
+                                                                        saveUserDetails
+                                                                            .delStatus = 0;
+                                                                        saveUserDetails
+                                                                            .latitude =
+                                                                        '${results.geometry
+                                                                            .location.lat}';
+                                                                        saveUserDetails
+                                                                            .longitude =
+                                                                        '${results.geometry
+                                                                            .location.lng}';
+                                                                        saveUserDetails
+                                                                            .exInt1 = int.parse(pincode);
+                                                                        saveUserDetails
+                                                                            .exInt2 = 0;
+                                                                        saveUserDetails
+                                                                            .exInt3 = 0;
+                                                                        saveUserDetails
+                                                                            .exVar1 = pincode??"";
+                                                                        saveUserDetails
+                                                                            .exVar2 = "";
+                                                                        saveUserDetails
+                                                                            .exVar3 = "";
+                                                                        saveUserDetails
+                                                                            .exFloat1 = 0;
+                                                                        saveUserDetails
+                                                                            .exFloat2 = 0;
+                                                                        saveUserDetails
+                                                                            .exFloat3 = 0;
+
+                                                                        FocusScope.of(context)
+                                                                            .unfocus();
+                                                                        addLocationViewModel
+                                                                            .saveUserDetails(
+                                                                            saveUserDetails)
+                                                                            .then((value) =>
+                                                                        {
+
+                                                                          print(
+                                                                              '#######$value######'),
+                                                                          if(value){
+                                                                            Navigator.pop(
+                                                                                context),
+                                                                            Navigator
+                                                                                .pushAndRemoveUntil(
+                                                                                context,
+                                                                                MaterialPageRoute(
+                                                                                    builder: (
+                                                                                        context) =>
+                                                                                        Dashboard()), (
+                                                                                r) => false),
+                                                                          } else
+                                                                            {
+                                                                              _showSnackbar(
+                                                                                  addLocationViewModel
+                                                                                      .msg,
+                                                                                  false),
+                                                                            }
+                                                                        }).catchError((
+                                                                            onError) {});
+                                                                      }
+                                                                    }
+                                                                  },
+                                                                    child: Text('Save', style: Theme
+                                                                        .of(context)
+                                                                        .textTheme
+                                                                        .subtitle2
+                                                                        .copyWith(
+                                                                        color: Colors.white),),
+                                                                    color: Theme
+                                                                        .of(context)
+                                                                        .primaryColor,
+                                                                  ),
+                                                                ),
+
+                                                                addLocationViewModel.isLoading
+                                                                    ? Center(
+                                                                  child: CircularProgressIndicator(
+                                                                    valueColor: AlwaysStoppedAnimation<
+                                                                        Color>(Theme
+                                                                        .of(context)
+                                                                        .primaryColor),
+                                                                  ),
+                                                                )
+                                                                    : Container(),
+
+
+                                                              ],
+                                                            ),
+                                                          ),
+                                                    ),
+                                                  ),
+
+
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      });
+                                });
+                          }
+
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 8),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Theme.of(context).primaryColor,
+                                style: BorderStyle.solid,
+                                width: 1.0,
+                              ),
+                              color: Theme.of(context).primaryColor,
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Center(
+                                    child: Text("Verify & Continue",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .button
+                                            .copyWith(
+                                            fontWeight: FontWeight.normal)
+                                            .copyWith(color: Colors.white)),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+              );},
+          // onPlacePicked: (result) {
+          //
+          // },
+          initialPosition:  LatLng(23.6163503,72.3496002),
+          useCurrentLocation: true,
+          usePlaceDetailSearch: true,
+          selectInitialPosition: true,
+          forceAndroidLocationManager: true,
+          desiredLocationAccuracy: LocationAccuracy.bestForNavigation,
+          resizeToAvoidBottomInset: true,
+          usePinPointingSearch: true,
+          hintText: 'Search location',
+        ),
       ),
-      initialCenter: LatLng(24.179331,72.426682),
-      layersButtonEnabled: true,
-      appBarColor: Colors.transparent,
-      requiredGPS: true,
-      myLocationButtonEnabled: true,
-      countries: ['IN'],
-
     );
 
 
-    if (result != null) {
-      showModalBottomSheet(
-          context: context,
-          backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          enableDrag: true,
-          isScrollControlled: true,
-
-          builder: (BuildContext bc) {
-            return StatefulBuilder(
-                builder: (context, setState) {
-                  return SafeArea(
-                    child: Container(
-
-                      padding: EdgeInsets.only(
-                          left: 16, right: 16, bottom: 16, top: 24),
-                      child: SingleChildScrollView(
-                        child: Stack(
-                          children: [
-                            Container(
-                              color: Colors.white,
-                              height: MediaQuery
-                                  .of(context)
-                                  .size
-                                  .height * .56,
-                              child: Observer(
-                                builder: (_) =>
-                                    Container(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment
-                                            .start,
-                                        children: [
-
-                                          Text('Selected address ${result
-                                              .address}', style: Theme
-                                              .of(context)
-                                              .textTheme
-                                              .subtitle2),
 
 
-                                          TextFormField(
-                                            onChanged: (str) {
-                                              completeaddress = str;
-                                            },
-                                            decoration: InputDecoration(
-                                              hintText: 'Complete Address *',
-                                            ),
-                                          ),
-
-                                          TextFormField(
-                                            onChanged: (str) {
-                                              floor = str;
-                                            },
-
-                                            decoration: InputDecoration(
-                                              hintText: 'Floor(Optional)',
-                                            ),
-                                          ),
-
-                                          TextFormField(
-                                            onChanged: (str) {
-                                              howtoreach = str;
-                                            },
-                                            decoration: InputDecoration(
-
-
-                                              hintText: 'How to reach(Optional)',
-                                            ),
-                                          ),
-
-                                          SizedBox(height: 16,),
-                                          Text('TAG THIS LOCATION FOR LATER',
-                                            style: Theme
-                                                .of(context)
-                                                .textTheme
-                                                .subtitle2
-                                                .copyWith(color: Colors.grey),),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment
-                                                .spaceEvenly,
-                                            children: [
-                                              FilterChip(
-                                                shape: StadiumBorder(
-                                                    side: BorderSide(
-                                                        color: Colors.grey)),
-                                                label: Text("Home", style: Theme
-                                                    .of(context)
-                                                    .textTheme
-                                                    .caption,),
-                                                padding: EdgeInsets.only(
-                                                    left: 12, right: 12),
-                                                labelStyle: TextStyle(
-                                                    letterSpacing: 2,
-                                                    color: Colors.black),
-
-                                                selected: selected == "Home",
-                                                selectedColor: Colors
-                                                    .transparent,
-                                                // backgroundColor: Theme.of(context).primaryColor,
-                                                onSelected: (flag) {
-                                                  if (flag) {
-                                                    setState(() {
-                                                      selected = "Home";
-                                                    });
-                                                  }
-                                                },
-                                              ),
-
-                                              FilterChip(
-                                                shape: StadiumBorder(
-                                                    side: BorderSide(
-                                                        color: Colors.grey)),
-                                                label: Text("Work", style: Theme
-                                                    .of(context)
-                                                    .textTheme
-                                                    .caption),
-                                                labelStyle: TextStyle(
-                                                    letterSpacing: 2,
-                                                    color: Colors.black),
-                                                padding: EdgeInsets.only(
-                                                    left: 12, right: 12),
-                                                selected: selected == "Work",
-                                                selectedColor: Colors
-                                                    .transparent,
-                                                // backgroundColor: Theme.of(context).primaryColor,
-                                                onSelected: (flag) {
-                                                  setState(() {
-                                                    if (flag) {
-                                                      selected = "Work";
-                                                    }
-                                                  });
-                                                },
-                                              ),
-
-                                              FilterChip(
-                                                // avatar: Icon(Icons.close,color: Colors.black),
-                                                shape: StadiumBorder(
-                                                    side: BorderSide(
-                                                        color: Colors.grey)),
-                                                label: Text(
-                                                    "Other", style: Theme
-                                                    .of(context)
-                                                    .textTheme
-                                                    .caption),
-                                                labelStyle: TextStyle(
-                                                    letterSpacing: 2,
-                                                    color: Colors.black),
-                                                padding: EdgeInsets.only(
-                                                    left: 12, right: 12),
-                                                selected: selected == "Other",
-                                                selectedColor: Colors
-                                                    .transparent,
-                                                // backgroundColor: Theme.of(context).primaryColor,
-                                                onSelected: (flag) {
-                                                  setState(() {
-                                                    selected = "Other";
-                                                  });
-                                                },
-                                              ),
-                                            ],
-                                          ),
-
-                                          Align(
-                                            alignment: Alignment.center,
-                                            child: RaisedButton(onPressed: () {
-                                              if (!addLocationViewModel
-                                                  .isLoading) {
-                                                SaveAddress saveUserDetails = SaveAddress();
-
-                                                saveUserDetails.custAddressId =
-                                                0;
-
-                                                saveUserDetails.addressCaption =
-                                                    selected;
-                                                saveUserDetails.address =
-                                                "${completeaddress} ~ ${floor} ~ ${howtoreach}";
-                                                saveUserDetails.areaId = 0;
-                                                saveUserDetails.area = null;
-                                                saveUserDetails.landmark =
-                                                "${result.address}";
-                                                saveUserDetails.pincode = "";
-                                                saveUserDetails.cityId = 1;
-                                                saveUserDetails.langId = 1;
-                                                saveUserDetails.delStatus = 0;
-                                                saveUserDetails.latitude =
-                                                '${result.latLng.latitude}';
-                                                saveUserDetails.longitude =
-                                                '${result.latLng.longitude}';
-                                                saveUserDetails.exInt1 = 0;
-                                                saveUserDetails.exInt2 = 0;
-                                                saveUserDetails.exInt3 = 0;
-                                                saveUserDetails.exVar1 = "";
-                                                saveUserDetails.exVar2 = "";
-                                                saveUserDetails.exVar3 = "";
-                                                saveUserDetails.exFloat1 = 0;
-                                                saveUserDetails.exFloat2 = 0;
-                                                saveUserDetails.exFloat3 = 0;
-
-                                                FocusScope.of(context)
-                                                    .unfocus();
-                                                addLocationViewModel
-                                                    .saveUserDetails(
-                                                    saveUserDetails).then((
-                                                    value) =>
-                                                {
-
-                                                  if(value){
-
-                                                    Navigator
-                                                        .pushAndRemoveUntil(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (
-                                                                context) =>
-                                                                Dashboard()), (
-                                                        r) => false),
-                                                  } else
-                                                    {
-                                                      _showSnackbar(
-                                                          addLocationViewModel
-                                                              .msg, false),
-                                                    }
-                                                }).catchError((onError) {});
-                                              }
-                                            },
-                                              child: Text('Save', style: Theme
-                                                  .of(context)
-                                                  .textTheme
-                                                  .subtitle2
-                                                  .copyWith(
-                                                  color: Colors.white),),
-                                              color: Theme
-                                                  .of(context)
-                                                  .primaryColor,
-                                            ),
-                                          ),
-
-                                          addLocationViewModel.isLoading
-                                              ? Center(
-                                            child: CircularProgressIndicator(
-                                              valueColor: AlwaysStoppedAnimation<
-                                                  Color>(Theme
-                                                  .of(context)
-                                                  .primaryColor),
-                                            ),
-                                          )
-                                              : Container(),
-
-
-                                        ],
-                                      ),
-                                    ),
-                              ),
-                            ),
-
-
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                });
-          });
-    }
   }
 
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      bottom: false,
       child: Scaffold(
         key: scaffoldState,
         body: Center(
@@ -920,7 +1186,7 @@ if(isNetWorkAvailable){
                       .of(context)
                       .size
                       .height*.5,
-                  padding: EdgeInsets.all(16),
+                  padding: EdgeInsets.fromLTRB(16,16,16,1),
 
 
                   child: Observer(
@@ -954,7 +1220,7 @@ if(isNetWorkAvailable){
                                   )):
 
                                   SizedBox(
-                                    height: MediaQuery.of(context).size.height*.39,
+                                    height: MediaQuery.of(context).size.height*.3924,
                                     child: ListView.separated(
                                         itemCount:  allFrenchisiViewModel.adressesMain.addressList.length,
                                         separatorBuilder: (context, index) => Divider(
@@ -963,7 +1229,7 @@ if(isNetWorkAvailable){
                                         ),
                                         itemBuilder: (context, index) {
                                           return ListTile(
-                                            minVerticalPadding: 16,
+
                                             onTap: (){
 
 

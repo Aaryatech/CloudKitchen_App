@@ -132,19 +132,16 @@ mixin _$ContactUSViewModel on _ContactUSViewModel, Store {
     });
   }
 
-  final _$_ContactUSViewModelActionController =
-      ActionController(name: '_ContactUSViewModel');
+  final _$getCusPhoneAsyncAction =
+      AsyncAction('_ContactUSViewModel.getCusPhone');
 
   @override
-  String getCusPhone() {
-    final _$actionInfo = _$_ContactUSViewModelActionController.startAction(
-        name: '_ContactUSViewModel.getCusPhone');
-    try {
-      return super.getCusPhone();
-    } finally {
-      _$_ContactUSViewModelActionController.endAction(_$actionInfo);
-    }
+  Future<String> getCusPhone() {
+    return _$getCusPhoneAsyncAction.run(() => super.getCusPhone());
   }
+
+  final _$_ContactUSViewModelActionController =
+      ActionController(name: '_ContactUSViewModel');
 
   @override
   dynamic validateUsername(String text) {

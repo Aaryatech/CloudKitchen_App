@@ -8,86 +8,67 @@ import 'package:cloud_kitchen/network/model/response/SaveUser.dart';
 // import 'package:cloud_kitchen/network/model/response/distancematrics/distancematricsone.dart';
 import 'package:cloud_kitchen/network/repository/saveuserrepo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+
 import 'package:mobx/mobx.dart';
 import 'package:regexpattern/regexpattern.dart';
 part 'profileDetailsViewModel.g.dart';
 
-class ProfileDetailsViewModel =_ProfileDetailsViewModel with _$ProfileDetailsViewModel;
+class ProfileDetailsViewModel = _ProfileDetailsViewModel
+    with _$ProfileDetailsViewModel;
 
-
-abstract class _ProfileDetailsViewModel with Store{
-
-
-  final ProfileDetailsErrorState profileDetailsErrorState=ProfileDetailsErrorState();
+abstract class _ProfileDetailsViewModel with Store {
+  final ProfileDetailsErrorState profileDetailsErrorState =
+      ProfileDetailsErrorState();
   // final FirebaseAuth _auth = FirebaseAuth.instance;
   // final GoogleSignIn googleSignIn = GoogleSignIn();
 
   SaveUserRepo saveUserRepo;
   MyLocalPrefes myLocalPrefes;
 
-  _ProfileDetailsViewModel(){
-
-    myLocalPrefes=MyLocalPrefes();
-    saveUserRepo=SaveUserRepo();
-
+  _ProfileDetailsViewModel() {
+    myLocalPrefes = MyLocalPrefes();
+    saveUserRepo = SaveUserRepo();
   }
-
-
-
 
   @observable
   UserCredential result;
 
+  @observable
+  String username = '';
 
   @observable
-  String username='';
-
-
-  @observable
-  String email='';
+  String email = '';
 
   @observable
-  String phoneNumber='';
+  String phoneNumber = '';
 
   @observable
-  String address='';
-
-
-  @observable
-  DateTime custDob=DateTime.now();
-
+  String address = '';
 
   @observable
-  int gender=0;
+  DateTime custDob = DateTime.now();
+
+  @observable
+  int gender = 0;
 
   @observable
   SaveUser customerDetails;
 
   @observable
-  bool loginStatus=false;
-
-
-  @observable
-  String errorMessage='';
-
-
-
+  bool loginStatus = false;
 
   @observable
-  bool isLoadingForLogin=false;
-
+  String errorMessage = '';
 
   @observable
-  bool isLoading=false;
+  bool isLoadingForLogin = false;
+
+  @observable
+  bool isLoading = false;
 
   List<ReactionDisposer> _disposers;
 
   void setupValidations() {
-
     _disposers = [
       reaction((_) => username, validateUsername),
       reaction((_) => email, validatePassword)
@@ -95,18 +76,14 @@ abstract class _ProfileDetailsViewModel with Store{
   }
 
   @action
-  String getCusPhone(){
-    return myLocalPrefes.getCustPhone();
+  Future<String> getCusPhone() async {
+    return await myLocalPrefes.getCustPhone();
   }
 
   @action
-  int getCustID(){
-    return myLocalPrefes.getCustId();
+  Future<int> getCustID() async {
+    return await myLocalPrefes.getCustId();
   }
-
-
-
-
 
   @action
   validateUsername(String text) {
@@ -117,133 +94,90 @@ abstract class _ProfileDetailsViewModel with Store{
 
   @action
   validatePassword(String text) {
-    return text.isEmpty||text.isEmail()
+    return text.isEmpty || text.isEmail()
         ? profileDetailsErrorState.email = null
         : profileDetailsErrorState.email = null;
   }
 
-
   @action
   validatePhoneNumber(String text) {
-    return text.isEmpty||text.isPhone()
+    return text.isEmpty || text.isPhone()
         ? profileDetailsErrorState.phoneNumber = null
         : profileDetailsErrorState.phoneNumber = null;
   }
 
-
-
   Future<bool> saveUserDetails(SaveCustomer saveUserDetails) async {
-    isLoading=true;
-   HttpResponse httpResponse=  await saveUserRepo.saveUser(saveUserDetails);
-      if(httpResponse.status==200){
+    isLoading = true;
+    HttpResponse httpResponse = await saveUserRepo.saveUser(saveUserDetails);
+    if (httpResponse.status == 200) {
+      if (!httpResponse.info.error) {
+        customerDetails = httpResponse.data;
+        print(customerDetails.custName);
+        myLocalPrefes.setCustId(customerDetails.custId);
+        myLocalPrefes.setCustDetails(true);
+        myLocalPrefes.setCustName(customerDetails.custName);
+        myLocalPrefes.setProfUrl(customerDetails.profilePic);
+        isLoading = false;
 
-        if(!httpResponse.info.error)
-        {
-          customerDetails=httpResponse.data;
-          print(customerDetails.custName);
-          myLocalPrefes.setCustId(customerDetails.custId);
-          myLocalPrefes.setCustDetails(true);
-          myLocalPrefes.setCustName(customerDetails.custName);
-
-          isLoading=false;
-
-          return true;
-        }
-
-      }else if(httpResponse.status==500) {
-        errorMessage=httpResponse.message;
-        isLoading=false;
+        return true;
+      }
+    } else if (httpResponse.status == 500) {
+      errorMessage = httpResponse.message;
+      isLoading = false;
 
       return false;
-      }
-      isLoading=false;
-
-
+    }
+    isLoading = false;
   }
 
 
-  Future<bool> saveUserProfileImage(File image) async {
-    isLoading=true;
-   HttpResponse httpResponse=  await saveUserRepo.updateUserProfile(image,customerDetails.custId);
-      if(httpResponse.status==200){
 
-        if(!httpResponse.info.error)
-        {
-          isLoading=false;
-
-          myLocalPrefes.setProfUrl(httpResponse.data['fileName']);
-
-
-          return true;
+  void getUserDetailsIfExist() async {
+    isLoading = true;
+    Future.delayed(Duration(seconds: 1)).then((value) async {
+      saveUserRepo
+          .getUserDetails(await myLocalPrefes.getCustPhone())
+          .then((value) {
+        isLoading = false;
+        if (value.status == 200) {
+          if (!value.info.error) {
+            customerDetails = value.data;
+            username = customerDetails.custName;
+            email = customerDetails.emailId;
+            phoneNumber = customerDetails.phoneNumber;
+            address = customerDetails.gstNo;
+            gender = customerDetails.gender;
+            custDob = DateTime.parse(customerDetails.custDob);
+          }
+        } else if (value.status == 500) {
+          errorMessage = value.message;
         }
-
-      }else if(httpResponse.status==500) {
-        errorMessage=httpResponse.message;
-        isLoading=false;
-
-      return false;
-      }
-      isLoading=false;
-
-
-  }
-
-  void getUserDetailsIfExist(){
-    String mobile;
-
-    isLoading=true;
-    Future.delayed(Duration(seconds: 1)).then((value) => {
-    saveUserRepo.getUserDetails(myLocalPrefes.getCustPhone()).then((value)
-    {
-    isLoading=false;
-    if(value.status==200){
-
-    if(!value.info.error) {
-    customerDetails = value.data;
-    username = customerDetails.custName;
-    email = customerDetails.emailId;
-    phoneNumber = customerDetails.phoneNumber;
-    address = customerDetails.gstNo;
-    gender = customerDetails.gender;
-    custDob=DateTime.parse(customerDetails.custDob);
-
-    }
-    }else if(value.status==500) {
-    errorMessage=value.message;
-    }
-
-    } ).catchError((onError){
-    isLoading=false;
-
-    }),
-
-
+      }).catchError((onError) {
+        isLoading = false;
+      });
     });
-
   }
-
-
-
 }
 
-class ProfileDetailsErrorState = _ProfileDetailsErrorState with _$ProfileDetailsErrorState;
+class ProfileDetailsErrorState = _ProfileDetailsErrorState
+    with _$ProfileDetailsErrorState;
 
 abstract class _ProfileDetailsErrorState with Store {
   @observable
-  String username = null;
+  String username;
 
   @observable
-  String email = null;
+  String email;
 
   @observable
-  String phoneNumber = null;
+  String phoneNumber;
 
   @observable
-  String address = null;
+  String address;
 
   @observable
-  int gender = null;
+  int gender;
 
   @computed
-  bool get hasErrors => username!= null || email != null;
+  bool get hasErrors => username != null || email != null;
 }

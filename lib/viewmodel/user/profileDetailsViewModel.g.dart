@@ -192,30 +192,24 @@ mixin _$ProfileDetailsViewModel on _ProfileDetailsViewModel, Store {
     });
   }
 
+  final _$getCusPhoneAsyncAction =
+      AsyncAction('_ProfileDetailsViewModel.getCusPhone');
+
+  @override
+  Future<String> getCusPhone() {
+    return _$getCusPhoneAsyncAction.run(() => super.getCusPhone());
+  }
+
+  final _$getCustIDAsyncAction =
+      AsyncAction('_ProfileDetailsViewModel.getCustID');
+
+  @override
+  Future<int> getCustID() {
+    return _$getCustIDAsyncAction.run(() => super.getCustID());
+  }
+
   final _$_ProfileDetailsViewModelActionController =
       ActionController(name: '_ProfileDetailsViewModel');
-
-  @override
-  String getCusPhone() {
-    final _$actionInfo = _$_ProfileDetailsViewModelActionController.startAction(
-        name: '_ProfileDetailsViewModel.getCusPhone');
-    try {
-      return super.getCusPhone();
-    } finally {
-      _$_ProfileDetailsViewModelActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  int getCustID() {
-    final _$actionInfo = _$_ProfileDetailsViewModelActionController.startAction(
-        name: '_ProfileDetailsViewModel.getCustID');
-    try {
-      return super.getCustID();
-    } finally {
-      _$_ProfileDetailsViewModelActionController.endAction(_$actionInfo);
-    }
-  }
 
   @override
   dynamic validateUsername(String text) {

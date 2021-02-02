@@ -267,7 +267,10 @@ class _DashboardState extends State<Dashboard> {
                 'channel.description',
                 // TODO add a proper drawable resource to android, for now using
                 //      one that already exists in example app.
-                icon: 'launch_background',
+                icon: '@mipmap/ic_launcher',
+                importance: Importance.high,
+                enableVibration: true,
+                playSound: true,
               ),
             ));
       }
@@ -326,8 +329,7 @@ class _DashboardState extends State<Dashboard> {
                   activeIcon: Icon(Icons.home, color: Theme.of(context).primaryColor,)
               ),
               BottomNavigationBarItem(
-                  icon:Observer(
-                    builder:(_)=> new Stack(
+                  icon: new Stack(
                       children: <Widget>[
                         new Icon(Icons.local_grocery_store,color: Colors.black,),
                         new Positioned(
@@ -357,7 +359,7 @@ class _DashboardState extends State<Dashboard> {
                         )
                       ],
                     ),
-                  ),
+
                   // new Icon(Icons.local_grocery_store,color: Colors.black,),
                   label: 'CART',
                   activeIcon: Icon(Icons.local_grocery_store, color: Theme.of(context).primaryColor,)
@@ -381,8 +383,7 @@ class _DashboardState extends State<Dashboard> {
               //  ),
             ],
           ),
-          body: Observer(
-            builder:(_)=> WillPopScope(
+          body:  WillPopScope(
                 onWillPop: (){
                   if(allFrenchisiViewModel.currentIndex!=0){
                     setState(() {
@@ -396,7 +397,7 @@ class _DashboardState extends State<Dashboard> {
                     builder:(_)=> _children(allFrenchisiViewModel.currentIndex))),
           ),
         ),
-      ),
+
 
     );
   }
